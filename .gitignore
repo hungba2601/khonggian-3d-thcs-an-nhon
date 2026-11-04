@@ -1,0 +1,30 @@
+# Dependencies & Node
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+*.log
+
+# Submodules / Tools
+rea/
+
+# Temporary & backup files
+*.tmp
+*.bak
+*_temp.*
+*.swp
+*~
+
+# Operating System Files
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# IDE & Editors
+.vscode/
+.idea/
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+
