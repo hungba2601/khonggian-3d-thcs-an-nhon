@@ -14,9 +14,10 @@ var SHEET_CAU_HOI = "CauHoi";
 function doGet(e) {
   var ss = SpreadsheetApp.getActiveSpreadsheet();
   var thamSo = e && e.parameter ? e.parameter : {};
-  var api = thamSo.api || "luot";
+  var api = thamSo.api || "xem";
 
   // 1. API ĐẾM VÀ TĂNG SỐ LƯỢT (GHI VÀO Ô B3 CỦA SHEET CauHinh)
+  // Chỉ tăng khi mở web lần đầu với ?api=luot (không tăng khi đi vào từng phòng)
   if (api === "luot") {
     return tangVaGhiLuotTruyCap(ss);
   }
@@ -31,8 +32,8 @@ function doGet(e) {
     return layDuLieuHienVat(ss);
   }
 
-  // Mặc định: tăng lượt truy cập
-  return tangVaGhiLuotTruyCap(ss);
+  // Mặc định: chỉ xem, không tăng
+  return xemSoLuotHienTai(ss);
 }
 
 function doPost(e) {
@@ -124,7 +125,8 @@ function layDuLieuHienVat(ss) {
     { ma: "P3", ten: "Những câu chuyện kể về Bác" },
     { ma: "P4", ten: "Hình ảnh tư liệu" },
     { ma: "P5", ten: "Video" },
-    { ma: "P6", ten: "Học tập và làm theo Bác" }
+    { ma: "P6", ten: "Học tập và làm theo Bác" },
+    { ma: "P7", ten: "Phòng Truyền thống trường" }
   ];
 
   return taoPhanHoiJson({
