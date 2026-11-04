@@ -1,7 +1,7 @@
 {
-  "name": "bao-tang-3d-thcs-an-nhon",
+  "name": "khonggian-3d-thcs-an-nhon",
   "version": "1.0.0",
-  "description": "Không gian văn hóa Hồ Chí Minh 3D - Trường THCS An Nhơn - Phường An Nhơn",
+  "description": "Không gian 3D Trường THCS An Nhơn - Phường An Nhơn",
   "private": true,
   "scripts": {
     "start": "npx serve ."
@@ -15,4 +15,3 @@
   "author": "Trường THCS An Nhơn",
   "license": "MIT"
 }
-

@@ -1,21 +1,25 @@
-# Không gian văn hóa Hồ Chí Minh 3D – Trường THCS An Nhơn - Phường An Nhơn
+# Không gian 3D Trường THCS An Nhơn
 
-Bảo tàng 3D tương tác trực quan giới thiệu về cuộc đời, sự nghiệp, tư tưởng, đạo đức và phong cách của Chủ tịch Hồ Chí Minh.
+Bảo tàng 3D tương tác trực quan tích hợp **Không gian văn hóa Hồ Chí Minh** và **Phòng Truyền thống nhà trường** – Trường THCS An Nhơn, Phường An Nhơn.
 
 ---
 
 ## 🌟 Tính năng chính
 
-- **Không gian 3D tương tác**: Sử dụng Three.js mô phỏng đại sảnh hai tầng và 6 phòng trưng bày chuyên đề.
-- **6 phòng chuyên mục**:
-  1. Tiểu sử Bác Hồ
-  2. Tác phẩm của Người
-  3. Những câu chuyện kể về Bác
-  4. Hình ảnh tư liệu
-  5. Video tư liệu
-  6. Học tập và làm theo Bác
+- **Không gian 3D tương tác**: Sử dụng Three.js mô phỏng đại sảnh hai tầng, 6 phòng trưng bày chuyên đề Bác Hồ và Phòng Truyền thống nhà trường.
+- **Các phân khu chuyên mục**:
+  1. Đại sảnh trung tâm & Lối vào 3D
+  2. Không gian văn hóa Hồ Chí Minh (6 phòng chuyên đề):
+     - Phòng 1: Tiểu sử Bác Hồ
+     - Phòng 2: Tác phẩm của Người
+     - Phòng 3: Những câu chuyện kể về Bác
+     - Phòng 4: Hình ảnh tư liệu
+     - Phòng 5: Video tư liệu
+     - Phòng 6: Học tập và làm theo Bác
+  3. Phòng Truyền thống nhà trường (Lịch sử hình thành & Biên niên Hiệu trưởng)
+- **Hành trình tham quan tự động 360°**: Chế độ tự động quay trọn góc 360 độ ngắm toàn cảnh trước khi di chuyển qua các phòng.
 - **Hệ thống đố vui tương tác & Hộ chiếu tham quan**: Tự động cấp giấy chứng nhận có tên học sinh, lớp, ngày tham quan sau khi trả lời các câu hỏi.
-- **Thuyết minh & nhạc nền**: Tích hợp giọng thuyết minh từng phòng và nhạc nền.
+- **Thuyết minh & nhạc nền**: Tích hợp danh sách phát nhạc nền và thuyết minh tự động từng phòng.
 - **Kết nối dữ liệu động**: Đồng bộ dữ liệu hiện vật và câu hỏi từ Google Apps Script.
 
 ---
@@ -36,28 +40,17 @@ npx serve .
 
 ## 📤 Hướng dẫn đưa lên GitHub
 
-1. Tạo một repository mới trên [GitHub](https://github.com/new) (ví dụ: `bao-tang-3d-thcs-an-nhon`).
-2. Mở terminal tại thư mục này và chạy các lệnh:
+1. Repository: [https://github.com/hungba2601/khonggian-3d-thcs-an-nhon](https://github.com/hungba2601/khonggian-3d-thcs-an-nhon)
+2. Lệnh đẩy code lên GitHub:
 ```bash
-git remote add origin https://github.com/<tai-khoan-cua-ban>/<ten-repo>.git
-git branch -M main
-git push -u origin main
+git add .
+git commit -m "Cap nhat noi dung"
+git push origin main
 ```
 
 ---
 
 ## 🌐 Hướng dẫn Deploy lên Vercel
 
-### Cách 1: Kết nối trực tiếp qua GitHub (Khuyên dùng)
-1. Đăng nhập [Vercel](https://vercel.com).
-2. Chọn **Add New...** -> **Project**.
-3. Chọn repository GitHub vừa tạo ở trên và bấm **Import**.
-4. Giữ nguyên cấu hình mặc định (Framework Preset: *Other*, Root Directory: `./`).
-5. Bấm **Deploy**. Sau khoảng 10-20 giây, website sẽ hoạt động với tên miền miễn phí dạng `ten-du-an.vercel.app`.
-
-### Cách 2: Deploy bằng dòng lệnh (CLI)
-```bash
-npx vercel
-```
-Làm theo các bước hướng dẫn trên màn hình đăng nhập và xác nhận để deploy ngay lập tức.
-
+Dự án đã được liên kết và tự động triển khai (Auto-deploy) trên Vercel mỗi khi đẩy commit mới lên nhánh `main` của GitHub:
+- **Địa chỉ website**: [https://khonggian-3d-thcs-an-nhon.vercel.app/](https://khonggian-3d-thcs-an-nhon.vercel.app/)
