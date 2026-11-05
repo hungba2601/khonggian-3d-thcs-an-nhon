@@ -1546,34 +1546,36 @@
     .wbox {
       position: relative;
       display: grid;
-      grid-template-columns: auto minmax(0, 1fr);
-      gap: clamp(28px, 5vw, 72px);
+      grid-template-columns: minmax(360px, 1.2fr) minmax(340px, 1fr);
+      gap: clamp(24px, 4vw, 56px);
       align-items: center;
-      max-width: 1060px;
+      max-width: clamp(980px, 92vw, 1320px);
       width: 100%
     }
 
     .wport {
       margin: 0;
+      width: 100%;
       display: flex;
       flex-direction: column;
       align-items: center
     }
 
     .wframe {
-      width: clamp(220px, 26vw, 330px);
-      aspect-ratio: 3/4;
-      max-width: 100%;
-      border-radius: 999px 999px 16px 16px;
-      padding: 12px;
+      width: 100%;
+      max-width: 680px;
+      aspect-ratio: 4/3;
+      max-height: min(500px, 64vh);
+      border-radius: 18px;
+      padding: 10px;
       background: linear-gradient(150deg, #f8e3a6 0%, #c9952f 30%, #f6dc96 52%, #a8741f 78%, #e9c56e 100%);
-      box-shadow: 0 28px 60px rgba(120, 30, 16, .28), 0 0 0 6px rgba(255, 248, 232, .9), 0 0 0 7px rgba(179, 132, 46, .5)
+      box-shadow: 0 24px 50px rgba(120, 30, 16, .22), 0 0 0 5px rgba(255, 248, 232, .9), 0 0 0 6px rgba(179, 132, 46, .45)
     }
 
     .winner {
       width: 100%;
       height: 100%;
-      border-radius: 999px 999px 8px 8px;
+      border-radius: 12px;
       overflow: hidden;
       background: radial-gradient(circle at 50% 38%, #fffaf0, #f1dfb8)
     }
@@ -1582,7 +1584,7 @@
       width: 100%;
       height: 100%;
       object-fit: cover;
-      object-position: 28% 40%;
+      object-position: center;
       display: block;
     }
 
@@ -1749,7 +1751,7 @@
       display: none
     }
 
-    @media (max-width:760px) {
+    @media (max-width:860px) {
       .welcome {
         padding: calc(env(safe-area-inset-top, 0px) + 10px) 14px calc(env(safe-area-inset-bottom, 0px) + 10px);
         display: flex;
@@ -1761,25 +1763,37 @@
         grid-template-columns: 1fr;
         text-align: center;
         justify-items: center;
-        gap: 8px;
-        max-width: 350px;
+        gap: 10px;
+        max-width: 440px;
         width: 100%;
       }
 
+      .wport {
+        width: 100%;
+        max-width: 380px;
+        margin: 0 auto;
+      }
+
       .wframe {
-        width: clamp(120px, 32vw, 145px);
-        aspect-ratio: 3/4;
+        width: 100%;
+        max-width: 380px;
+        aspect-ratio: 4/3;
+        border-radius: 14px;
         padding: 6px;
         box-shadow: 0 16px 40px rgba(120, 30, 16, .25);
       }
 
+      .winner {
+        border-radius: 9px;
+      }
+
       .wport figcaption {
-        font-size: 12.5px;
-        margin-top: 4px;
+        font-size: 14px;
+        margin-top: 6px;
       }
 
       .wport figcaption small {
-        font-size: 10.5px;
+        font-size: 11px;
       }
 
       .wtext .wlogo {
@@ -2926,13 +2940,27 @@
       }
 
       .wport {
-        max-width: 130px !important;
+        width: 100% !important;
+        max-width: 380px !important;
         margin: 0 auto !important;
       }
 
+      .wframe {
+        width: 100% !important;
+        max-width: 380px !important;
+        aspect-ratio: 4 / 3 !important;
+        border-radius: 14px !important;
+      }
+
+      .winner {
+        border-radius: 9px !important;
+      }
+
       .wport img {
-        aspect-ratio: 4 / 5 !important;
-        max-height: 150px !important;
+        aspect-ratio: 4 / 3 !important;
+        max-height: 250px !important;
+        object-fit: cover !important;
+        object-position: center !important;
       }
 
       .wcap {
