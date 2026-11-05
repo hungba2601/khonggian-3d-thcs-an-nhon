@@ -4551,29 +4551,23 @@
           });
           g.textAlign = 'center';
           g.fillStyle = '#f3dc8a'; g.font = `600 36px ${FB}`; spaced(g, '8px');
-          g.fillText('TRƯỜNG THCS AN NHƠN · PHƯỜNG AN NHƠN', w / 2, 105); spaced(g, '0px');
-          g.fillStyle = '#ffffff'; g.font = `700 80px ${FD}`;
-          g.fillText('PHÒNG TRUYỀN THỐNG NHÀ TRƯỜNG', w / 2, 215);
-          g.fillStyle = '#d2ad66'; g.fillRect(w / 2 - 340, 245, 680, 4);
-          g.fillStyle = '#f3dc8a'; g.beginPath(); g.arc(w / 2, 247, 9, 0, 7); g.fill();
+          g.fillText('TRƯỜNG THCS AN NHƠN · PHƯỜNG AN NHƠN', w / 2, 130); spaced(g, '0px');
+          g.fillStyle = '#ffffff'; g.font = `700 82px ${FD}`;
+          g.fillText('PHÒNG TRUYỀN THỐNG NHÀ TRƯỜNG', w / 2, 245);
+          g.fillStyle = '#d2ad66'; g.fillRect(w / 2 - 360, 280, 720, 4);
+          g.fillStyle = '#f3dc8a'; g.beginPath(); g.arc(w / 2, 282, 10, 0, 7); g.fill();
 
-          const bw = 1460, bh = 95, bx = (w - bw) / 2, by = 285;
-          g.fillStyle = '#dfa12d'; g.fillRect(bx, by, bw, bh);
-          g.strokeStyle = '#fff0c2'; g.lineWidth = 3; g.strokeRect(bx + 4, by + 4, bw - 8, bh - 8);
-          g.fillStyle = '#5c1318'; g.font = `800 32px ${FB}`;
-          g.fillText('🏛️ CÁNH TRÁI: TRỤ SỞ CHÍNH (THCS AN NHƠN)   |   🏫 CÁNH PHẢI: PHÂN HIỆU (THCS NGUYỄN VĂN NGHI)', w / 2, by + 60);
-
-          g.fillStyle = '#fcedd4'; g.font = `600 34px ${FB}`;
-          g.fillText('BIÊN NIÊN SỬ CÁC THỜI KỲ HIỆU TRƯỞNG & LỊCH SỬ NHÀ TRƯỜNG', w / 2, 455);
-          g.fillStyle = '#d9c2a7'; g.font = `400 27px ${FB}`;
-          drawWrap(g, 'Nơi tôn vinh các thế hệ Hiệu trưởng lãnh đạo trường THCS An Nhơn qua từng thời kỳ lịch sử; lưu giữ truyền thống dạy tốt - học tốt, các dấu ấn xây dựng và phát triển của nhà trường qua hai cơ sở: Trụ sở chính (Trường THCS An Nhơn) và Phân hiệu (THCS Nguyễn Văn Nghi).', w / 2, 530, w - 280, 40, 3);
+          g.fillStyle = '#fcedd4'; g.font = `600 36px ${FB}`;
+          g.fillText('BIÊN NIÊN SỬ CÁC THỜI KỲ HIỆU TRƯỞNG & LỊCH SỬ NHÀ TRƯỜNG', w / 2, 380);
+          g.fillStyle = '#d9c2a7'; g.font = `400 28px ${FB}`;
+          drawWrap(g, 'Nơi tôn vinh các thế hệ Hiệu trưởng lãnh đạo trường THCS An Nhơn qua từng thời kỳ lịch sử; lưu giữ truyền thống dạy tốt - học tốt, các dấu ấn xây dựng và phát triển của nhà trường qua hai cơ sở: Trụ sở chính (Trường THCS An Nhơn) và Phân hiệu (THCS Nguyễn Văn Nghi).', w / 2, 475, w - 280, 44, 3);
           g.fillStyle = '#f3dc8a'; g.font = `italic 400 25px ${FB}`;
-          g.fillText('Nhà trường đang tiếp tục tổng hợp hồ sơ, tư liệu, hình ảnh lưu niệm các khóa. Bấm vào màn hình hoặc bảng tin để xem chi tiết.', w / 2, 700);
-          const btnW = 440, btnH = 68, btnX = (w - btnW) / 2, btnY = 760;
+          g.fillText('Nhà trường đang tiếp tục tổng hợp hồ sơ, tư liệu, hình ảnh lưu niệm các khóa. Bấm vào màn hình hoặc bảng tin để xem chi tiết.', w / 2, 670);
+          const btnW = 460, btnH = 72, btnX = (w - btnW) / 2, btnY = 745;
           g.fillStyle = 'rgba(255,255,255,0.12)'; g.fillRect(btnX, btnY, btnW, btnH);
           g.strokeStyle = '#d2ad66'; g.lineWidth = 2; g.strokeRect(btnX, btnY, btnW, btnH);
           g.fillStyle = '#ffffff'; g.font = `600 26px ${FB}`;
-          g.fillText('Nhấp để xem danh sách & hồ sơ  ➔', w / 2, btnY + 44);
+          g.fillText('Nhấp để xem danh sách & hồ sơ  ➔', w / 2, btnY + 46);
         });
       }
 
@@ -7044,10 +7038,10 @@
           }
         }).catch(function (err) { if (window.console) console.warn('[Bảo tàng 3D] Chưa tải được tư liệu bổ sung:', err.message); });
       }
-      // ---------- SỐ LƯỢT THAM QUAN ----------
-      // 1. Chỉ tính duy nhất 1 lần cho mỗi người dùng/thiết bị trong ngày (1 lượt/ngày).
-      // 2. Mở lại tab, F5, đóng mở link trên Zalo trong ngày: CHỈ XEM (api=xem), TUYỆT ĐỐI KHÔNG TĂNG.
-      // 3. Người dùng tham quan các phòng, xem tư liệu, nghe thuyết minh, về trang chủ: TUYỆT ĐỐI KHÔNG ĐẾM LẠI.
+      // ---------- SỐ LƯỢT THAM QUAN (CHỐNG TĂNG TRÙNG LẶP TUYỆT ĐỐI) ----------
+      // 1. Chỉ tính duy nhất 1 lần khi người dùng mới mở link lần đầu.
+      // 2. Đi vào bất kỳ phòng nào, nhấp hiện vật, xoay 3D, quay về trang chủ: TUYỆT ĐỐI KHÔNG GỌI API ĐẾM.
+      // 3. F5, mở lại tab, mở qua Zalo, duyệt web trên cùng thiết bị: Nhận diện đa tầng Cookie + LocalStorage + SessionStorage -> CHỈ XEM (api=xem).
       var _daGoiDemLuot = false;
       function demLuot() {
         if (_daGoiDemLuot) return;
@@ -7064,26 +7058,34 @@
           homNay = 'today';
         }
 
+        // Kiểm tra đa tầng chống trùng: Cookie + LocalStorage + SessionStorage + Bot Detection
         var daTinh = false;
         try {
+          var coCookie = document.cookie && document.cookie.indexOf('bt3d_visited=1') >= 0;
+          var daVao = localStorage.getItem('bt3d_da_vao');
           var ngayLuu = localStorage.getItem('bt3d_ngay_tinh_luot');
           var phienLuu = sessionStorage.getItem('bt3d_phien_tinh_luot');
-          if (ngayLuu === homNay || phienLuu === '1') {
+          if (daVao === '1' || ngayLuu === homNay || phienLuu === '1' || coCookie) {
             daTinh = true;
           }
         } catch (e) { }
 
-        // Đã tính hôm nay -> chỉ lấy số lượt xem để hiển thị (api=xem)
-        // Chưa tính hôm nay -> tăng 1 lượt (api=luot)
+        // Chặn bot / crawler tự động quét link
+        if (typeof navigator !== 'undefined' && navigator.webdriver) {
+          daTinh = true;
+        }
+
+        // Đã từng vào trên thiết bị này -> CHỈ XEM (api=xem), không tăng lượt
+        // Thiết bị hoàn toàn mới -> TĂNG 1 LƯỢT (api=luot)
         var apiMucTieu = daTinh ? 'api=xem' : 'api=luot';
 
-        // Đánh dấu ngay lập tức để chống trùng lặp khi mở nhiều tab cùng lúc
-        if (!daTinh) {
-          try {
-            localStorage.setItem('bt3d_ngay_tinh_luot', homNay);
-            sessionStorage.setItem('bt3d_phien_tinh_luot', '1');
-          } catch (e) { }
-        }
+        // Đánh dấu ngay lập tức trên mọi kho lưu trữ để các lần mở sau không bao giờ tăng nữa
+        try {
+          localStorage.setItem('bt3d_da_vao', '1');
+          localStorage.setItem('bt3d_ngay_tinh_luot', homNay);
+          sessionStorage.setItem('bt3d_phien_tinh_luot', '1');
+          document.cookie = 'bt3d_visited=1; max-age=2592000; path=/; SameSite=Lax';
+        } catch (e) { }
 
         if (/[?&]api=[^&]+/.test(u)) {
           u = u.replace(/([?&])api=[^&]+/, '$1' + apiMucTieu);
