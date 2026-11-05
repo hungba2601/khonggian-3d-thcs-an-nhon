@@ -2691,26 +2691,26 @@
         padding: 0 !important;
       }
 
-      /* Bàn phím ảo di chuyển: Góc dưới bên TRÁI cho ngón tay cái trái */
+      /* Bàn phím ảo di chuyển: Góc dưới bên TRÁI - sát đáy màn hình để không che nội dung */
       .pad {
         position: fixed !important;
-        left: 12px !important;
+        left: 8px !important;
         right: auto !important;
         top: auto !important;
-        bottom: calc(env(safe-area-inset-bottom, 0px) + 16px) !important;
+        bottom: calc(env(safe-area-inset-bottom, 0px) + 4px) !important;
         display: grid !important;
-        grid-template-columns: repeat(3, 40px) !important;
-        grid-template-rows: repeat(2, 40px) !important;
-        gap: 4px !important;
+        grid-template-columns: repeat(3, 36px) !important;
+        grid-template-rows: repeat(2, 36px) !important;
+        gap: 3px !important;
         z-index: 10 !important;
       }
 
       .pad button {
-        width: 40px !important;
-        height: 40px !important;
-        border-radius: 11px !important;
-        background: rgba(74, 16, 30, .75) !important;
-        border: 1.2px solid rgba(210, 173, 102, .45) !important;
+        width: 36px !important;
+        height: 36px !important;
+        border-radius: 9px !important;
+        background: rgba(74, 16, 30, .85) !important;
+        border: 1.2px solid rgba(210, 173, 102, .5) !important;
         backdrop-filter: blur(8px) !important;
         -webkit-backdrop-filter: blur(8px) !important;
         box-shadow: 0 4px 14px rgba(0, 0, 0, .3) !important;
@@ -2728,27 +2728,27 @@
         height: 18px !important;
       }
 
-      /* Nút mở Lộ trình tham quan: Góc dưới bên PHẢI (Luôn hiển thị) */
+      /* Nút mở Lộ trình tham quan: Góc dưới bên PHẢI - sát đáy màn hình */
       .ropen {
         position: fixed !important;
         left: auto !important;
-        right: 12px !important;
+        right: 8px !important;
         top: auto !important;
-        bottom: calc(env(safe-area-inset-bottom, 0px) + 16px) !important;
+        bottom: calc(env(safe-area-inset-bottom, 0px) + 4px) !important;
         z-index: 10 !important;
         width: auto !important;
-        height: 40px !important;
-        padding: 0 14px !important;
+        height: 36px !important;
+        padding: 0 12px !important;
         border-radius: 999px !important;
         background: linear-gradient(135deg, rgba(138, 28, 34, .92), rgba(80, 12, 16, .96)) !important;
         border: 1.5px solid #d2ad66 !important;
         box-shadow: 0 6px 18px rgba(0, 0, 0, .4) !important;
-        font-size: 13px !important;
+        font-size: 12.5px !important;
         font-weight: 700 !important;
         color: #ffe6a8 !important;
         display: inline-flex !important;
         align-items: center !important;
-        gap: 6px !important;
+        gap: 5px !important;
       }
 
       .ropen[hidden] {
@@ -2768,8 +2768,8 @@
       .rooms {
         position: fixed !important;
         top: auto !important;
-        bottom: calc(env(safe-area-inset-bottom, 0px) + 64px) !important;
-        right: 12px !important;
+        bottom: calc(env(safe-area-inset-bottom, 0px) + 44px) !important;
+        right: 8px !important;
         left: auto !important;
         width: 250px !important;
         max-width: calc(100vw - 24px) !important;
@@ -2953,14 +2953,17 @@
         font-size: 13.5px !important;
       }
 
-      /* Hộp hướng dẫn từng bước (Nằm trên hàng nút bấm đáy) */
+      /* Hộp hướng dẫn từng bước: Nằm hoàn toàn PHÍA TRÊN hàng nút bấm đáy (KHÔNG che nút, KHÔNG bị nút che) */
       .guide {
-        width: calc(100vw - 20px) !important;
-        max-width: calc(100vw - 20px) !important;
-        bottom: calc(env(safe-area-inset-bottom, 0px) + 64px) !important;
+        width: calc(100vw - 16px) !important;
+        max-width: calc(100vw - 16px) !important;
+        left: 50% !important;
+        transform: translateX(-50%) !important;
+        bottom: calc(env(safe-area-inset-bottom, 0px) + 86px) !important;
         padding: 12px 14px 10px !important;
         border-radius: 16px !important;
         z-index: 105 !important;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.45) !important;
       }
 
       .guide h3 {
@@ -2983,7 +2986,7 @@
 
       /* Khi thu nhỏ trên điện thoại */
       .guide.minimized {
-        bottom: calc(env(safe-area-inset-bottom, 0px) + 64px) !important;
+        bottom: calc(env(safe-area-inset-bottom, 0px) + 86px) !important;
         padding: 4px 8px 4px 12px !important;
         border-radius: 999px !important;
         width: max-content !important;
