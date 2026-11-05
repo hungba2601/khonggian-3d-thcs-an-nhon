@@ -3651,7 +3651,6 @@
         truSoChinh: [
           {
             no: 1,
-            era: "ĐỜI HIỆU TRƯỞNG SỐ 1",
             name: "Cô Trần Thị Phú",
             role: "Hiệu trưởng",
             term: "Nhiệm kỳ: Chờ cập nhật (năm – năm)",
@@ -3663,7 +3662,6 @@
           },
           {
             no: 2,
-            era: "ĐỜI HIỆU TRƯỞNG SỐ 2",
             name: "Cô Hồ Thị Thu Liên",
             role: "Hiệu trưởng",
             term: "Nhiệm kỳ: Chờ cập nhật (năm – năm)",
@@ -3675,7 +3673,6 @@
           },
           {
             no: 3,
-            era: "ĐỜI HIỆU TRƯỞNG SỐ 3",
             name: "Cô Nguyễn Thị Ngọc Ánh",
             role: "Hiệu trưởng",
             term: "Nhiệm kỳ: Chờ cập nhật (năm – năm)",
@@ -3687,7 +3684,6 @@
           },
           {
             no: 4,
-            era: "ĐỜI HIỆU TRƯỞNG SỐ 4",
             name: "Thầy Phạm Dương Hoàng Dũng",
             role: "Hiệu trưởng",
             term: "Nhiệm kỳ: 2021 – 2025",
@@ -3864,7 +3860,7 @@
                   </div>
                 `}
               </div>
-              <div class="meta" style="color:#b3781f;font-weight:700;font-size:11.5px;letter-spacing:0.5px;">${esc(p.era || ('ĐỜI HIỆU TRƯỞNG SỐ ' + (i + 1)))}</div>
+              ${p.era ? `<div class="meta" style="color:#b3781f;font-weight:700;font-size:11.5px;letter-spacing:0.5px;">${esc(p.era)}</div>` : ''}
               <h5 style="margin:5px 0 3px;font-size:16px;color:#8a1c22;font-weight:700;">${esc(p.name)}</h5>
               <div style="margin:0;font-size:13px;color:#333;font-weight:600;">${esc(p.role)}</div>
               <div style="background:#fcedd4;color:#7a1626;padding:4px 8px;border-radius:4px;font-size:11.5px;font-weight:600;margin-top:8px;border:1px solid #d9b87b;">${esc(p.term || 'Nhiệm kỳ: Chờ cập nhật (năm – năm)')}</div>
@@ -4645,10 +4641,16 @@
           g.strokeStyle = '#f0ce84'; g.lineWidth = 2; g.strokeRect(26, 26, w - 52, 88);
 
           g.textAlign = 'center';
-          g.fillStyle = '#fceecb'; g.font = `700 22px ${FB}`; spaced(g, '3px');
-          g.fillText(p.era || (isTruSo ? 'TRỤ SỞ CHÍNH' : 'THCS NGUYỄN VĂN NGHI'), w / 2, 60); spaced(g, '0px');
-          g.fillStyle = '#ffffff'; g.font = `700 30px ${FD}`;
-          g.fillText(isTruSo ? 'BIÊN NIÊN HIỆU TRƯỞNG' : 'TRUYỀN THỐNG NHÀ TRƯỜNG', w / 2, 96);
+          if (isTruSo) {
+            // Không hiển thị "Đời hiệu trưởng số 1, 2, 3, 4"; căn giữa BIÊN NIÊN HIỆU TRƯỞNG trang trọng
+            g.fillStyle = '#fceecb'; g.font = `700 30px ${FD}`;
+            g.fillText('BIÊN NIÊN HIỆU TRƯỞNG', w / 2, 78);
+          } else {
+            g.fillStyle = '#fceecb'; g.font = `700 20px ${FB}`; spaced(g, '3px');
+            g.fillText(p.era || 'THCS NGUYỄN VĂN NGHI', w / 2, 58); spaced(g, '0px');
+            g.fillStyle = '#ffffff'; g.font = `700 28px ${FD}`;
+            g.fillText('TRUYỀN THỐNG NHÀ TRƯỜNG', w / 2, 94);
+          }
 
           // Khung ảnh chân dung
           const pw = 340, ph = 410, px = (w - pw) / 2, py = 140;
