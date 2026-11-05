@@ -681,6 +681,31 @@
       }
     }
 
+    
+    /* Toast hướng dẫn nhanh trên điện thoại */
+    .mobile-toast {
+      position: fixed;
+      bottom: calc(env(safe-area-inset-bottom, 0px) + 72px);
+      left: 50%;
+      transform: translateX(-50%);
+      background: rgba(26, 8, 12, .92);
+      color: #ffe6a8;
+      border: 1.2px solid rgba(210, 173, 102, .55);
+      border-radius: 999px;
+      padding: 7px 16px;
+      font-size: 12px;
+      font-weight: 600;
+      white-space: nowrap;
+      pointer-events: none;
+      z-index: 25;
+      box-shadow: 0 6px 20px rgba(0, 0, 0, .45);
+      opacity: 0;
+      transition: opacity .4s ease;
+    }
+    .mobile-toast.show {
+      opacity: 1;
+    }
+
     /* Gợi ý điều khiển */
     .hint {
       position: fixed;
@@ -1354,113 +1379,448 @@
     }
 
     @media (max-width:820px) {
+      /* Logo góc trên trái */
       .brand {
-        padding: 5px 12px 5px 5px
+        position: fixed;
+        top: calc(env(safe-area-inset-top, 0px) + 8px);
+        left: 10px;
+        padding: 4px 10px 4px 4px;
+        gap: 6px;
+        z-index: 20;
+        max-width: 145px;
+        box-shadow: 0 4px 14px rgba(0, 0, 0, .35);
       }
 
       .brand img {
-        width: 34px;
-        height: 34px
+        width: 30px;
+        height: 30px;
       }
 
       .brand .brand-title {
-        font-size: 11px;
-        letter-spacing: .05em
+        font-size: 10px;
+        letter-spacing: .03em;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
       }
 
+      /* Thanh công cụ ngang gọn gàng ở góc trên phải */
       .tools {
-        top: auto;
-        bottom: calc(env(safe-area-inset-bottom, 0px) + 136px);
-        right: 16px;
-        flex-direction: column
+        position: fixed;
+        top: calc(env(safe-area-inset-top, 0px) + 8px);
+        right: 10px;
+        bottom: auto;
+        left: auto;
+        display: flex;
+        flex-direction: row;
+        gap: 6px;
+        z-index: 20;
+        align-items: center;
       }
 
       .tbtn {
-        width: 44px;
-        height: 44px;
+        width: 38px;
+        height: 38px;
         padding: 0;
-        justify-content: center
+        justify-content: center;
+        border-radius: 50%;
+        flex: none;
+        box-shadow: 0 4px 14px rgba(0, 0, 0, .3);
       }
 
       .tbtn span {
-        display: none
+        display: none;
       }
 
+      .tbtn svg {
+        width: 19px;
+        height: 19px;
+      }
+
+      .tbtn#btnFull,
+      .tbtn#btnQR,
+      .tbtn#btnGuide {
+        display: none; /* Rút gọn trên điện thoại */
+      }
+
+      .tbtn#btnMusic[aria-pressed="true"],
+      .tbtn#btnTour[aria-pressed="true"] {
+        border-color: #ffd27a;
+        background: rgba(138, 28, 34, 0.95);
+      }
+
+      /* Tên phòng / Vị trí đang đứng: Huy hiệu nổi giữa màn hình phía trên */
+      .caption {
+        position: fixed;
+        top: calc(env(safe-area-inset-top, 0px) + 52px);
+        left: 50%;
+        transform: translateX(-50%);
+        bottom: auto;
+        z-index: 15;
+        background: rgba(45, 12, 18, .88);
+        backdrop-filter: blur(10px);
+        -webkit-backdrop-filter: blur(10px);
+        border: 1px solid rgba(210, 173, 102, .4);
+        border-radius: 999px;
+        padding: 5px 12px;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        box-shadow: 0 6px 18px rgba(0, 0, 0, .35);
+        max-width: calc(100vw - 20px);
+        width: max-content;
+      }
+
+      .cey {
+        font-size: 9.5px;
+        padding: 2px 6px;
+        border-radius: 6px;
+        background: rgba(210, 173, 102, .2);
+        color: #ffe6a8;
+        font-weight: 700;
+        letter-spacing: .06em;
+      }
+
+      .cti {
+        font-size: 12.5px;
+        font-weight: 600;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        max-width: 170px;
+      }
+
+      .caption .btn {
+        padding: 4px 10px;
+        font-size: 11.5px;
+        border-radius: 999px;
+        height: 26px;
+        line-height: 1;
+      }
+
+      .caption #capHome {
+        display: none; /* Đã có nút Home ở góc trên */
+      }
+
+      /* Bàn phím ảo di chuyển: Góc dưới bên TRÁI cho ngón tay cái trái */
+      .pad {
+        position: fixed;
+        left: 12px;
+        right: auto;
+        bottom: calc(env(safe-area-inset-bottom, 0px) + 16px);
+        display: grid;
+        grid-template-columns: repeat(3, 42px);
+        grid-template-rows: repeat(2, 42px);
+        gap: 5px;
+        z-index: 10;
+      }
+
+      .pad button {
+        width: 42px;
+        height: 42px;
+        border-radius: 12px;
+        background: rgba(74, 16, 30, .75);
+        border: 1.2px solid rgba(210, 173, 102, .45);
+        backdrop-filter: blur(8px);
+        -webkit-backdrop-filter: blur(8px);
+        box-shadow: 0 4px 14px rgba(0, 0, 0, .3);
+      }
+
+      .pad button:active,
+      .pad button.on {
+        background: var(--orange);
+        color: #1a0f02;
+        border-color: #ffe2a0;
+      }
+
+      .pad svg {
+        width: 20px;
+        height: 20px;
+      }
+
+      /* Nút mở Lộ trình tham quan: Góc dưới bên PHẢI */
+      .ropen {
+        position: fixed;
+        left: auto;
+        right: 12px;
+        top: auto;
+        bottom: calc(env(safe-area-inset-bottom, 0px) + 16px);
+        z-index: 10;
+        width: auto;
+        height: 42px;
+        padding: 0 16px;
+        border-radius: 999px;
+        background: linear-gradient(135deg, rgba(138, 28, 34, .92), rgba(80, 12, 16, .96));
+        border: 1.5px solid #d2ad66;
+        box-shadow: 0 6px 18px rgba(0, 0, 0, .4);
+        font-size: 13.5px;
+        font-weight: 700;
+        color: #ffe6a8;
+        display: inline-flex;
+        align-items: center;
+        gap: 7px;
+      }
+
+      .ropen span {
+        display: inline;
+      }
+
+      .ropen svg {
+        width: 18px;
+        height: 18px;
+      }
+
+      /* Danh mục phòng dạng Bottom Sheet trượt từ dưới lên */
       .rooms {
+        position: fixed;
         top: auto;
         left: 0;
         right: 0;
-        width: auto;
-        bottom: calc(env(safe-area-inset-bottom, 0px) + 0px);
-        border-radius: 16px 16px 0 0;
-        padding: 10px 0 calc(env(safe-area-inset-bottom, 0px) + 10px);
-        border-left: 0;
-        border-right: 0;
-        border-bottom: 0
+        bottom: 0;
+        width: 100%;
+        max-height: 75vh;
+        border-radius: 22px 22px 0 0;
+        background: rgba(26, 8, 12, .96);
+        border: 1.5px solid rgba(210, 173, 102, .5);
+        border-bottom: 0;
+        box-shadow: 0 -16px 45px rgba(0, 0, 0, .65);
+        padding: 12px 14px calc(env(safe-area-inset-bottom, 0px) + 16px);
+        z-index: 35;
+        backdrop-filter: blur(16px);
+        -webkit-backdrop-filter: blur(16px);
+        display: flex;
+        flex-direction: column;
+        animation: sheetIn .3s ease-out;
       }
 
-      .rooms h2,
-      .rooms .sep {
-        display: none
+      .rooms::before {
+        content: "";
+        display: block;
+        width: 42px;
+        height: 4.5px;
+        border-radius: 999px;
+        background: rgba(210, 173, 102, .45);
+        margin: 0 auto 10px;
+        flex: none;
+      }
+
+      .rooms .rh {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-bottom: 10px;
+        position: static;
+        padding: 0 4px;
+      }
+
+      .rooms .rh h2 {
+        display: block;
+        margin: 0;
+        font-size: 16px;
+        color: #ffe6a8;
+        font-family: var(--f-display);
+      }
+
+      .rx {
+        width: 34px;
+        height: 34px;
+        border-radius: 50%;
+        background: rgba(255, 255, 255, .1);
+        border: 1px solid rgba(210, 173, 102, .4);
+        display: grid;
+        place-items: center;
+        color: #ffe6a8;
+        cursor: pointer;
       }
 
       .rooms ol {
         display: flex;
-        overflow-x: auto;
-        gap: 6px;
-        padding: 0 16px;
-        scrollbar-width: none
+        flex-direction: column;
+        overflow-y: auto;
+        -webkit-overflow-scrolling: touch;
+        max-height: 58vh;
+        gap: 8px;
+        padding: 4px 2px;
+        scrollbar-width: thin;
       }
 
       .room {
-        flex: none;
-        width: auto;
-        grid-template-columns: 24px auto;
-        padding: 7px 12px 7px 7px;
-        border: 1px solid var(--line);
-        border-radius: 999px;
-        font-size: 13px;
-        white-space: nowrap
+        display: grid;
+        grid-template-columns: 32px 1fr;
+        align-items: center;
+        gap: 10px;
+        width: 100%;
+        padding: 10px 14px;
+        border-radius: 12px;
+        background: rgba(255, 255, 255, .06);
+        border: 1px solid rgba(210, 173, 102, .25);
+        font-size: 14px;
+        text-align: left;
+        color: #f6ead0;
+        white-space: normal;
+      }
+
+      .room:active,
+      .room.active {
+        background: linear-gradient(135deg, rgba(168, 32, 40, .9), rgba(100, 16, 22, .95));
+        border-color: #ffd27a;
+        box-shadow: 0 4px 14px rgba(168, 32, 40, .4);
+        color: #fff;
+        font-weight: 700;
       }
 
       .room .n {
-        width: 24px;
-        height: 24px;
-        font-size: 12px
+        width: 30px;
+        height: 30px;
+        border-radius: 50%;
+        font-size: 13px;
+        font-weight: 700;
+        background: rgba(210, 173, 102, .2);
+        color: #ffe6a8;
+        display: grid;
+        place-items: center;
       }
 
-      .pad {
-        bottom: calc(env(safe-area-inset-bottom, 0px) + 72px)
+      .room.active .n {
+        background: #ffe6a8;
+        color: #5a0e14;
+      }
+
+      .room-group-hd {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        font-size: 11.5px;
+        letter-spacing: .08em;
+        color: #d2ad66;
+        font-weight: 700;
+        padding: 8px 4px 2px;
+        text-transform: uppercase;
       }
 
       .hint {
-        display: none
+        display: none;
       }
 
+      /* Thẻ đọc nội dung hiện vật */
       .drawer {
         top: auto;
+        bottom: 0;
+        left: 0;
+        right: 0;
         width: 100%;
-        height: 76%;
-        border-radius: 18px 18px 0 0;
-        animation: sheetIn .3s ease-out
+        height: 82vh;
+        border-radius: 20px 20px 0 0;
+        animation: sheetIn .3s ease-out;
+        z-index: 40;
+        box-shadow: 0 -16px 50px rgba(0, 0, 0, .6);
       }
 
       .dh {
-        padding-top: 16px;
-        border-radius: 18px 18px 0 0
+        padding: 12px 16px;
+        border-radius: 20px 20px 0 0;
+        position: relative;
+        flex: none;
+      }
+
+      .dh::before {
+        content: "";
+        display: block;
+        width: 40px;
+        height: 4px;
+        border-radius: 999px;
+        background: rgba(255, 255, 255, .35);
+        margin: 0 auto 8px;
       }
 
       .dh h3 {
-        font-size: 22px
+        font-size: 18px;
+        line-height: 1.35;
+        padding-right: 36px;
+      }
+
+      .dh .x {
+        width: 38px;
+        height: 38px;
+        top: 14px;
+        right: 12px;
+      }
+
+      .db {
+        padding: 16px 18px calc(env(safe-area-inset-bottom, 0px) + 24px);
+        font-size: 15.5px;
+        line-height: 1.65;
+        overflow-y: auto;
+        -webkit-overflow-scrolling: touch;
+      }
+
+      /* Thẻ thuyết minh hành trình tự động */
+      .guide {
+        position: fixed;
+        bottom: calc(env(safe-area-inset-bottom, 0px) + 14px);
+        left: 10px;
+        right: 10px;
+        width: auto;
+        max-width: none;
+        padding: 12px 14px;
+        border-radius: 16px;
+        background: rgba(28, 10, 15, .95);
+        border: 1.5px solid rgba(210, 173, 102, .5);
+        backdrop-filter: blur(12px);
+        -webkit-backdrop-filter: blur(12px);
+        z-index: 25;
+      }
+
+      .guide h3 {
+        font-size: 16px;
+        margin: 2px 0 6px;
+      }
+
+      .guide p {
+        font-size: 13.5px;
+        line-height: 1.55;
+        max-height: 22vh;
+        overflow-y: auto;
+      }
+
+      .gctl {
+        margin-top: 10px;
+        display: flex;
+        gap: 8px;
+      }
+
+      .gctl button {
+        flex: 1;
+        min-height: 40px;
+        font-size: 13.5px;
+        border-radius: 10px;
+      }
+
+      #minimap {
+        display: none;
+      }
+
+      /* Widget nhạc nền */
+      .music-popover {
+        top: calc(env(safe-area-inset-top, 0px) + 54px);
+        right: 10px;
+        left: 10px;
+        width: auto;
+        max-width: 360px;
+        margin: 0 auto;
+      }
+
+      .music-popover::before {
+        right: 48px;
       }
 
       @keyframes sheetIn {
         from {
-          transform: translateY(40px)
+          transform: translateY(100%);
         }
 
         to {
-          transform: none
+          transform: translateY(0);
         }
       }
     }
@@ -1571,19 +1931,7 @@
       flex: none
     }
 
-    @media (max-width:820px) {
-      .caption {
-        left: 16px;
-        transform: none;
-        top: calc(env(safe-area-inset-top, 0px) + 66px);
-        bottom: auto;
-        padding: 6px 6px 6px 12px
-      }
 
-      .cti {
-        font-size: 14px
-      }
-    }
 
     @media (prefers-reduced-motion:reduce) {
       .fade {
@@ -1840,28 +2188,104 @@
     }
 
     @media (max-width:760px) {
+      .welcome {
+        padding: calc(env(safe-area-inset-top, 0px) + 10px) 14px calc(env(safe-area-inset-bottom, 0px) + 10px);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+
       .wbox {
         grid-template-columns: 1fr;
         text-align: center;
         justify-items: center;
-        gap: 22px
+        gap: 8px;
+        max-width: 350px;
+        width: 100%;
       }
 
       .wframe {
-        width: min(200px, 56vw)
+        width: clamp(120px, 32vw, 145px);
+        aspect-ratio: 3/4;
+        padding: 6px;
+        box-shadow: 0 16px 40px rgba(120, 30, 16, .25);
       }
 
-      .wrule {
-        margin-inline: auto
+      .wport figcaption {
+        font-size: 12.5px;
+        margin-top: 4px;
+      }
+
+      .wport figcaption small {
+        font-size: 10.5px;
+      }
+
+      .wtext .wlogo {
+        display: none;
+      }
+
+      .weye {
+        font-size: 11px;
+        letter-spacing: .04em;
+        margin-bottom: 2px;
       }
 
       .wtext h1 {
-        font-size: clamp(20px, 5.5vw, 30px);
+        font-size: clamp(17px, 5vw, 22px);
+        line-height: 1.22;
+        margin: 2px 0 6px;
+      }
+
+      .wtext h1 span {
+        font-size: 12px;
+        margin-bottom: 2px;
+      }
+
+      .wrule {
+        margin: 4px auto 6px;
+      }
+
+      .wsub {
+        font-size: 12px;
+        margin-bottom: 10px;
+      }
+
+      .wbtns {
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+        width: 100%;
+        max-width: 320px;
+        margin: 0 auto;
+        justify-content: center;
+      }
+
+      .wbtn {
+        min-height: 46px;
+        padding: 10px 16px;
+        font-size: 14.5px;
+        border-radius: 12px;
+        font-weight: 700;
+        justify-content: center;
+      }
+
+      .wbtn2 {
+        min-height: 42px;
+        padding: 8px 14px;
+        font-size: 13.5px;
+        border-radius: 12px;
+        justify-content: center;
+      }
+
+      .wnote {
+        font-size: 11px;
+        margin-top: 6px;
+        line-height: 1.35;
       }
 
       .welcome::before,
       .welcome::after {
-        display: none
+        display: none;
       }
     }
 
@@ -1922,35 +2346,7 @@
       }
     }
 
-    @media (max-width:820px) {
-      .rooms .rh {
-        display: block;
-        position: absolute;
-        right: 10px;
-        top: -44px
-      }
 
-      .rooms .rh h2 {
-        display: none
-      }
-
-      .rx {
-        background: var(--glass);
-        width: 36px;
-        height: 36px
-      }
-
-      .ropen {
-        top: auto;
-        bottom: calc(env(safe-area-inset-bottom, 0px) + 16px);
-        width: auto;
-        padding: 0 14px
-      }
-
-      .ropen span {
-        display: inline
-      }
-    }
 
     @media (prefers-reduced-motion:reduce) {
       .tbtn#btnMusic[aria-pressed="true"] svg {
@@ -2116,26 +2512,7 @@
       display: none
     }
 
-    @media (max-width:820px) {
-      #minimap {
-        display: none
-      }
 
-      .guide {
-        bottom: calc(env(safe-area-inset-bottom, 0px) + 70px);
-        padding: 12px 14px
-      }
-
-      .guide p {
-        font-size: 14px;
-        max-height: 30vh;
-        overflow: auto
-      }
-
-      .gctl .gprim {
-        margin-left: 0
-      }
-    }
 
     @media (max-width:760px) {
       .wbtns {
@@ -2563,6 +2940,7 @@
       <path d="M4 6h16M4 12h16M4 18h10" />
     </svg><span>Lộ trình tham quan</span></button>
 
+  <div class="mobile-toast" id="mobileToast" hidden>👆 Vuốt để nhìn quanh · Bấm sàn để đi tới</div>
   <div class="hint">Bấm vào sàn để đi tới · Kéo chuột để nhìn quanh · Nhấp vào hiện vật để xem</div>
 
   <canvas id="minimap" width="200" height="200" aria-label="Sơ đồ mặt bằng, bấm để di chuyển"></canvas>
@@ -4648,7 +5026,18 @@
       $('#btnEnter').onclick = () => enterMuseum();
       const bEnterTrad = $('#btnEnterTradition');
       if (bEnterTrad) bEnterTrad.onclick = () => enterMuseum('cm7');
-      function skipIntro() { if (S.entered) return; S.entered = true; welcome.hidden = true; portal.force = true; portal.open = 1 }
+      function showMobileTip() {
+        if (!matchMedia('(max-width:820px)').matches) return;
+        const toast = $('#mobileToast');
+        if (!toast) return;
+        toast.hidden = false;
+        requestAnimationFrame(() => toast.classList.add('show'));
+        setTimeout(() => {
+          toast.classList.remove('show');
+          setTimeout(() => { toast.hidden = true; }, 400);
+        }, 4000);
+      }
+      function skipIntro() { if (S.entered) return; S.entered = true; welcome.hidden = true; portal.force = true; portal.open = 1; showMobileTip(); }
 
       async function enterRoom(id) {
         const R = ROOMS[id]; if (!R || S.busy) return; skipIntro(); S.busy = true; closeDrawer(); S.tour = false; setTourBtn(); markNav(id);
@@ -4729,6 +5118,7 @@
       roomList.addEventListener('click', e => {
         const b = e.target.closest('.room');
         if (!b) return;
+        if (matchMedia('(max-width:820px)').matches) setRooms(false);
         if (b.dataset.id === 'home') {
           goHome();
           return;
@@ -4741,6 +5131,14 @@
         }
         if (typeof syncGuideToRoom === 'function') {
           syncGuideToRoom(targetId, true);
+        }
+      });
+
+      // Đóng bảng chọn phòng khi chạm ra ngoài trên điện thoại
+      document.addEventListener('pointerdown', e => {
+        if (!matchMedia('(max-width:820px)').matches) return;
+        if (!roomsNav.hidden && !e.target.closest('.rooms') && !e.target.closest('#roomsOpen')) {
+          setRooms(false);
         }
       });
       function markNav(id) { document.querySelectorAll('.room').forEach(b => b.classList.toggle('active', b.dataset.id === id)) }
@@ -4786,15 +5184,88 @@
       function hit(cx, cy) { const r = renderer.domElement.getBoundingClientRect(); ndc.set((cx - r.left) / r.width * 2 - 1, -(cy - r.top) / r.height * 2 + 1); ray.setFromCamera(ndc, camera); const hs = ray.intersectObjects(clickables, false).filter(h => { let o = h.object; while (o) { if (o.visible === false) return false; o = o.parent } return true }); return hs.length && hs[0].distance < 18 ? hs[0].object : null }
       function setupPointer() {
         const cv = renderer.domElement;
-        cv.addEventListener('pointerdown', e => { S.drag = { x: e.clientX, y: e.clientY, sx: e.clientX, sy: e.clientY, id: e.pointerId }; try { cv.setPointerCapture(e.pointerId) } catch (_) { } cv.classList.add('grabbing') });
-        cv.addEventListener('pointermove', e => {
-          if (S.drag && S.drag.id === e.pointerId) { const dx = e.clientX - S.drag.x, dy = e.clientY - S.drag.y; S.drag.x = e.clientX; S.drag.y = e.clientY; if (Math.abs(e.clientX - S.drag.sx) + Math.abs(e.clientY - S.drag.sy) > 5 && !S.busy) { S.fly = null; S.tour = false; setTourBtn() } if (!S.busy) { S.yaw += dx * .0042; S.pitch = Math.max(-.7, Math.min(.8, S.pitch + dy * .0034)) } tip.hidden = true; return }
-          if (e.pointerType === 'mouse') { const o = hit(e.clientX, e.clientY); cv.classList.toggle('pointing', !!o); if (o) { tip.hidden = false; tip.textContent = o.userData.label; tip.style.left = e.clientX + 'px'; tip.style.top = e.clientY + 'px'; marker.visible = false } else { tip.hidden = true; hoverFloor(e.clientX, e.clientY) } }
+        const pointers = new Map();
+        let pinchDist0 = 0, fov0 = 65;
+
+        cv.addEventListener('pointerdown', e => {
+          pointers.set(e.pointerId, { x: e.clientX, y: e.clientY });
+          if (pointers.size === 1) {
+            S.drag = { x: e.clientX, y: e.clientY, sx: e.clientX, sy: e.clientY, id: e.pointerId };
+            try { cv.setPointerCapture(e.pointerId) } catch (_) { }
+            cv.classList.add('grabbing');
+          } else if (pointers.size === 2) {
+            S.drag = null;
+            const pts = Array.from(pointers.values());
+            pinchDist0 = Math.hypot(pts[0].x - pts[1].x, pts[0].y - pts[1].y);
+            fov0 = camera.fov;
+          }
         });
-        const end = e => { if (!S.drag) return; const moved = Math.abs(e.clientX - S.drag.sx) + Math.abs(e.clientY - S.drag.sy); S.drag = null; cv.classList.remove('grabbing'); if (moved < 6 && e.type === 'pointerup' && !S.busy) { const o = hit(e.clientX, e.clientY); if (o) activate(o.userData.act); else { const f = floorAt(e.clientX, e.clientY); if (f) walkTo(f) } } };
-        cv.addEventListener('pointerup', end); cv.addEventListener('pointercancel', end);
+
+        cv.addEventListener('pointermove', e => {
+          if (pointers.has(e.pointerId)) {
+            pointers.set(e.pointerId, { x: e.clientX, y: e.clientY });
+          }
+          if (pointers.size === 2 && pinchDist0 > 0) {
+            const pts = Array.from(pointers.values());
+            const d = Math.hypot(pts[0].x - pts[1].x, pts[0].y - pts[1].y);
+            const ratio = pinchDist0 / Math.max(20, d);
+            camera.fov = Math.max(35, Math.min(85, fov0 * ratio));
+            camera.updateProjectionMatrix();
+            tip.hidden = true;
+            return;
+          }
+          if (S.drag && S.drag.id === e.pointerId) {
+            const dx = e.clientX - S.drag.x, dy = e.clientY - S.drag.y;
+            S.drag.x = e.clientX; S.drag.y = e.clientY;
+            if (Math.abs(e.clientX - S.drag.sx) + Math.abs(e.clientY - S.drag.sy) > 5 && !S.busy) {
+              S.fly = null; S.tour = false; setTourBtn();
+            }
+            if (!S.busy) {
+              S.yaw += dx * .0042;
+              S.pitch = Math.max(-.7, Math.min(.8, S.pitch + dy * .0034));
+            }
+            tip.hidden = true;
+            return;
+          }
+          if (e.pointerType === 'mouse') {
+            const o = hit(e.clientX, e.clientY);
+            cv.classList.toggle('pointing', !!o);
+            if (o) {
+              tip.hidden = false;
+              tip.textContent = o.userData.label;
+              tip.style.left = e.clientX + 'px';
+              tip.style.top = e.clientY + 'px';
+              marker.visible = false;
+            } else {
+              tip.hidden = true;
+              hoverFloor(e.clientX, e.clientY);
+            }
+          }
+        });
+
+        const end = e => {
+          pointers.delete(e.pointerId);
+          if (pointers.size < 2) pinchDist0 = 0;
+          if (!S.drag) return;
+          const moved = Math.abs(e.clientX - S.drag.sx) + Math.abs(e.clientY - S.drag.sy);
+          S.drag = null;
+          cv.classList.remove('grabbing');
+          if (moved < 8 && e.type === 'pointerup' && !S.busy) {
+            const o = hit(e.clientX, e.clientY);
+            if (o) activate(o.userData.act);
+            else { const f = floorAt(e.clientX, e.clientY); if (f) walkTo(f); }
+          }
+        };
+        cv.addEventListener('pointerup', end);
+        cv.addEventListener('pointercancel', end);
         cv.addEventListener('pointerleave', () => { tip.hidden = true });
-        cv.addEventListener('wheel', e => { e.preventDefault(); if (S.busy) return; S.fly = null; S.tour = false; setTourBtn(); const f = -Math.sign(e.deltaY) * .45; moveBy(-Math.sin(S.yaw) * f, -Math.cos(S.yaw) * f) }, { passive: false });
+        cv.addEventListener('wheel', e => {
+          e.preventDefault();
+          if (S.busy) return;
+          S.fly = null; S.tour = false; setTourBtn();
+          const f = -Math.sign(e.deltaY) * .45;
+          moveBy(-Math.sin(S.yaw) * f, -Math.cos(S.yaw) * f);
+        }, { passive: false });
       }
       /* ---------- Bấm vào sàn để đi tới ---------- */
       let marker = null, lastHover = 0;
