@@ -4636,9 +4636,16 @@
 
           g.textAlign = 'center';
           if (isTruSo) {
-            // Không hiển thị "Đời hiệu trưởng số 1, 2, 3, 4"; căn giữa BIÊN NIÊN HIỆU TRƯỞNG trang trọng
-            g.fillStyle = '#fceecb'; g.font = `700 30px ${FD}`;
-            g.fillText('BIÊN NIÊN HIỆU TRƯỞNG', w / 2, 78);
+            // Đổi "BIÊN NIÊN HIỆU TRƯỞNG" thành "HIỆU TRƯỞNG TRƯỜNG THCS AN NHƠN"
+            let fSize = 25;
+            g.font = `700 ${fSize}px ${FD}`;
+            const tieuDeTruSo = 'HIỆU TRƯỞNG TRƯỜNG THCS AN NHƠN';
+            while (g.measureText(tieuDeTruSo).width > 550 && fSize > 16) {
+              fSize -= 1;
+              g.font = `700 ${fSize}px ${FD}`;
+            }
+            g.fillStyle = '#fceecb';
+            g.fillText(tieuDeTruSo, w / 2, 76);
           } else {
             g.fillStyle = '#fceecb'; g.font = `700 20px ${FB}`; spaced(g, '3px');
             g.fillText(p.era || 'THCS NGUYỄN VĂN NGHI', w / 2, 58); spaced(g, '0px');
