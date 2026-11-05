@@ -6023,9 +6023,10 @@
         guideAutoMinTimer = null;
         const g = $('#guide');
         if (g && !g.hidden && !g.classList.contains('minimized')) {
+          const delay = matchMedia('(max-width:820px)').matches ? 10000 : 20000; // Trên điện thoại 10 giây, máy tính 20 giây
           guideAutoMinTimer = setTimeout(() => {
             setGuideMinimized(true);
-          }, 20000); // Tự động thu nhỏ sau 20 giây theo yêu cầu
+          }, delay);
         }
       }
       function cancelGuideAutoMinTimer() {
