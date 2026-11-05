@@ -3674,17 +3674,7 @@
           },
           {
             no: 3,
-            era: "ĐỜI HIỆU TRƯỞNG SỐ 3",
-            name: "Thầy/Cô Hiệu trưởng",
-            role: "Hiệu trưởng",
-            term: "Nhiệm kỳ: Chờ cập nhật (năm – năm)",
-            side: "truSoChinh",
-            imgKey: null,
-            note: "Đang chờ cập nhật thông tin & hình ảnh lưu niệm"
-          },
-          {
-            no: 4,
-            era: "ĐỜI HIỆU TRƯỞNG SỐ 4",
+            era: "HIỆU TRƯỞNG NHÀ TRƯỜNG",
             name: "Cô Nguyễn Thị Ngọc Ánh",
             role: "Hiệu trưởng",
             term: "Nhiệm kỳ: Chờ cập nhật (năm – năm)",
@@ -3876,7 +3866,7 @@
           </div>`;
           h += '<div class="photos" style="grid-template-columns:repeat(auto-fill, minmax(210px, 1fr));gap:14px;">' + phanHieu.map((p, i) => {
             return `
-            <div class="card${item === (i + 4) ? ' hl' : ''}" id="ph${i}" style="margin:0;padding:12px;text-align:center;border-top:3px solid #173a7a;box-shadow:0 3px 10px rgba(0,0,0,0.06);">
+            <div class="card${item === (i + 3) ? ' hl' : ''}" id="ph${i}" style="margin:0;padding:12px;text-align:center;border-top:3px solid #173a7a;box-shadow:0 3px 10px rgba(0,0,0,0.06);">
               <div style="width:130px;height:165px;margin:0 auto 10px;background:#eef3fc;border-radius:6px;overflow:hidden;border:2px dashed #3a6ab3;display:flex;flex-direction:column;align-items:center;justify-content:center;color:#173a7a;">
                 <svg viewBox="0 0 24 24" width="40" height="40" fill="currentColor" style="opacity:0.65;"><path d="M12 3L1 9l4 2.18v6L12 21l7-3.82v-6l2-1.09V17h2V9L12 3zm6.82 6L12 12.72 5.18 9 12 5.28 18.82 9zM17 15.99l-5 2.73-5-2.73v-3.72L12 15l5-2.73v3.72z"/></svg>
                 <span style="font-size:11px;margin-top:6px;font-weight:600;">Chờ tư liệu</span>
@@ -3901,7 +3891,7 @@
         $('#dBody').innerHTML = sectionHTML(id, item) + galleryHTML(id);
         drawer.hidden = false; $('#dBody').scrollTop = 0;
         $('#dBody').querySelectorAll('.ph img').forEach(img => { img.onerror = () => { const p = img.parentElement; if (p) p.textContent = 'Chờ ảnh tư liệu có nguồn' } });
-        if (item != null) { const el = $('#dBody').querySelector(`#book${item},#story${item},#photo${item},#video${item},#act${item},#pr${item},#ph${item - 4}`); if (el) setTimeout(() => el.scrollIntoView({ block: 'center', behavior: reduce ? 'auto' : 'smooth' }), 60); }
+        if (item != null) { const el = $('#dBody').querySelector(`#book${item},#story${item},#photo${item},#video${item},#act${item},#pr${item},#ph${item - 3}`); if (el) setTimeout(() => el.scrollIntoView({ block: 'center', behavior: reduce ? 'auto' : 'smooth' }), 60); }
       }
       function closeDrawer() { drawer.hidden = true }
       $('#dClose').onclick = closeDrawer;
@@ -5280,12 +5270,12 @@
           // Biển tiêu đề trên cao
           framed(A, 5.6, 0.72, ua(5.5), 3.98, panelMat(wallTitleTex('🏛️ TRỤ SỞ CHÍNH', 'CÁC THỜI KỲ HIỆU TRƯỞNG NHÀ TRƯỜNG', '#7a1626'), .35), { sec: s.id }, 'Trụ sở chính · Các thời kỳ Hiệu trưởng');
 
-          // 4 Khung ảnh Hiệu trưởng Trụ sở chính
+          // 3 Khung ảnh Hiệu trưởng Trụ sở chính (Cô Ánh đặt cạnh bên Cô Liên)
           const truSo = (s.truSoChinh && s.truSoChinh.length) ? s.truSoChinh : (s.principals || []);
-          const posA = [2.0, 4.3, 6.6, 8.9];
+          const posA = [2.8, 5.5, 8.2];
           truSo.forEach((p, i) => {
-            const u = posA[i] || (2.0 + i * 2.3);
-            framed(A, 1.7, 2.3, ua(u), 2.2, panelMat(principalFrameTex(p, i + 1), .35), { sec: s.id, item: i }, 'Trụ sở chính · ' + p.name, .05, GOLD);
+            const u = posA[i] || (2.8 + i * 2.7);
+            framed(A, 1.75, 2.35, ua(u), 2.2, panelMat(principalFrameTex(p, i + 1), .35), { sec: s.id, item: i }, 'Trụ sở chính · ' + p.name, .05, GOLD);
           });
 
           // Cánh B (Phải): PHÂN HIỆU
@@ -5297,7 +5287,7 @@
           const posB = [2.8, 5.5, 8.2];
           phanHieu.forEach((p, i) => {
             const u = posB[i] || (2.8 + i * 2.7);
-            framed(B, 1.75, 2.35, ub(u), 2.2, panelMat(principalFrameTex(p, i + 5), .35), { sec: s.id, item: i + 4 }, 'Phân hiệu · ' + p.name, .05, GOLD);
+            framed(B, 1.75, 2.35, ub(u), 2.2, panelMat(principalFrameTex(p, i + 4), .35), { sec: s.id, item: i + 3 }, 'Phân hiệu · ' + p.name, .05, GOLD);
           });
 
           // Bục sổ vàng truyền thống ở giữa phòng
