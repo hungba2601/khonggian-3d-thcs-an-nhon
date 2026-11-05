@@ -732,63 +732,96 @@
     }
 
     /* Bàn phím ảo */
+    /* ========================================================
+       CẦN GẠT ẢO (VIRTUAL JOYSTICK) PHONG CÁCH GAME ĐÁ BANH
+       ======================================================== */
+    .joystick-pad,
     .pad {
       position: fixed;
-      right: 16px;
-      bottom: calc(env(safe-area-inset-bottom, 0px) + 16px);
-      display: grid;
-      grid-template-columns: repeat(3, 52px);
-      grid-template-rows: repeat(2, 52px);
-      gap: 6px;
-      z-index: 4
+      left: 18px;
+      right: auto;
+      bottom: calc(env(safe-area-inset-bottom, 0px) + 18px);
+      z-index: 15;
+      user-select: none;
+      -webkit-user-select: none;
+      touch-action: none;
+      display: flex;
+      align-items: center;
+      justify-content: center;
     }
 
-    .pad button {
-      border-radius: 14px;
-      border: 1px solid var(--line);
-      background: var(--glass);
+    .joy-base {
+      position: relative;
+      width: 96px;
+      height: 96px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(110, 20, 30, 0.5) 0%, rgba(55, 10, 16, 0.85) 100%);
+      border: 2px solid rgba(210, 173, 102, 0.7);
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.45), inset 0 0 16px rgba(210, 173, 102, 0.2);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      touch-action: none;
+      cursor: grab;
+      transition: border-color 0.2s, box-shadow 0.2s;
+    }
+
+    .joy-base.active {
+      cursor: grabbing;
+      border-color: #ffd88a;
+      box-shadow: 0 8px 28px rgba(0, 0, 0, 0.6), inset 0 0 20px rgba(230, 168, 72, 0.35);
+    }
+
+    /* Mũi tên định hướng 4 phía mờ tinh tế */
+    .joy-dir {
+      position: absolute;
+      font-size: 11px;
+      line-height: 1;
+      color: rgba(255, 230, 168, 0.45);
+      pointer-events: none;
+      font-family: monospace;
+      font-weight: 700;
+    }
+    .joy-u { top: 7px; left: 50%; transform: translateX(-50%); }
+    .joy-d { bottom: 7px; left: 50%; transform: translateX(-50%); }
+    .joy-l { left: 7px; top: 50%; transform: translateY(-50%); }
+    .joy-r { right: 7px; top: 50%; transform: translateY(-50%); }
+
+    /* Núm gạt 3D tròn mô phỏng cần analog thể thao */
+    .joy-knob {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      width: 44px;
+      height: 44px;
+      margin: -22px 0 0 -22px;
+      border-radius: 50%;
+      background: radial-gradient(circle at 35% 35%, #e9be6f 0%, #b3842e 38%, #7a1626 80%, #4a0d16 100%);
+      border: 2px solid #ffe2a0;
+      box-shadow: 0 4px 14px rgba(0, 0, 0, 0.55), inset 0 2px 3px rgba(255, 255, 255, 0.65), inset 0 -2px 4px rgba(0, 0, 0, 0.4);
+      pointer-events: none;
+      will-change: transform;
       display: grid;
       place-items: center;
-      cursor: pointer;
-      touch-action: none;
-      user-select: none;
-      -webkit-user-select: none
     }
 
-    .pad button:active,
-    .pad button.on {
-      background: var(--orange);
-      color: #1a0f02
+    .joy-knob.active {
+      border-color: #ffffff;
+      box-shadow: 0 0 20px rgba(233, 190, 111, 0.95), 0 4px 16px rgba(0, 0, 0, 0.6), inset 0 2px 4px rgba(255, 255, 255, 0.85);
     }
 
-    .pad svg {
-      width: 22px;
-      height: 22px
+    .joy-knob-core {
+      width: 14px;
+      height: 14px;
+      border-radius: 50%;
+      background: radial-gradient(circle, #ffe6a8 0%, #9e1b22 100%);
+      border: 1.5px solid rgba(255, 255, 255, 0.5);
+      box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.4);
     }
 
-    .pad .kup {
-      grid-column: 2;
-      grid-row: 1
-    }
-
-    .pad .klt {
-      grid-column: 1;
-      grid-row: 2
-    }
-
-    .pad .kdn {
-      grid-column: 2;
-      grid-row: 2
-    }
-
-    .pad .krt {
-      grid-column: 3;
-      grid-row: 2
-    }
-
-    @media (hover:hover) and (pointer:fine) {
+    @media (min-width: 1025px) and (hover:hover) and (pointer:fine) {
+      .joystick-pad,
       .pad {
-        display: none
+        display: none !important;
       }
     }
 
@@ -1740,7 +1773,9 @@
     }
 
     .intro .rooms,
-    .intro .ropen {
+    .intro .ropen,
+    .intro .joystick-pad,
+    .intro .pad {
       display: none !important
     }
 
@@ -2706,41 +2741,27 @@
         padding: 0 !important;
       }
 
-      /* Bàn phím ảo di chuyển: Góc dưới bên TRÁI - sát đáy màn hình để không che nội dung */
+      /* Cần gạt ảo di chuyển: Góc dưới bên TRÁI - sát đáy màn hình để không che nội dung */
+      .joystick-pad,
       .pad {
         position: fixed !important;
-        left: 8px !important;
+        left: 10px !important;
         right: auto !important;
         top: auto !important;
-        bottom: calc(env(safe-area-inset-bottom, 0px) + 4px) !important;
-        display: grid !important;
-        grid-template-columns: repeat(3, 36px) !important;
-        grid-template-rows: repeat(2, 36px) !important;
-        gap: 3px !important;
-        z-index: 10 !important;
+        bottom: calc(env(safe-area-inset-bottom, 0px) + 8px) !important;
+        display: flex !important;
+        z-index: 15 !important;
       }
 
-      .pad button {
-        width: 36px !important;
-        height: 36px !important;
-        border-radius: 9px !important;
-        background: rgba(74, 16, 30, .85) !important;
-        border: 1.2px solid rgba(210, 173, 102, .5) !important;
-        backdrop-filter: blur(8px) !important;
-        -webkit-backdrop-filter: blur(8px) !important;
-        box-shadow: 0 4px 14px rgba(0, 0, 0, .3) !important;
+      .joy-base {
+        width: 88px !important;
+        height: 88px !important;
       }
 
-      .pad button:active,
-      .pad button.on {
-        background: var(--orange) !important;
-        color: #1a0f02 !important;
-        border-color: #ffe2a0 !important;
-      }
-
-      .pad svg {
-        width: 18px !important;
-        height: 18px !important;
+      .joy-knob {
+        width: 40px !important;
+        height: 40px !important;
+        margin: -20px 0 0 -20px !important;
       }
 
       /* Nút mở Lộ trình tham quan: Góc dưới bên PHẢI - sát đáy màn hình */
@@ -3274,23 +3295,16 @@
     </div>
   </div>
 
-  <div class="pad" aria-label="Di chuyển">
-    <button class="kup" data-k="f" aria-label="Đi tới"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"
-        stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
-        <path d="M6 15l6-6 6 6" />
-      </svg></button>
-    <button class="klt" data-k="l" aria-label="Xoay trái"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"
-        stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
-        <path d="M15 6l-6 6 6 6" />
-      </svg></button>
-    <button class="kdn" data-k="b" aria-label="Lùi lại"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"
-        stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
-        <path d="M6 9l6 6 6-6" />
-      </svg></button>
-    <button class="krt" data-k="r" aria-label="Xoay phải"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"
-        stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
-        <path d="M9 6l6 6-6 6" />
-      </svg></button>
+  <div class="joystick-pad pad" id="joystickPad" aria-label="Cần gạt di chuyển ảo">
+    <div class="joy-base" id="joyBase">
+      <div class="joy-dir joy-u" aria-hidden="true">▲</div>
+      <div class="joy-dir joy-l" aria-hidden="true">◀</div>
+      <div class="joy-dir joy-d" aria-hidden="true">▼</div>
+      <div class="joy-dir joy-r" aria-hidden="true">▶</div>
+      <div class="joy-knob" id="joyKnob">
+        <div class="joy-knob-core"></div>
+      </div>
+    </div>
   </div>
 
   <div class="caption" id="caption">
@@ -5511,8 +5525,112 @@
       const KEYMAP = { KeyW: 'f', ArrowUp: 'f', KeyS: 'b', ArrowDown: 'b', KeyA: 'sl', KeyD: 'sr', ArrowLeft: 'tl', ArrowRight: 'tr' };
       addEventListener('keydown', e => { if (e.target.closest && e.target.closest('input,select,textarea')) return; const k = KEYMAP[e.code]; if (k) { if (S.busy) return; S.keys[k] = true; S.fly = null; S.tour = false; setTourBtn(); e.preventDefault() } });
       addEventListener('keyup', e => { const k = KEYMAP[e.code]; if (k) S.keys[k] = false });
-      addEventListener('blur', () => { S.keys = {}; S.pad = {} });
-      document.querySelectorAll('.pad button').forEach(b => { const k = b.dataset.k; const on = e => { e.preventDefault(); if (S.busy) return; S.pad[k] = true; b.classList.add('on'); S.fly = null; S.tour = false; setTourBtn() }; const off = () => { S.pad[k] = false; b.classList.remove('on') }; b.addEventListener('pointerdown', on);['pointerup', 'pointerleave', 'pointercancel'].forEach(t => b.addEventListener(t, off)) });
+      addEventListener('blur', () => { S.keys = {}; S.pad = {}; if (S.joy) { S.joy.x = 0; S.joy.y = 0; } });
+
+      /* ---------- Khởi tạo Cần gạt ảo (Virtual Joystick) ---------- */
+      (function setupJoystick() {
+        const base = document.getElementById('joyBase');
+        const knob = document.getElementById('joyKnob');
+        if (!base || !knob) return;
+
+        S.joy = { x: 0, y: 0 };
+        let activePointerId = null;
+        let baseCenterX = 0, baseCenterY = 0;
+        let maxR = 26;
+
+        function updateBasePos() {
+          const rect = base.getBoundingClientRect();
+          baseCenterX = rect.left + rect.width / 2;
+          baseCenterY = rect.top + rect.height / 2;
+          maxR = Math.max(20, (rect.width - knob.offsetWidth) / 2 + 5);
+        }
+
+        function handleMove(clientX, clientY) {
+          const dx = clientX - baseCenterX;
+          const dy = clientY - baseCenterY;
+          const dist = Math.hypot(dx, dy);
+
+          let cx = dx;
+          let cy = dy;
+          if (dist > maxR && dist > 0) {
+            cx = (dx / dist) * maxR;
+            cy = (dy / dist) * maxR;
+          }
+
+          knob.style.transform = 'translate(' + cx.toFixed(1) + 'px, ' + cy.toFixed(1) + 'px)';
+
+          let nx = cx / maxR;
+          let ny = -cy / maxR; // Hướng lên trên là tiến (+)
+
+          if (Math.hypot(nx, ny) < 0.08) {
+            nx = 0;
+            ny = 0;
+          }
+
+          S.joy.x = nx;
+          S.joy.y = ny;
+
+          S.pad.f = ny > 0.35;
+          S.pad.b = ny < -0.35;
+          S.pad.l = nx < -0.35;
+          S.pad.r = nx > 0.35;
+        }
+
+        function onPointerDown(e) {
+          e.preventDefault();
+          e.stopPropagation();
+          if (S.busy) return;
+          if (activePointerId !== null) return;
+
+          activePointerId = e.pointerId;
+          try { base.setPointerCapture(e.pointerId); } catch (_) { }
+          base.classList.add('active');
+          knob.classList.add('active');
+          knob.style.transition = 'none';
+
+          updateBasePos();
+          handleMove(e.clientX, e.clientY);
+
+          S.fly = null;
+          S.tour = false;
+          setTourBtn();
+        }
+
+        function onPointerMove(e) {
+          if (e.pointerId !== activePointerId) return;
+          e.preventDefault();
+          e.stopPropagation();
+          handleMove(e.clientX, e.clientY);
+        }
+
+        function resetJoystick(e) {
+          if (e && e.pointerId !== activePointerId) return;
+          if (activePointerId !== null) {
+            try { base.releasePointerCapture(activePointerId); } catch (_) { }
+          }
+          activePointerId = null;
+          base.classList.remove('active');
+          knob.classList.remove('active');
+
+          knob.style.transition = 'transform 0.18s cubic-bezier(0.18, 0.89, 0.32, 1.28)';
+          knob.style.transform = 'translate(0px, 0px)';
+
+          S.joy.x = 0;
+          S.joy.y = 0;
+          S.pad.f = false;
+          S.pad.b = false;
+          S.pad.l = false;
+          S.pad.r = false;
+        }
+
+        base.addEventListener('pointerdown', onPointerDown);
+        base.addEventListener('pointermove', onPointerMove);
+        base.addEventListener('pointerup', resetJoystick);
+        base.addEventListener('pointercancel', resetJoystick);
+
+        window.addEventListener('resize', () => { if (activePointerId === null) updateBasePos(); });
+        window.addEventListener('blur', () => resetJoystick());
+      })();
 
       const ray = new T.Raycaster(), ndc = new T.Vector2(); const tip = $('#tip');
       function hit(cx, cy) { const r = renderer.domElement.getBoundingClientRect(); ndc.set((cx - r.left) / r.width * 2 - 1, -(cy - r.top) / r.height * 2 + 1); ray.setFromCamera(ndc, camera); const hs = ray.intersectObjects(clickables, false).filter(h => { let o = h.object; while (o) { if (o.visible === false) return false; o = o.parent } return true }); return hs.length && hs[0].distance < 18 ? hs[0].object : null }
@@ -5680,10 +5798,30 @@
         const dt = Math.min(.05, (now - last) / 1000); last = now; clock += dt;
         if (S.fly) { const f = S.fly; f.t += dt / f.dur; const k = f.t >= 1 ? 1 : (f.t < .5 ? 4 * f.t * f.t * f.t : 1 - Math.pow(-2 * f.t + 2, 3) / 2); S.pos.lerpVectors(f.fp, f.tp, k); S.yaw = f.fy + f.dy * k; S.pitch = f.fpi + (f.tpi - f.fpi) * k; if (f.t >= 1) { S.fly = null; f.cb && f.cb() } }
         else if (!S.busy) {
-          const K = S.keys, P = S.pad; const sp = 3.2 * dt; const fx = -Math.sin(S.yaw), fz = -Math.cos(S.yaw), rx = Math.cos(S.yaw), rz = -Math.sin(S.yaw);
-          let mx = 0, mz = 0; if (K.f || P.f) { mx += fx; mz += fz } if (K.b || P.b) { mx -= fx; mz -= fz } if (K.sl) { mx -= rx; mz -= rz } if (K.sr) { mx += rx; mz += rz }
+          const K = S.keys, P = S.pad, J = S.joy || { x: 0, y: 0 };
+          const sp = 3.2 * dt;
+          const fx = -Math.sin(S.yaw), fz = -Math.cos(S.yaw), rx = Math.cos(S.yaw), rz = -Math.sin(S.yaw);
+          let mx = 0, mz = 0;
+          const hasJoy = (Math.abs(J.y) > 0.05 || Math.abs(J.x) > 0.05);
+
+          if (hasJoy) {
+            // Cần gạt ảo analog phong cách game:
+            // J.y: tiến/lùi theo lực gạt
+            mx += fx * J.y;
+            mz += fz * J.y;
+            // J.x: bẻ lái dạt ngang nhẹ nhàng kết hợp xoay góc nhìn mượt mà
+            mx += rx * (J.x * 0.65);
+            mz += rz * (J.x * 0.65);
+            S.yaw -= J.x * 1.8 * dt;
+          } else {
+            if (K.f || P.f) { mx += fx; mz += fz; }
+            if (K.b || P.b) { mx -= fx; mz -= fz; }
+            if (K.sl) { mx -= rx; mz -= rz; }
+            if (K.sr) { mx += rx; mz += rz; }
+            if (K.tl || P.l) S.yaw += 1.6 * dt;
+            if (K.tr || P.r) S.yaw -= 1.6 * dt;
+          }
           if (mx || mz) moveBy(mx * sp, mz * sp);
-          if (K.tl || P.l) S.yaw += 1.6 * dt; if (K.tr || P.r) S.yaw -= 1.6 * dt;
           if (S.tour) {
             S.yaw += dt * (reduce ? .12 : .28);
           } else if (G.auto && G.on && !S.busy && !S.fly && !S.drag) {
