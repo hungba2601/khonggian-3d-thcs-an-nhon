@@ -6457,7 +6457,7 @@
         const BTH = {
           tieuDe: 'BAN THỰC HIỆN', dong: [
             ['Chỉ đạo', 'Ban Giám hiệu Trường THCS An Nhơn - Phường An Nhơn'],
-            ['Thiết kế & xây dựng', 'Nguyễn Thị Thúy Vân'],
+            ['Thiết kế & xây dựng', 'Nguyễn Phi Hùng - Zalo 0938750424'],
             ['Tư liệu', 'Giáo viên và học sinh nhà trường']]
         };
         // mục trong hộp Hướng dẫn
@@ -6467,7 +6467,7 @@
             const d = document.createElement('div'); d.id = 'banThucHien';
             d.style.cssText = 'margin-top:16px;padding:14px 16px;border:1px solid #d9bf86;border-radius:10px;background:linear-gradient(135deg,#fbf3df,#f3e3bd)';
             d.innerHTML = '<h3 style="font-size:17px;margin:0 0 8px;letter-spacing:.12em;color:#7a1626">' + BTH.tieuDe + '</h3>' +
-              BTH.dong.map(([a, b]) => '<p style="margin:4px 0;line-height:1.5"><span style="color:#7a6a50">' + a + ':</span> <b style="color:#3b2410' + (a.indexOf('Thiết kế') === 0 ? ';white-space:nowrap' : '') + '">' + b + '</b></p>').join('');
+              BTH.dong.map(([a, b]) => '<p style="margin:4px 0;line-height:1.5"><span style="color:#7a6a50">' + a + ':</span> <b style="color:#3b2410' + '' + '">' + b + '</b></p>').join('');
             mc.insertBefore(d, cuoi);
           }
         } catch (e) { }
