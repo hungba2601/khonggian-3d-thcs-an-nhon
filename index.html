@@ -6659,20 +6659,46 @@
           }
         }).catch(function (err) { if (window.console) console.warn('[Bảo tàng 3D] Chưa tải được tư liệu bổ sung:', err.message); });
       }
-      // ---------- số lượt tham quan: mỗi lần người dùng vào website tính 1 lần duy nhất trong phiên (session), không tính khi đi vào từng phòng ----------
+      // ---------- SỐ LƯỢT THAM QUAN ----------
+      // 1. Chỉ tính duy nhất 1 lần cho mỗi người dùng/thiết bị trong ngày (1 lượt/ngày).
+      // 2. Mở lại tab, F5, đóng mở link trên Zalo trong ngày: CHỈ XEM (api=xem), TUYỆT ĐỐI KHÔNG TĂNG.
+      // 3. Người dùng tham quan các phòng, xem tư liệu, nghe thuyết minh, về trang chủ: TUYỆT ĐỐI KHÔNG ĐẾM LẠI.
+      var _daGoiDemLuot = false;
       function demLuot() {
+        if (_daGoiDemLuot) return;
+        _daGoiDemLuot = true;
+
         if (!/^https:\/\//.test(CAU_HINH.DIA_CHI_DU_LIEU)) return;
         var u = CAU_HINH.DIA_CHI_DU_LIEU;
 
-        // Kiểm tra xem trong phiên này (session) người dùng đã được tính lượt vào web chưa
-        var daTinhPhien = false;
+        var homNay = '';
         try {
-          daTinhPhien = !!sessionStorage.getItem('bt3d_da_tinh_luot');
+          var d = new Date();
+          homNay = d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0');
+        } catch (e) {
+          homNay = 'today';
+        }
+
+        var daTinh = false;
+        try {
+          var ngayLuu = localStorage.getItem('bt3d_ngay_tinh_luot');
+          var phienLuu = sessionStorage.getItem('bt3d_phien_tinh_luot');
+          if (ngayLuu === homNay || phienLuu === '1') {
+            daTinh = true;
+          }
         } catch (e) { }
 
-        // Nếu đã tính lượt trong phiên này (ví dụ F5 hoặc chuyển trang) thì CHỈ XEM (api=xem), KHÔNG tăng thêm
-        // Nếu là lần đầu mở web trong phiên thì TĂNG LƯỢT (api=luot) và đánh dấu
-        var apiMucTieu = daTinhPhien ? 'api=xem' : 'api=luot';
+        // Đã tính hôm nay -> chỉ lấy số lượt xem để hiển thị (api=xem)
+        // Chưa tính hôm nay -> tăng 1 lượt (api=luot)
+        var apiMucTieu = daTinh ? 'api=xem' : 'api=luot';
+
+        // Đánh dấu ngay lập tức để chống trùng lặp khi mở nhiều tab cùng lúc
+        if (!daTinh) {
+          try {
+            localStorage.setItem('bt3d_ngay_tinh_luot', homNay);
+            sessionStorage.setItem('bt3d_phien_tinh_luot', '1');
+          } catch (e) { }
+        }
 
         if (/[?&]api=[^&]+/.test(u)) {
           u = u.replace(/([?&])api=[^&]+/, '$1' + apiMucTieu);
@@ -6680,23 +6706,49 @@
           u = u + (u.indexOf('?') >= 0 ? '&' : '?') + apiMucTieu;
         }
 
-        fetch(u, { cache: 'no-store' }).then(function (r) { if (!r.ok) throw new Error('HTTP ' + r.status); return r.json(); })
+        fetch(u, { cache: 'no-store' })
+          .then(function (r) { if (!r.ok) throw new Error('HTTP ' + r.status); return r.json(); })
           .then(function (d) {
             var n = Number(d && d.luot);
             if (!(n > 0)) return;
-            try { sessionStorage.setItem('bt3d_da_tinh_luot', 'true'); } catch (e) { }
             hienLuot(n.toLocaleString('vi-VN'));
           })
-          .catch(function (err) { if (window.console) console.warn('[Bảo tàng 3D] Chưa đếm được lượt tham quan:', err.message); });
+          .catch(function (err) {
+            if (window.console) console.warn('[Bảo tàng 3D] Chưa đếm được lượt tham quan:', err.message);
+          });
       }
+
       function hienLuot(so) {
-        var st = el('style'); st.textContent = '.bt3d-luot{margin-top:14px;display:inline-flex;align-items:center;gap:8px;padding:6px 14px;border-radius:999px;background:rgba(201,162,39,.14);border:1px solid rgba(201,162,39,.55);color:#5d4a2e;font:500 14px/1.3 "Be Vietnam Pro","Segoe UI",Roboto,Arial,sans-serif}.bt3d-luot b{color:#9a1c22;font-weight:700;font-size:15px}.bt3d-luot svg{width:16px;height:16px;flex:none}';
-        document.head.appendChild(st);
+        if (!document.getElementById('bt3d-luot-style')) {
+          var st = el('style');
+          st.id = 'bt3d-luot-style';
+          st.textContent = '.bt3d-luot{margin-top:14px;display:inline-flex;align-items:center;gap:8px;padding:6px 14px;border-radius:999px;background:rgba(201,162,39,.14);border:1px solid rgba(201,162,39,.55);color:#5d4a2e;font:500 14px/1.3 "Be Vietnam Pro","Segoe UI",Roboto,Arial,sans-serif}.bt3d-luot b{color:#9a1c22;font-weight:700;font-size:15px}.bt3d-luot svg{width:16px;height:16px;flex:none}';
+          document.head.appendChild(st);
+        }
         var mat = '<svg viewBox="0 0 24 24" fill="none" stroke="#9a1c22" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 12s3.6-7 10-7 10 7 10 7-3.6 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/><\/svg>';
+
         var w = document.querySelector('#welcome .wbtns');
-        if (w && w.parentNode) { var d = el('div', 'bt3d-luot'); d.innerHTML = mat + '<span>Đã có <b>' + so + '<\/b> lượt tham quan<\/span>'; w.parentNode.insertBefore(d, w.nextSibling); }
+        var daCoW = document.querySelector('#welcome .bt3d-luot');
+        if (daCoW) {
+          var b = daCoW.querySelector('b');
+          if (b) b.textContent = so;
+        } else if (w && w.parentNode) {
+          var d = el('div', 'bt3d-luot');
+          d.innerHTML = mat + '<span>Đã có <b>' + so + '<\/b> lượt tham quan<\/span>';
+          w.parentNode.insertBefore(d, w.nextSibling);
+        }
+
         var h = document.querySelector('#helpModal .mc .mrow');
-        if (h && h.parentNode) { var d2 = el('div', 'bt3d-luot'); d2.style.marginTop = '12px'; d2.innerHTML = mat + '<span>Bảo tàng đã có <b>' + so + '<\/b> lượt tham quan<\/span>'; h.parentNode.insertBefore(d2, h); }
+        var daCoH = document.querySelector('#helpModal .bt3d-luot');
+        if (daCoH) {
+          var b2 = daCoH.querySelector('b');
+          if (b2) b2.textContent = so;
+        } else if (h && h.parentNode) {
+          var d2 = el('div', 'bt3d-luot');
+          d2.style.marginTop = '12px';
+          d2.innerHTML = mat + '<span>Bảo tàng đã có <b>' + so + '<\/b> lượt tham quan<\/span>';
+          h.parentNode.insertBefore(d2, h);
+        }
         window.BaoTang3D_LuotThamQuan = so;
       }
       if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', function () { khoiDong(); demLuot(); }); else { khoiDong(); demLuot(); }
