@@ -3647,7 +3647,7 @@
       },
       {
         id: "cm7", no: 7, title: "Phòng Truyền thống trường", side: "R", z: 7.5,
-        lead: "Không gian trưng bày lịch sử hình thành và phát triển của Trường THCS An Nhơn - Phường An Nhơn, được quy hoạch trang trọng thành hai khu vực: Trụ sở chính (Biên niên các thời kỳ Hiệu trưởng) và Phân hiệu (Lịch sử xây dựng & phát triển).",
+        lead: "Không gian trưng bày lịch sử hình thành và phát triển của Trường THCS An Nhơn - Phường An Nhơn, được quy hoạch trang trọng thành hai khu vực: Trụ sở chính - Trường THCS An Nhơn (Biên niên các thời kỳ Hiệu trưởng) và Phân hiệu - THCS Nguyễn Văn Nghi (Lịch sử xây dựng & phát triển).",
         truSoChinh: [
           {
             no: 1,
@@ -3701,33 +3701,33 @@
         phanHieu: [
           {
             no: 1,
-            era: "PHÂN HIỆU · GIAI ĐOẠN 1",
-            name: "Thời kỳ thành lập Phân hiệu",
+            era: "THCS NGUYỄN VĂN NGHI · GIAI ĐOẠN 1",
+            name: "Thời kỳ thành lập Trường",
             role: "Khởi đầu & đặt nền móng phát triển",
             term: "Nhiệm kỳ / Mốc thời gian: Chờ cập nhật (năm – năm)",
             side: "phanHieu",
             imgKey: null,
-            note: "Đang sưu tầm tài liệu & hình ảnh cơ sở vật chất buổi đầu"
+            note: "Phân hiệu · THCS Nguyễn Văn Nghi"
           },
           {
             no: 2,
-            era: "PHÂN HIỆU · GIAI ĐOẠN 2",
+            era: "THCS NGUYỄN VĂN NGHI · GIAI ĐOẠN 2",
             name: "Xây dựng & phát triển",
             role: "Mở rộng cơ sở vật chất & quy mô đào tạo",
             term: "Nhiệm kỳ / Mốc thời gian: Chờ cập nhật (năm – năm)",
             side: "phanHieu",
             imgKey: null,
-            note: "Đang sưu tầm tài liệu & hình ảnh lưu niệm qua các thời kỳ"
+            note: "Phân hiệu · THCS Nguyễn Văn Nghi"
           },
           {
             no: 3,
-            era: "PHÂN HIỆU · LÃNH ĐẠO",
-            name: "Ban Giám hiệu Phân hiệu",
-            role: "Lãnh đạo phụ trách Phân hiệu",
+            era: "THCS NGUYỄN VĂN NGHI · LÃNH ĐẠO",
+            name: "Ban Giám hiệu qua các thời kỳ",
+            role: "Lãnh đạo phụ trách qua các giai đoạn",
             term: "Nhiệm kỳ: Chờ cập nhật (năm – năm)",
             side: "phanHieu",
             imgKey: null,
-            note: "Đang cập nhật hồ sơ & hình ảnh các thế hệ lãnh đạo"
+            note: "Phân hiệu · THCS Nguyễn Văn Nghi"
           }
         ],
         principals: [] // alias initialized below
@@ -3846,7 +3846,7 @@
           // Phần 1: TRỤ SỞ CHÍNH
           h += `<div style="display:flex;align-items:center;gap:8px;margin:24px 0 12px;padding-bottom:6px;border-bottom:2px solid #8a1c22;">
             <span style="font-size:22px">🏛️</span>
-            <h4 style="margin:0;color:#8a1c22;font-size:18px;font-weight:800;letter-spacing:0.5px;">TRỤ SỞ CHÍNH · CÁC THỜI KỲ HIỆU TRƯỞNG</h4>
+            <h4 style="margin:0;color:#8a1c22;font-size:18px;font-weight:800;letter-spacing:0.5px;">TRỤ SỞ CHÍNH - TRƯỜNG THCS AN NHƠN</h4>
           </div>`;
           h += '<div class="photos" style="grid-template-columns:repeat(auto-fill, minmax(210px, 1fr));gap:14px;margin-bottom:30px;">' + truSo.map((p, i) => {
             const hasImg = p.imgKey && PRINCIPALS_SRC[p.imgKey];
@@ -3875,7 +3875,7 @@
           // Phần 2: PHÂN HIỆU
           h += `<div style="display:flex;align-items:center;gap:8px;margin:24px 0 12px;padding-bottom:6px;border-bottom:2px solid #173a7a;">
             <span style="font-size:22px">🏫</span>
-            <h4 style="margin:0;color:#173a7a;font-size:18px;font-weight:800;letter-spacing:0.5px;">PHÂN HIỆU · TRUYỀN THỐNG NHÀ TRƯỜNG</h4>
+            <h4 style="margin:0;color:#173a7a;font-size:18px;font-weight:800;letter-spacing:0.5px;">PHÂN HIỆU - THCS NGUYỄN VĂN NGHI</h4>
           </div>`;
           h += '<div class="photos" style="grid-template-columns:repeat(auto-fill, minmax(210px, 1fr));gap:14px;">' + phanHieu.map((p, i) => {
             return `
@@ -4564,13 +4564,13 @@
           const bw = 1460, bh = 95, bx = (w - bw) / 2, by = 285;
           g.fillStyle = '#dfa12d'; g.fillRect(bx, by, bw, bh);
           g.strokeStyle = '#fff0c2'; g.lineWidth = 3; g.strokeRect(bx + 4, by + 4, bw - 8, bh - 8);
-          g.fillStyle = '#5c1318'; g.font = `800 40px ${FB}`;
-          g.fillText('🏛️ CÁNH TRÁI: TRỤ SỞ CHÍNH   |   🏫 CÁNH PHẢI: PHÂN HIỆU', w / 2, by + 65);
+          g.fillStyle = '#5c1318'; g.font = `800 32px ${FB}`;
+          g.fillText('🏛️ CÁNH TRÁI: TRỤ SỞ CHÍNH (THCS AN NHƠN)   |   🏫 CÁNH PHẢI: PHÂN HIỆU (THCS NGUYỄN VĂN NGHI)', w / 2, by + 60);
 
           g.fillStyle = '#fcedd4'; g.font = `600 34px ${FB}`;
           g.fillText('BIÊN NIÊN SỬ CÁC THỜI KỲ HIỆU TRƯỞNG & LỊCH SỬ NHÀ TRƯỜNG', w / 2, 455);
           g.fillStyle = '#d9c2a7'; g.font = `400 27px ${FB}`;
-          drawWrap(g, 'Nơi tôn vinh các thế hệ Hiệu trưởng lãnh đạo trường THCS An Nhơn qua từng thời kỳ lịch sử; lưu giữ truyền thống dạy tốt - học tốt, các dấu ấn xây dựng và phát triển của nhà trường qua hai cơ sở: Trụ sở chính và Phân hiệu.', w / 2, 530, w - 280, 40, 3);
+          drawWrap(g, 'Nơi tôn vinh các thế hệ Hiệu trưởng lãnh đạo trường THCS An Nhơn qua từng thời kỳ lịch sử; lưu giữ truyền thống dạy tốt - học tốt, các dấu ấn xây dựng và phát triển của nhà trường qua hai cơ sở: Trụ sở chính (Trường THCS An Nhơn) và Phân hiệu (THCS Nguyễn Văn Nghi).', w / 2, 530, w - 280, 40, 3);
           g.fillStyle = '#f3dc8a'; g.font = `italic 400 25px ${FB}`;
           g.fillText('Nhà trường đang tiếp tục tổng hợp hồ sơ, tư liệu, hình ảnh lưu niệm các khóa. Bấm vào màn hình hoặc bảng tin để xem chi tiết.', w / 2, 700);
           const btnW = 440, btnH = 68, btnX = (w - btnW) / 2, btnY = 760;
@@ -4595,10 +4595,25 @@
             g.strokeStyle = '#ffd885'; g.lineWidth = 2.5; g.beginPath(); g.arc(cx, cy, 14, 0, 7); g.stroke();
           });
           g.textAlign = 'center';
-          g.fillStyle = '#fceecb'; g.font = `700 70px ${FD}`;
+          // Tự động căn chỉnh cỡ chữ tiêu đề đảm bảo không tràn và sắc nét
+          let fSize = 60;
+          g.font = `700 ${fSize}px ${FD}`;
+          while (g.measureText(title).width > 1620 && fSize > 32) {
+            fSize -= 2;
+            g.font = `700 ${fSize}px ${FD}`;
+          }
+          g.fillStyle = '#fceecb';
           g.fillText(title, w / 2, 96);
-          g.fillStyle = '#d2ad66'; g.fillRect(w / 2 - 320, 126, 640, 3);
-          g.fillStyle = '#ffffff'; g.font = `600 34px ${FB}`; spaced(g, '4px');
+          g.fillStyle = '#d2ad66'; g.fillRect(w / 2 - 400, 126, 800, 3);
+
+          // Tự động căn chỉnh cỡ chữ phụ đề
+          let sSize = 32;
+          g.font = `600 ${sSize}px ${FB}`;
+          while (g.measureText(sub).width > 1620 && sSize > 20) {
+            sSize -= 2;
+            g.font = `600 ${sSize}px ${FB}`;
+          }
+          g.fillStyle = '#ffffff'; spaced(g, '3px');
           g.fillText(sub, w / 2, 186); spaced(g, '0px');
         });
       }
@@ -4631,7 +4646,7 @@
 
           g.textAlign = 'center';
           g.fillStyle = '#fceecb'; g.font = `700 22px ${FB}`; spaced(g, '3px');
-          g.fillText(p.era || (isTruSo ? 'TRỤ SỞ CHÍNH' : 'PHÂN HIỆU'), w / 2, 60); spaced(g, '0px');
+          g.fillText(p.era || (isTruSo ? 'TRỤ SỞ CHÍNH' : 'THCS NGUYỄN VĂN NGHI'), w / 2, 60); spaced(g, '0px');
           g.fillStyle = '#ffffff'; g.font = `700 30px ${FD}`;
           g.fillText(isTruSo ? 'BIÊN NIÊN HIỆU TRƯỞNG' : 'TRUYỀN THỐNG NHÀ TRƯỜNG', w / 2, 96);
 
@@ -5279,9 +5294,9 @@
           const cb = plane(5.7, 2.5, panelMat(traditionBannerTex(s), .35)); cb.position.set(0, 2.3, .085); F.add(cb);
           pick(cb, { sec: s.id }, 'Phòng truyền thống trường · Trụ sở chính & Phân hiệu');
 
-          // Cánh A (Trái): TRỤ SỞ CHÍNH
+          // Cánh A (Trái): TRỤ SỞ CHÍNH - TRƯỜNG THCS AN NHƠN
           // Biển tiêu đề trên cao
-          framed(A, 5.6, 0.72, ua(5.5), 3.98, panelMat(wallTitleTex('🏛️ TRỤ SỞ CHÍNH', 'CÁC THỜI KỲ HIỆU TRƯỞNG NHÀ TRƯỜNG', '#7a1626'), .35), { sec: s.id }, 'Trụ sở chính · Các thời kỳ Hiệu trưởng');
+          framed(A, 5.6, 0.72, ua(5.5), 3.98, panelMat(wallTitleTex('🏛️ TRỤ SỞ CHÍNH - TRƯỜNG THCS AN NHƠN', 'CÁC THỜI KỲ HIỆU TRƯỞNG NHÀ TRƯỜNG', '#7a1626'), .35), { sec: s.id }, 'Trụ sở chính · Trường THCS An Nhơn');
 
           // 4 Khung ảnh Hiệu trưởng Trụ sở chính (Cô Phú, Cô Liên, Cô Ánh, Thầy Dũng)
           const truSo = (s.truSoChinh && s.truSoChinh.length) ? s.truSoChinh : (s.principals || []);
@@ -5291,9 +5306,9 @@
             framed(A, 1.7, 2.3, ua(u), 2.2, panelMat(principalFrameTex(p, i + 1), .35), { sec: s.id, item: i }, 'Trụ sở chính · ' + p.name, .05, GOLD);
           });
 
-          // Cánh B (Phải): PHÂN HIỆU
+          // Cánh B (Phải): PHÂN HIỆU - THCS NGUYỄN VĂN NGHI
           // Biển tiêu đề trên cao
-          framed(B, 5.6, 0.72, ub(5.5), 3.98, panelMat(wallTitleTex('🏫 PHÂN HIỆU', 'LỊCH SỬ XÂY DỰNG & BAN GIÁM HIỆU PHÂN HIỆU', '#173a7a'), .35), { sec: s.id }, 'Phân hiệu · Truyền thống nhà trường');
+          framed(B, 5.6, 0.72, ub(5.5), 3.98, panelMat(wallTitleTex('🏫 PHÂN HIỆU - THCS NGUYỄN VĂN NGHI', 'LỊCH SỬ XÂY DỰNG & BAN GIÁM HIỆU', '#173a7a'), .35), { sec: s.id }, 'Phân hiệu · THCS Nguyễn Văn Nghi');
 
           // 3 Khung Phân hiệu
           const phanHieu = s.phanHieu || [];
@@ -6153,7 +6168,7 @@
         { t: 'Phòng 4 · Hình ảnh tư liệu', x: 'Phòng 4 trưng bày ảnh tư liệu về những địa danh gắn với cuộc đời Bác: làng Sen, Bến Nhà Rồng, hang Pác Bó, Quảng trường Ba Đình, nhà sàn trong Phủ Chủ tịch và tượng đài Bác tại Thành phố Hồ Chí Minh.', room: 'cm4' },
         { t: 'Phòng 5 · Video', x: 'Phòng 5 là phòng chiếu phim tài liệu về cuộc đời, sự nghiệp của Chủ tịch Hồ Chí Minh, như Ra đi tìm đường cứu nước, Hồ Chí Minh – Chân dung một con người, Di chúc của Bác Hồ. Bấm vào màn chiếu hoặc một áp phích, phim sẽ được chiếu ngay trên màn ảnh lớn của phòng.', room: 'cm5' },
         { t: 'Phòng 6 · Học tập và làm theo Bác', x: 'Phòng 6 nhắc lại Năm điều Bác Hồ dạy thiếu niên, nhi đồng và giới thiệu các hoạt động của Trường THCS An Nhơn - Phường An Nhơn: sinh hoạt Góc văn hóa tại lớp, giới thiệu sách, kể chuyện và sáng tạo sản phẩm.', room: 'cm6' },
-        { t: 'Phòng 7 · Phòng Truyền thống trường', x: 'Phòng 7 là Phòng Truyền thống trường, được chia thành hai cánh trang trọng: cánh trái là Trụ sở chính trưng bày Biên niên sử và ảnh chân dung các thời kỳ Hiệu trưởng (Cô Trần Thị Phú, Cô Hồ Thị Thu Liên, Cô Nguyễn Thị Ngọc Ánh...), cánh phải là không gian lịch sử xây dựng và phát triển của Phân hiệu.', room: 'cm7' },
+        { t: 'Phòng 7 · Phòng Truyền thống trường', x: 'Phòng 7 là Phòng Truyền thống trường, được chia thành hai cánh trang trọng: cánh trái là Trụ sở chính (Trường THCS An Nhơn) trưng bày Biên niên sử và ảnh chân dung các thời kỳ Hiệu trưởng (Cô Trần Thị Phú, Cô Hồ Thị Thu Liên, Cô Nguyễn Thị Ngọc Ánh, Thầy Phạm Dương Hoàng Dũng), cánh phải là không gian lịch sử xây dựng và phát triển của Phân hiệu (THCS Nguyễn Văn Nghi).', room: 'cm7' },
         { t: 'Kết thúc hành trình', x: 'Cảm ơn các bạn đã tham quan. Hãy tiếp tục khám phá từng hiện vật và mang những bài học từ cuộc đời Bác vào học tập, rèn luyện mỗi ngày.', view: 'lobby' }
       ];
       const G = { i: -1, on: false, auto: false, voice: false, timer: null, audio: null, viVoice: null, sweep: null };
