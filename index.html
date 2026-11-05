@@ -3730,7 +3730,7 @@
           h += '<p class="src">Ảnh lấy từ Wikimedia Commons, có giấy phép sử dụng ghi dưới từng ảnh.</p>';
         }
         if (s.videos) {
-          h += s.videos.map((v, i) => `<div class="card${item === i ? ' hl' : ''}" id="video${i}"><div class="vid"><div class="play"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg></div><div style="min-width:0"><h5>${esc(v.t)}</h5><div class="meta">${esc(v.n)}</div>${v.url ? `<button class="btn" data-play="${i}">▶ Chiếu trong phòng</button> <a class="btn ghost" href="${esc(v.url)}" target="_blank" rel="noopener">YouTube ↗</a>` : '<span class="muted">Đang chờ cập nhật liên kết video.</span>'}</div></div></div>`).join('');
+          h += s.videos.map((v, i) => `<div class="card${item === i ? ' hl' : ''}" id="video${i}"><div class="vid"><div class="play"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg></div><div style="min-width:0"><h5>${esc(v.t)}</h5><div class="meta">${esc(v.n)}</div>${v.url ? `<button class="btn" data-play="${i}">▶ Xem phim trên màn chiếu</button>` : '<span class="muted">Đang chờ cập nhật liên kết video.</span>'}</div></div></div>`).join('');
           h += '<h4>Nguồn chính thống gợi ý</h4><p>' + s.sources.map(x => `<a href="${x[1]}" target="_blank" rel="noopener">${esc(x[0])}</a>`).join(' · ') + '</p>';
         }
         if (s.five) {
@@ -5202,7 +5202,6 @@
     <div class="cin-now"><span>Đang chiếu</span><b id="cinT"></b><i id="cinN"></i></div>
     <div class="cin-list" id="cinList"></div>
     <div class="cin-act">
-      <a class="cin-b ghost" id="cinYT" target="_blank" rel="noopener">Mở trên YouTube ↗</a>
       <button class="cin-b" id="cinX">Rời ghế ngồi</button>
     </div>
     <p class="cin-tip">Phim phát trực tiếp ngay trên màn chiếu. Bạn cũng có thể đưa file phim .mp4 vào thư mục dự án hoặc chọn file từ máy tính để chiếu offline chất lượng cao.</p>
@@ -5258,12 +5257,8 @@
         $('#cinT').textContent = f.t;
         $('#cinN').textContent = f.n;
 
-        if (f.url && ytId(f.url)) {
-          $('#cinYT').hidden = false;
-          $('#cinYT').href = f.url;
-        } else {
-          $('#cinYT').hidden = true;
-        }
+        const cyt = $('#cinYT');
+        if (cyt) cyt.hidden = true;
 
         // Nếu người dùng đang xem phim (màn chiếu đã mở), chuyển sang phát phim mới ngay
         if ($('#cinAlt').hidden) {
