@@ -4636,10 +4636,10 @@
 
           g.textAlign = 'center';
           if (isTruSo) {
-            // Đổi "BIÊN NIÊN HIỆU TRƯỞNG" thành "HIỆU TRƯỞNG TRƯỜNG THCS AN NHƠN"
-            let fSize = 25;
+            // Đổi thành "HIỆU TRƯỞNG TRƯỜNG THCS AN NHƠN CŨ"
+            let fSize = 24;
             g.font = `700 ${fSize}px ${FD}`;
-            const tieuDeTruSo = 'HIỆU TRƯỞNG TRƯỜNG THCS AN NHƠN';
+            const tieuDeTruSo = 'HIỆU TRƯỞNG TRƯỜNG THCS AN NHƠN CŨ';
             while (g.measureText(tieuDeTruSo).width > 550 && fSize > 16) {
               fSize -= 1;
               g.font = `700 ${fSize}px ${FD}`;
