@@ -7038,10 +7038,9 @@
           }
         }).catch(function (err) { if (window.console) console.warn('[Bảo tàng 3D] Chưa tải được tư liệu bổ sung:', err.message); });
       }
-      // ---------- SỐ LƯỢT THAM QUAN (CHỐNG TĂNG TRÙNG LẶP TUYỆT ĐỐI) ----------
-      // 1. Chỉ tính duy nhất 1 lần khi người dùng mới mở link lần đầu.
-      // 2. Đi vào bất kỳ phòng nào, nhấp hiện vật, xoay 3D, quay về trang chủ: TUYỆT ĐỐI KHÔNG GỌI API ĐẾM.
-      // 3. F5, mở lại tab, mở qua Zalo, duyệt web trên cùng thiết bị: Nhận diện đa tầng Cookie + LocalStorage + SessionStorage -> CHỈ XEM (api=xem).
+      // ---------- SỐ LƯỢT THAM QUAN ----------
+      // 1. Cứ mỗi lần mở link (mở trang web / tải trang): TĂNG 1 LƯỢT (api=luot), bất kể máy nào hay thoát ra vào lại.
+      // 2. Trong cùng 1 lần mở: Đi vào các phòng, bấm xem hiện vật, nghe thuyết minh, quay về sảnh: TUYỆT ĐỐI KHÔNG TĂNG LẠI (_daGoiDemLuot chỉ chạy đúng 1 lần).
       var _daGoiDemLuot = false;
       function demLuot() {
         if (_daGoiDemLuot) return;
@@ -7050,47 +7049,18 @@
         if (!/^https:\/\//.test(CAU_HINH.DIA_CHI_DU_LIEU)) return;
         var u = CAU_HINH.DIA_CHI_DU_LIEU;
 
-        var homNay = '';
+        // Xóa các cờ cũ nếu có để đảm bảo trình duyệt luôn thông suốt
         try {
-          var d = new Date();
-          homNay = d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0');
-        } catch (e) {
-          homNay = 'today';
-        }
-
-        // Kiểm tra đa tầng chống trùng: Cookie + LocalStorage + SessionStorage + Bot Detection
-        var daTinh = false;
-        try {
-          var coCookie = document.cookie && document.cookie.indexOf('bt3d_visited=1') >= 0;
-          var daVao = localStorage.getItem('bt3d_da_vao');
-          var ngayLuu = localStorage.getItem('bt3d_ngay_tinh_luot');
-          var phienLuu = sessionStorage.getItem('bt3d_phien_tinh_luot');
-          if (daVao === '1' || ngayLuu === homNay || phienLuu === '1' || coCookie) {
-            daTinh = true;
-          }
-        } catch (e) { }
-
-        // Chặn bot / crawler tự động quét link
-        if (typeof navigator !== 'undefined' && navigator.webdriver) {
-          daTinh = true;
-        }
-
-        // Đã từng vào trên thiết bị này -> CHỈ XEM (api=xem), không tăng lượt
-        // Thiết bị hoàn toàn mới -> TĂNG 1 LƯỢT (api=luot)
-        var apiMucTieu = daTinh ? 'api=xem' : 'api=luot';
-
-        // Đánh dấu ngay lập tức trên mọi kho lưu trữ để các lần mở sau không bao giờ tăng nữa
-        try {
-          localStorage.setItem('bt3d_da_vao', '1');
-          localStorage.setItem('bt3d_ngay_tinh_luot', homNay);
-          sessionStorage.setItem('bt3d_phien_tinh_luot', '1');
-          document.cookie = 'bt3d_visited=1; max-age=2592000; path=/; SameSite=Lax';
+          localStorage.removeItem('bt3d_da_vao');
+          localStorage.removeItem('bt3d_ngay_tinh_luot');
+          sessionStorage.removeItem('bt3d_phien_tinh_luot');
+          document.cookie = 'bt3d_visited=; max-age=0; path=/;';
         } catch (e) { }
 
         if (/[?&]api=[^&]+/.test(u)) {
-          u = u.replace(/([?&])api=[^&]+/, '$1' + apiMucTieu);
+          u = u.replace(/([?&])api=[^&]+/, '$1api=luot');
         } else {
-          u = u + (u.indexOf('?') >= 0 ? '&' : '?') + apiMucTieu;
+          u = u + (u.indexOf('?') >= 0 ? '&' : '?') + 'api=luot';
         }
 
         fetch(u, { cache: 'no-store' })
