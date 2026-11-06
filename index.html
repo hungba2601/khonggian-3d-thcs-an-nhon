@@ -3760,6 +3760,26 @@
         truSoChinh: [], // alias initialized below
         phanHieu: [],
         principals: []
+      },
+      {
+        id: "cm8",
+        no: 8,
+        title: "Phòng chuyện kể Bác Hồ",
+        side: "L",
+        z: 7.5,
+        group: "bacho",
+        underConstruction: true,
+        lead: "Không gian tuyển chọn các mẩu chuyện kể xúc động về Bác Hồ, bài học đạo đức sâu sắc cho học sinh và các tác phẩm dự thi Hội thi Kể chuyện Bác Hồ của nhà trường (Hiện đang trong quá trình xây dựng và hoàn thiện tư liệu)."
+      },
+      {
+        id: "cm9",
+        no: 9,
+        title: "Phòng các hoạt động trường",
+        side: "R",
+        z: 7.5,
+        group: "truong",
+        underConstruction: true,
+        lead: "Không gian trưng bày hình ảnh, tư liệu về các phong trào thi đua dạy tốt – học tốt, hoạt động Đoàn – Đội, văn hóa – văn nghệ, thể dục thể thao và hoạt động ngoại khóa của Trường THCS An Nhơn (Hiện đang trong quá trình xây dựng và hoàn thiện tư liệu)."
       }
     ];
     const _s7 = SECTIONS.find(s => s.id === "cm7");
@@ -3799,18 +3819,27 @@
         </li>
         <li><button class="room" data-id="lobby"><span class="n">◆</span><span>Sảnh chính</span></button></li>
       `;
-      SECTIONS.filter(s => s.id !== 'cm7').forEach(s => {
-        navHtml += `<li><button class="room" data-id="${s.id}"><span class="n">${s.no}</span><span>Phòng ${s.no}: ${esc(s.title)}</span></button></li>`;
+      // Danh sách phòng thuộc Không gian Bác Hồ
+      SECTIONS.filter(s => s.id !== 'cm7' && s.id !== 'cm9').forEach(s => {
+        const isUC = s.underConstruction;
+        navHtml += `<li><button class="room" data-id="${s.id}"><span class="n">${s.no}</span><span>Phòng ${s.no}: ${esc(s.title)}${isUC ? ' <small style="display:inline-block;padding:1px 6px;border-radius:8px;background:#8a1c22;color:#fff;font-size:10px;margin-left:4px;font-weight:600;vertical-align:middle;">Đang xây dựng</small>' : ''}</span></button></li>`;
       });
-      const s7 = byId('cm7');
-      if (s7) {
+
+      // Nhóm Nhà trường (Phòng 7: Phòng Truyền thống trường & Phòng 9: Phòng Các hoạt động trường)
+      const s7 = byId('cm7'), s9 = byId('cm9');
+      if (s7 || s9) {
         navHtml += `
           <li class="sep" aria-hidden="true" style="margin:8px 0;"></li>
           <li class="room-group-hd" style="color:#f3dc8a;">
-            <span>🏫</span> PHÒNG TRUYỀN THỐNG
+            <span>🏫</span> TRUYỀN THỐNG NHÀ TRƯỜNG
           </li>
-          <li><button class="room room-tradition" data-id="cm7"><span class="n" style="background:#8a1c22;color:#f6f0e3;">7</span><span><b style="color:#fcedd4;">${esc(s7.title)}</b><small style="display:block;font-size:11px;color:#d9a5a5;font-weight:normal;">An Nhơn cũ · Nguyễn Văn Nghi · Hợp nhất</small></span></button></li>
         `;
+        if (s7) {
+          navHtml += `<li><button class="room room-tradition" data-id="cm7"><span class="n" style="background:#8a1c22;color:#f6f0e3;">7</span><span><b style="color:#fcedd4;">${esc(s7.title)}</b><small style="display:block;font-size:11px;color:#d9a5a5;font-weight:normal;">An Nhơn cũ · Nguyễn Văn Nghi · Hợp nhất</small></span></button></li>`;
+        }
+        if (s9) {
+          navHtml += `<li><button class="room room-tradition" data-id="cm9"><span class="n" style="background:#173a7a;color:#f6f0e3;">${s9.no}</span><span><b style="color:#fcedd4;">${esc(s9.title)}</b><small style="display:inline-block;padding:1px 6px;border-radius:8px;background:#b3781f;color:#fff;font-size:10px;margin-left:4px;font-weight:600;vertical-align:middle;">Đang xây dựng</small></span></button></li>`;
+        }
       }
       roomList.innerHTML = navHtml;
 
@@ -3818,6 +3847,23 @@
       const PHOTO_PREVIEW = {};
       function sectionHTML(id, item) {
         const s = byId(id); let h = '';
+        if (s && s.underConstruction) {
+          const isBacho = (s.id === 'cm8');
+          const priCol = isBacho ? '#8a1c22' : '#173a7a';
+          return `
+            <div class="card" style="border: 2px dashed #b3781f; background: #fffcf4; padding: 22px 18px; text-align: center; border-radius: 12px; margin-top: 10px;">
+              <div style="font-size: 46px; margin-bottom: 8px;">🏗️</div>
+              <h3 style="color: ${priCol}; font-family: var(--f-display); font-size: 22px; margin: 0 0 10px;">${esc(s.title).toUpperCase()}</h3>
+              <div style="display: inline-block; background: ${priCol}; color: #fff; font-size: 12px; font-weight: 700; padding: 4px 14px; border-radius: 14px; margin-bottom: 14px; letter-spacing: 0.5px;">★ KHÔNG GIAN ĐANG XÂY DỰNG ★</div>
+              <p style="font-size: 14.5px; line-height: 1.6; color: #444; margin: 0 0 16px; text-align: justify;">
+                ${esc(s.lead)}
+              </p>
+              <div style="padding: 12px 14px; background: rgba(179,120,31,0.12); border: 1px solid rgba(179,120,31,0.3); border-radius: 8px; font-size: 13px; color: #7a5010; line-height: 1.5; text-align: left;">
+                📌 <b>Thông báo từ Ban biên tập:</b> Dữ liệu số, hình ảnh tư liệu và hiện vật của phòng này đang được bộ phận chuyên môn của Trường THCS An Nhơn thu thập, số hóa và biên tập hoàn thiện. Kính mời quý thầy cô, quý phụ huynh và các bạn học sinh đón xem trong thời gian tới!
+              </div>
+            </div>
+          `;
+        }
         if (id === 'intro') {
           return `<p>Bảo tàng 3D là hợp phần thứ ba (Không gian số) của <b>Kế hoạch số 25/KH-THCS.AN</b> ngày 25/9/2026 về triển khai xây dựng Không gian văn hóa Hồ Chí Minh từ năm học 2026–2027 của Trường THCS An Nhơn - Phường An Nhơn.</p>
     <h4>Sáu phòng trưng bày</h4><p>Từ sảnh chính, hai bên có sáu cửa dẫn vào sáu phòng theo các chuyên mục của kế hoạch. Chọn phòng ở thanh “Lộ trình tham quan”, trên sơ đồ mặt bằng, hoặc bấm vào sàn để đi thẳng vào cửa phòng.</p>
@@ -4389,7 +4435,7 @@
       const PW = 4.4, PH = 6;                            // cổng chính
       const RW = 8, RD = 11, RH = 5.2, DW = 2.6, DH = 4.0;     // phòng trưng bày, cửa phòng
       const AW = 5.6, AD = 1.5;                          // gian trưng bày lõm vào vách sảnh
-      const ANG = { cm1: -115, cm2: -80, cm3: -45, cm4: 45, cm5: 80, cm6: 115, cm7: 148 };   // vị trí 7 gian theo vòng cung (độ)
+      const ANG = { cm1: -115, cm2: -80, cm3: -45, cm8: -148, cm4: 38, cm5: 66, cm6: 94, cm7: 122, cm9: 150 };   // vị trí các gian đại sảnh theo vòng cung (độ)
       const D2R = Math.PI / 180;
       const MAROON = 0x7a1626;
       const STYLE = {
@@ -4399,7 +4445,9 @@
         cm4: { wall: 0xf5f3ef, band: 0xd6d1c6, ceil: 0xf2f0ec, floor: ['concrete', '#bdb8b0'], title: '#1c2440', sub: '#7a6a50', li: .95, beam: 0xe2ddd3, ty: 4.5 },
         cm5: { wall: 0x1b1f2a, band: 0x3a1416, ceil: 0x0e1016, floor: ['carpet', '#5a1a1c'], title: '#e8c77f', sub: '#d2ad66', li: .4, dark: true, beam: 0x15171d, ty: 4.74 },
         cm6: { wall: 0xf6ecd8, band: 0x173a7a, ceil: 0xfbf4e6, floor: ['wood', '#c9a77c'], title: '#173a7a', sub: '#d26a17', li: .95, beam: 0x173a7a, ty: 4.5 },
-        cm7: { wall: 0xf4eee1, band: 0x8a1c22, ceil: 0x381f12, floor: ['wood', '#9c6b3e'], title: '#8a1c22', sub: '#b3781f', li: .95, beam: 0x8a1c22, ty: 4.5 }
+        cm7: { wall: 0xf4eee1, band: 0x8a1c22, ceil: 0x381f12, floor: ['wood', '#9c6b3e'], title: '#8a1c22', sub: '#b3781f', li: .95, beam: 0x8a1c22, ty: 4.5 },
+        cm8: { wall: 0xf5efe6, band: 0x8a1c22, ceil: 0x422617, floor: ['wood', '#b58554'], title: '#8a1c22', sub: '#b3781f', li: .95, beam: 0x8a1c22, ty: 4.5 },
+        cm9: { wall: 0xf4eee1, band: 0x173a7a, ceil: 0x2d1f14, floor: ['wood', '#a8794c'], title: '#173a7a', sub: '#b3781f', li: .95, beam: 0x173a7a, ty: 4.5 }
       };
       let renderer, scene, camera, maxAniso = 4;
       const clickables = [], photoMeshes = [], ROOMS = {}, ANIM = [];
@@ -4706,6 +4754,150 @@
           }
           g.fillStyle = '#ffffff'; spaced(g, '3px');
           g.fillText(sub, w / 2, 186); spaced(g, '0px');
+        });
+      }
+
+      function underConstructionBannerTex(s) {
+        return canvasTex(2400, 720, (g, w, h) => {
+          const isBacho = (s.id === 'cm8');
+          const priCol = isBacho ? '#7a1626' : '#173a7a';
+          const subCol = isBacho ? '#4d0b12' : '#0c224a';
+          const gold = '#d2ad66', goldL = '#f5e4ba';
+          
+          const gr = g.createLinearGradient(0, 0, 0, h);
+          gr.addColorStop(0, priCol);
+          gr.addColorStop(0.5, isBacho ? '#8f1c2b' : '#1d4894');
+          gr.addColorStop(1, subCol);
+          g.fillStyle = gr;
+          g.fillRect(0, 0, w, h);
+          
+          g.strokeStyle = gold; g.lineWidth = 8; g.strokeRect(16, 16, w - 32, h - 32);
+          g.strokeStyle = goldL; g.lineWidth = 2.5; g.strokeRect(28, 28, w - 56, h - 56);
+          [[38, 38], [w - 38, 38], [38, h - 38], [w - 38, h - 38]].forEach(([cx, cy]) => {
+            g.strokeStyle = goldL; g.lineWidth = 2.5; g.beginPath(); g.arc(cx, cy, 22, 0, 7); g.stroke();
+          });
+          
+          g.textAlign = 'center';
+          g.fillStyle = goldL; g.font = `700 30px ${FB}`; spaced(g, '6px');
+          const topSub = isBacho ? 'KHÔNG GIAN VĂN HÓA HỒ CHÍ MINH · TRƯỜNG THCS AN NHƠN' : 'TRUYỀN THỐNG NHÀ TRƯỜNG · TRƯỜNG THCS AN NHƠN';
+          g.fillText(topSub, w / 2, 90); spaced(g, '0px');
+          
+          g.fillStyle = '#ffffff'; g.font = `800 78px ${FD}`;
+          const mainTitle = isBacho ? 'PHÒNG CHUYỆN KỂ BÁC HỒ' : 'PHÒNG CÁC HOẠT ĐỘNG TRƯỜNG';
+          g.fillText(mainTitle, w / 2, 195);
+          
+          g.fillStyle = gold; g.fillRect(w / 2 - 420, 230, 840, 4);
+          g.fillStyle = goldL; g.beginPath(); g.arc(w / 2, 232, 9, 0, 7); g.fill();
+          
+          const bW = 620, bH = 64, bX = (w - bW) / 2, bY = 265;
+          g.fillStyle = '#fceecb'; g.fillRect(bX, bY, bW, bH);
+          g.strokeStyle = gold; g.lineWidth = 3; g.strokeRect(bX, bY, bW, bH);
+          g.fillStyle = priCol; g.font = `800 30px ${FB}`;
+          g.fillText('★ KHÔNG GIAN ĐANG XÂY DỰNG ★', w / 2, bY + 44);
+          
+          g.fillStyle = '#fff4e0'; g.font = `500 28px ${FB}`;
+          const desc1 = isBacho
+            ? 'Nơi lưu giữ, lan tỏa các mẩu chuyện kể xúc động về cuộc đời, tư tưởng, đạo đức, phong cách của Bác'
+            : 'Nơi trưng bày các phong trào thi đua Dạy tốt – Học tốt, hoạt động Đoàn – Đội, văn thể mỹ & ngoại khóa';
+          const desc2 = isBacho
+            ? 'và tôn vinh các tác phẩm tham gia Hội thi Kể chuyện Bác Hồ của học sinh Trường THCS An Nhơn.'
+            : 'khắc họa bức tranh toàn diện về đời sống học đường năng động, sáng tạo của thầy và trò nhà trường.';
+          g.fillText(desc1, w / 2, 385);
+          g.fillText(desc2, w / 2, 432);
+          
+          g.fillStyle = '#ecd8b8'; g.font = `italic 400 24px ${FB}`;
+          g.fillText('(Tư liệu, hình ảnh và kỷ vật hiện đang được Ban biên tập tiếp tục sưu tầm, tuyển chọn và hoàn thiện)', w / 2, 500);
+          
+          const btnW = 540, btnH = 62, btnX = (w - btnW) / 2, btnY = 560;
+          g.fillStyle = 'rgba(255, 255, 255, 0.12)'; g.fillRect(btnX, btnY, btnW, btnH);
+          g.strokeStyle = gold; g.lineWidth = 2; g.strokeRect(btnX, btnY, btnW, btnH);
+          g.fillStyle = '#ffffff'; g.font = `700 24px ${FB}`;
+          g.fillText('Nhấp vào đây để xem thông tin giới thiệu chi tiết  ➔', w / 2, btnY + 40);
+        });
+      }
+
+      function underConstructionPanelTex(title, items, priCol) {
+        return canvasTex(1000, 1200, (g, w, h) => {
+          g.fillStyle = '#fcf9f2'; g.fillRect(0, 0, w, h);
+          g.strokeStyle = '#b3842e'; g.lineWidth = 6; g.strokeRect(16, 16, w - 32, h - 32);
+          g.strokeStyle = '#d9c49a'; g.lineWidth = 2; g.strokeRect(26, 26, w - 52, h - 52);
+          [[34, 34], [w - 34, 34], [34, h - 34], [w - 34, h - 34]].forEach(([cx, cy]) => {
+            g.strokeStyle = '#b3842e'; g.lineWidth = 2; g.beginPath(); g.arc(cx, cy, 12, 0, 7); g.stroke();
+          });
+          
+          const rGrad = g.createLinearGradient(0, 26, 0, 146);
+          rGrad.addColorStop(0, priCol || '#7a1626');
+          rGrad.addColorStop(1, '#2c080e');
+          g.fillStyle = rGrad; g.fillRect(26, 26, w - 52, 120);
+          g.strokeStyle = '#ffd885'; g.lineWidth = 2.5; g.strokeRect(30, 30, w - 60, 112);
+          
+          g.textAlign = 'center';
+          g.fillStyle = '#fce59f'; g.font = `700 22px ${FB}`; spaced(g, '4px');
+          g.fillText('DỰ KIẾN TRƯNG BÀY', w / 2, 70); spaced(g, '0px');
+          g.fillStyle = '#ffffff'; g.font = `800 32px ${FD}`;
+          g.fillText(title, w / 2, 118);
+          
+          let curY = 190;
+          items.forEach((it, idx) => {
+            const boxW = w - 100, boxH = 145, boxX = 50;
+            g.fillStyle = '#fffdfa'; g.fillRect(boxX, curY, boxW, boxH);
+            g.strokeStyle = '#c9a35a'; g.lineWidth = 2;
+            g.setLineDash([8, 6]); g.strokeRect(boxX, curY, boxW, boxH); g.setLineDash([]);
+            
+            g.fillStyle = priCol || '#7a1626';
+            g.beginPath(); g.arc(boxX + 50, curY + boxH / 2, 28, 0, 7); g.fill();
+            g.strokeStyle = '#ffd885'; g.lineWidth = 2; g.stroke();
+            g.fillStyle = '#ffffff'; g.font = `700 24px ${FB}`; g.textAlign = 'center';
+            g.fillText(String(idx + 1), boxX + 50, curY + boxH / 2 + 8);
+            
+            g.textAlign = 'left';
+            g.fillStyle = priCol || '#7a1626'; g.font = `700 26px ${FD}`;
+            g.fillText(it.t, boxX + 96, curY + 48);
+            
+            g.fillStyle = '#444444'; g.font = `400 21px ${FB}`;
+            drawWrap(g, it.d, boxX + 96, curY + 84, boxW - 120, 28, 2);
+            
+            g.textAlign = 'right';
+            g.fillStyle = '#b3781f'; g.font = `italic 600 18px ${FB}`;
+            g.fillText('⏳ Đang biên tập tư liệu…', boxX + boxW - 18, curY + boxH - 16);
+            
+            curY += boxH + 26;
+          });
+          
+          g.textAlign = 'center';
+          g.fillStyle = '#666666'; g.font = `italic 20px ${FB}`;
+          g.fillText('Ban biên tập trân trọng kính mời đóng góp tư liệu, hình ảnh kỷ niệm', w / 2, h - 70);
+          g.fillStyle = '#b3842e'; g.font = `700 19px ${FB}`;
+          g.fillText('Liên hệ: Ban Giám hiệu & Bộ phận Truyền thông nhà trường', w / 2, h - 40);
+        });
+      }
+
+      function underConstructionEaselTex(title, priCol) {
+        return canvasTex(800, 600, (g, w, h) => {
+          g.fillStyle = '#fffdf8'; g.fillRect(0, 0, w, h);
+          g.strokeStyle = '#b3842e'; g.lineWidth = 8; g.strokeRect(16, 16, w - 32, h - 32);
+          g.strokeStyle = '#e8d2a2'; g.lineWidth = 3; g.strokeRect(26, 26, w - 52, h - 52);
+          
+          g.textAlign = 'center';
+          g.fillStyle = '#b3781f'; g.font = `700 68px ${FB}`;
+          g.fillText('🏗️', w / 2, 120);
+          
+          g.fillStyle = priCol || '#7a1626'; g.font = `800 42px ${FD}`;
+          g.fillText(title, w / 2, 200);
+          
+          g.fillStyle = '#b3842e'; g.fillRect(w / 2 - 180, 230, 360, 4);
+          
+          const bW = 460, bH = 56, bX = (w - bW) / 2, bY = 265;
+          g.fillStyle = priCol || '#7a1626'; g.fillRect(bX, bY, bW, bH);
+          g.fillStyle = '#fceecb'; g.font = `800 24px ${FB}`;
+          g.fillText('★ KHÔNG GIAN ĐANG XÂY DỰNG ★', w / 2, bY + 38);
+          
+          g.fillStyle = '#333333'; g.font = `500 24px ${FB}`;
+          g.fillText('Nội dung, tư liệu và hình ảnh đang được chuẩn bị.', w / 2, 385);
+          g.fillText('Kính mời quý khách quay lại tham quan trong thời gian tới!', w / 2, 428);
+          
+          g.fillStyle = '#b3781f'; g.font = `italic 600 20px ${FB}`;
+          g.fillText('Nhấp vào đây để xem thông báo chi tiết', w / 2, 510);
         });
       }
 
@@ -5039,7 +5231,17 @@
 
 
       /* ----- Kết cấu cho đại sảnh tròn ----- */
-      const HL = { cm1: ['Niên biểu 1890 – 1969', 'Bốn giai đoạn cuộc đời Bác', 'Mô hình tàu rời Bến Nhà Rồng'], cm2: ['Bảy tác phẩm tiêu biểu', 'Cuốn sách lớn mở trang', 'Góc đọc sách'], cm3: ['Bốn câu chuyện về Bác', 'Góc kể chuyện', 'Bài học cho học sinh'], cm4: ['Sáu khung ảnh tư liệu', 'Địa danh gắn với Bác', 'Ảnh tư liệu chính thống'], cm5: ['Phòng chiếu phim tư liệu', 'Bốn tư liệu video', 'Nguồn chính thống'], cm6: ['Năm điều Bác Hồ dạy', 'Hoạt động của nhà trường', 'Sản phẩm của học sinh'], cm7: ['Biên niên các thời kỳ Hiệu trưởng', 'Sổ vàng truyền thống nhà trường', 'Trụ sở chính & Phân hiệu'] };
+      const HL = {
+        cm1: ['Niên biểu 1890 – 1969', 'Bốn giai đoạn cuộc đời Bác', 'Mô hình tàu rời Bến Nhà Rồng'],
+        cm2: ['Bảy tác phẩm tiêu biểu', 'Cuốn sách lớn mở trang', 'Góc đọc sách'],
+        cm3: ['Bốn câu chuyện về Bác', 'Góc kể chuyện', 'Bài học cho học sinh'],
+        cm4: ['Sáu khung ảnh tư liệu', 'Địa danh gắn với Bác', 'Ảnh tư liệu chính thống'],
+        cm5: ['Phòng chiếu phim tư liệu', 'Bốn tư liệu video', 'Nguồn chính thống'],
+        cm6: ['Năm điều Bác Hồ dạy', 'Hoạt động của nhà trường', 'Sản phẩm của học sinh'],
+        cm7: ['Biên niên các thời kỳ Hiệu trưởng', 'Sổ vàng truyền thống nhà trường', 'Trụ sở chính & Phân hiệu'],
+        cm8: ['Chuyện kể Bác Hồ', 'Bài học đạo đức cho học sinh', 'Không gian đang xây dựng'],
+        cm9: ['Phong trào thi đua dạy và học', 'Hoạt động Đoàn – Đội & Ngoại khóa', 'Không gian đang xây dựng']
+      };
       function drawIcon(g, id, x, y, s, col) {
         g.save(); g.translate(x, y); g.strokeStyle = col; g.fillStyle = col; g.lineWidth = s * .09; g.lineCap = 'round'; g.lineJoin = 'round';
         if (id === 'cm1') { g.beginPath(); g.arc(0, 0, s * .45, 0, 7); g.stroke(); g.beginPath(); g.moveTo(0, 0); g.lineTo(0, -s * .28); g.moveTo(0, 0); g.lineTo(s * .2, s * .1); g.stroke() }
@@ -5048,6 +5250,18 @@
         else if (id === 'cm4') { g.strokeRect(-s * .48, -s * .26, s * .96, s * .62); g.beginPath(); g.arc(0, s * .05, s * .18, 0, 7); g.stroke(); g.fillRect(-s * .2, -s * .38, s * .24, s * .12) }
         else if (id === 'cm5') { g.beginPath(); g.roundRect ? g.roundRect(-s * .5, -s * .34, s, s * .68, s * .1) : g.rect(-s * .5, -s * .34, s, s * .68); g.stroke(); g.beginPath(); g.moveTo(-s * .12, -s * .17); g.lineTo(s * .2, 0); g.lineTo(-s * .12, s * .17); g.closePath(); g.fill() }
         else if (id === 'cm7') { g.beginPath(); g.moveTo(0, -s * .42); g.lineTo(s * .38, -s * .25); g.lineTo(s * .38, s * .1); g.quadraticCurveTo(s * .38, s * .42, 0, s * .5); g.quadraticCurveTo(-s * .38, s * .42, -s * .38, s * .1); g.lineTo(-s * .38, -s * .25); g.closePath(); g.stroke(); }
+        else if (id === 'cm8') { g.beginPath(); g.moveTo(0, -s * .25); g.quadraticCurveTo(-s * .22, -s * .38, -s * .45, -s * .3); g.lineTo(-s * .45, s * .28); g.quadraticCurveTo(-s * .22, s * .2, 0, s * .32); g.quadraticCurveTo(s * .22, s * .2, s * .45, s * .28); g.lineTo(s * .45, -s * .3); g.quadraticCurveTo(s * .22, -s * .38, 0, -s * .25); g.lineTo(0, s * .32); g.stroke(); }
+        else if (id === 'cm9') {
+          g.beginPath();
+          for (let i = 0; i < 5; i++) {
+            const a1 = (i * 72 - 90) * Math.PI / 180, a2 = (i * 72 + 36 - 90) * Math.PI / 180;
+            const r1 = s * .44, r2 = s * .2;
+            if (i === 0) g.moveTo(Math.cos(a1) * r1, Math.sin(a1) * r1);
+            else g.lineTo(Math.cos(a1) * r1, Math.sin(a1) * r1);
+            g.lineTo(Math.cos(a2) * r2, Math.sin(a2) * r2);
+          }
+          g.closePath(); g.stroke();
+        }
         else { g.beginPath(); for (let i = 0; i < 10; i++) { const a = -Math.PI / 2 + i * Math.PI / 5, r = i % 2 ? s * .2 : s * .46; g.lineTo(Math.cos(a) * r, Math.sin(a) * r) } g.closePath(); g.stroke() }
         g.restore()
       }
@@ -5056,7 +5270,15 @@
           const gr = g.createLinearGradient(0, 0, 0, h); gr.addColorStop(0, '#fbf3e2'); gr.addColorStop(1, '#efdfbd'); g.fillStyle = gr; g.fillRect(0, 0, w, h);
           g.strokeStyle = '#c9a35a'; g.lineWidth = 8; g.strokeRect(10, 10, w - 20, h - 20); g.lineWidth = 2; g.strokeRect(28, 28, w - 56, h - 56);
           g.fillStyle = '#7a1626'; g.beginPath(); g.arc(170, h / 2, 104, 0, 7); g.fill(); drawIcon(g, s.id, 170, h / 2, 150, '#f6e4b8');
-          g.textAlign = 'left'; g.fillStyle = '#b3842e'; g.font = `600 34px ${FB}`; spaced(g, '10px'); g.fillText('PHÒNG TRƯNG BÀY SỐ ' + s.no, 320, 128); spaced(g, '0px');
+          g.textAlign = 'left'; g.fillStyle = '#b3842e'; g.font = `600 34px ${FB}`; spaced(g, '10px');
+          if (s.id === 'cm7' || s.id === 'cm9') {
+            g.fillText('TRUYỀN THỐNG NHÀ TRƯỜNG', 320, 128);
+          } else if (s.id === 'cm8') {
+            g.fillText('KHÔNG GIAN VĂN HÓA HỒ CHÍ MINH', 320, 128);
+          } else {
+            g.fillText('PHÒNG TRƯNG BÀY SỐ ' + s.no, 320, 128);
+          }
+          spaced(g, '0px');
           g.fillStyle = '#7a1626'; let fs = 96; g.font = `700 ${fs}px ${FD}`; while (g.measureText(s.title).width > w - 370 && fs > 50) { fs -= 4; g.font = `700 ${fs}px ${FD}` } g.fillText(s.title, 320, 250);
         })
       }
@@ -5253,7 +5475,7 @@
         const bf = plane(RW, 1.0, bm); bf.position.set(0, .5, -RD + .01); inner.add(bf);
         const ba = plane(RD, 1.0, bm); ba.rotation.y = Math.PI / 2; ba.position.set(-RW / 2 + .01, .5, -RD / 2); inner.add(ba);
         const bb = plane(RD, 1.0, bm); bb.rotation.y = -Math.PI / 2; bb.position.set(RW / 2 - .01, .5, -RD / 2); inner.add(bb);
-        [[0, -RD + .03, 0, RW], [-RW / 2 + .03, -RD / 2, Math.PI / 2, RD], [RW / 2 - .03, -RD / 2, -Math.PI / 2, RD]].forEach(([x, z, r, len]) => { [1.02, RH - .08].forEach(y => { if (s.id === 'cm7' && y < 3) return; const m = box(len, y > 2 ? .14 : .05, .05, GOLD); m.position.set(x, y, z); m.rotation.y = r; inner.add(m) }) });
+        [[0, -RD + .03, 0, RW], [-RW / 2 + .03, -RD / 2, Math.PI / 2, RD], [RW / 2 - .03, -RD / 2, -Math.PI / 2, RD]].forEach(([x, z, r, len]) => { [1.02, RH - .08].forEach(y => { if ((s.id === 'cm7' || s.id === 'cm8' || s.id === 'cm9') && y < 3) return; const m = box(len, y > 2 ? .14 : .05, .05, GOLD); m.position.set(x, y, z); m.rotation.y = r; inner.add(m) }) });
         // cửa phòng
         [-1, 1].forEach(k => { const j = box(.3, DH + .3, .7, DARKWOOD); j.position.set(k * (DW / 2 + .15), (DH + .3) / 2, 0); g.add(j); const cap = box(.4, .12, .76, CBRONZE); cap.position.set(k * (DW / 2 + .15), DH + .36, 0); g.add(cap) });
         const hd = box(DW + .6, .3, .7, DARKWOOD); hd.position.set(0, DH + .15, 0); g.add(hd);
@@ -5268,8 +5490,8 @@
         const B = new T.Group(); B.rotation.y = -Math.PI / 2; B.position.set(RW / 2, 0, 0); inner.add(B);
         const F = new T.Group(); F.position.set(0, 0, -RD); inner.add(F);
         const ua = u => u, ub = u => -u;
-        if (s.id !== 'cm7') { const tt = plane(6.6, .99, new T.MeshBasicMaterial({ map: roomTitleTex(s, st), transparent: true })); tt.position.set(0, st.ty, s.id === 'cm5' ? .46 : .04); if (s.id === 'cm5') tt.scale.setScalar(.82); F.add(tt); }
-        if (s.id !== 'cm7') framed(A, 2.0, 2.42, ua(2.0), 2.2, panelMat(introTex(s), .35), { sec: s.id }, 'Giới thiệu phòng ' + s.no);
+        if (s.id !== 'cm7' && s.id !== 'cm8' && s.id !== 'cm9') { const tt = plane(6.6, .99, new T.MeshBasicMaterial({ map: roomTitleTex(s, st), transparent: true })); tt.position.set(0, st.ty, s.id === 'cm5' ? .46 : .04); if (s.id === 'cm5') tt.scale.setScalar(.82); F.add(tt); }
+        if (s.id !== 'cm7' && s.id !== 'cm8' && s.id !== 'cm9') framed(A, 2.0, 2.42, ua(2.0), 2.2, panelMat(introTex(s), .35), { sec: s.id }, 'Giới thiệu phòng ' + s.no);
         [2.0, 5.0, 8.2].forEach(u => { fixture(inner, -RW / 2 + .9, RH, -u); fixture(inner, RW / 2 - .9, RH, -u) });[-2, 0, 2].forEach(x => fixture(inner, x, RH, -RD + .9));
         const R = { id: s.id, s, g, inner, leaves, open: 1, force: true, th }; ROOMS[s.id] = R;
         CONTENT_BUILDERS[s.id](s, { A, B, F, inner, ua, ub, st, R }); addFrieze(s.id, A, B);
@@ -5635,6 +5857,62 @@
           const bookTrim = box(.82, .03, .57, GOLD); bookTrim.position.set(0, .9, -6.0); inner.add(bookTrim);
           pick(ped, { sec: s.id }, 'Sổ vàng truyền thống nhà trường');
           pick(glass, { sec: s.id }, 'Sổ vàng truyền thống nhà trường');
+        },
+        cm8(s, { A, B, F, inner, ua, ub }) {
+          // 1. Biển hoành phi lớn ở tường đáy F (z = -11m)
+          framed(F, 7.4, 2.2, 0, 2.7, panelMat(underConstructionBannerTex(s), .35), { sec: s.id }, s.title + ' · Đang xây dựng', .06, GOLD);
+          
+          // 2. Pano tường trái A: Các chủ đề chuyện kể về Bác
+          const itemsA = [
+            { t: 'Bác Hồ với thiếu niên, nhi đồng', d: 'Những câu chuyện cảm động về tình yêu thương, sự chăm lo và lời dạy của Bác dành cho thế hệ mầm non tương lai.' },
+            { t: 'Đạo đức & lối sống giản dị', d: 'Bài học sâu sắc qua đôi dép cao su, chiếc áo nâu, bữa ăn thanh đạm và tình thương bao la của Bác.' },
+            { t: 'Ý chí tự học và tinh thần yêu nước', d: 'Hành trình vượt qua mọi gian khó, học hỏi ngôn ngữ và kiên trì lý tưởng giải phóng dân tộc.' }
+          ];
+          framed(A, 3.2, 3.8, ua(4.5), 2.5, panelMat(underConstructionPanelTex('CHỦ ĐỀ CHUYỆN KỂ VỀ BÁC', itemsA, '#7a1626'), .35), { sec: s.id }, 'Các chủ đề chuyện kể về Bác');
+
+          // 3. Pano tường phải B: Hội thi kể chuyện Bác Hồ của nhà trường
+          const itemsB = [
+            { t: 'Hội thi Kể chuyện Bác Hồ', d: 'Các video clip ghi hình phần thi kể chuyện xuất sắc, truyền cảm của các em học sinh Trường THCS An Nhơn.' },
+            { t: 'Hình ảnh hoạt động qua các năm học', d: 'Kho tư liệu ảnh lưu giữ kỷ niệm các kỳ hội thi, phong trào học tập và làm theo tư tưởng, đạo đức Bác.' },
+            { t: 'Bài học và cảm nghĩ của học sinh', d: 'Những bài viết, cảm xúc và quyết tâm rèn luyện của học sinh sau mỗi câu chuyện về Bác.' }
+          ];
+          framed(B, 3.2, 3.8, ub(4.5), 2.5, panelMat(underConstructionPanelTex('HỘI THI KỂ CHUYỆN BÁC HỒ', itemsB, '#7a1626'), .35), { sec: s.id }, 'Hội thi Kể chuyện Bác Hồ');
+
+          // 4. Bục thông báo trung tâm
+          const ped = box(1.6, .85, 1.1, DARKWOOD); ped.position.set(0, .425, -5.5); inner.add(ped);
+          const pedTrim = box(1.66, .05, 1.16, GOLD); pedTrim.position.set(0, .85, -5.5); inner.add(pedTrim);
+          const stand = plane(1.3, .98, panelMat(underConstructionEaselTex(s.title, '#7a1626'), .4));
+          stand.position.set(0, 1.38, -5.5); stand.rotation.x = -.25; inner.add(stand);
+          pick(stand, { sec: s.id }, s.title + ' · Đang xây dựng');
+          pick(ped, { sec: s.id }, s.title + ' · Đang xây dựng');
+        },
+        cm9(s, { A, B, F, inner, ua, ub }) {
+          // 1. Biển hoành phi lớn ở tường đáy F (z = -11m)
+          framed(F, 7.4, 2.2, 0, 2.7, panelMat(underConstructionBannerTex(s), .35), { sec: s.id }, s.title + ' · Đang xây dựng', .06, GOLD);
+          
+          // 2. Pano tường trái A: Phong trào thi đua dạy tốt – học tốt
+          const itemsA = [
+            { t: 'Thi đua Dạy tốt – Học tốt', d: 'Thành tích Hội thi Giáo viên dạy giỏi, giáo viên chủ nhiệm giỏi và các tiết học đổi mới sáng tạo, chuyển đổi số.' },
+            { t: 'Học sinh giỏi & Nghiên cứu khoa học', d: 'Tôn vinh các gương mặt học sinh đạt giải cao trong các kỳ thi học sinh giỏi các môn và sáng tạo khoa học kỹ thuật.' },
+            { t: 'Chuyên đề & Sinh hoạt chuyên môn', d: 'Các chuyên đề cấp trường, cấp quận, ngày hội STEM và các hoạt động chuyên môn nâng cao chất lượng giáo dục.' }
+          ];
+          framed(A, 3.2, 3.8, ua(4.5), 2.5, panelMat(underConstructionPanelTex('THI ĐUA DẠY TỐT – HỌC TỐT', itemsA, '#173a7a'), .35), { sec: s.id }, 'Phong trào thi đua Dạy tốt – Học tốt');
+
+          // 3. Pano tường phải B: Hoạt động Đoàn – Đội & Ngoại khóa
+          const itemsB = [
+            { t: 'Công tác Đội & Phong trào thiếu nhi', d: 'Đại hội Liên đội, các phong trào Kế hoạch nhỏ, Nuôi heo đất, Đôi bạn cùng tiến và rèn luyện đội viên.' },
+            { t: 'Văn hóa – Văn nghệ & Thể dục thể thao', d: 'Hội diễn văn nghệ tri ân Ngày Nhà giáo Việt Nam 20/11, Hội khỏe Phù Đổng và giải thi đấu thể thao học sinh.' },
+            { t: 'Hoạt động trải nghiệm & Thiện nguyện', d: 'Hành trình về nguồn thăm di tích lịch sử, giáo dục kỹ năng sống, hoạt động thiện nguyện và vì cộng đồng.' }
+          ];
+          framed(B, 3.2, 3.8, ub(4.5), 2.5, panelMat(underConstructionPanelTex('ĐOÀN – ĐỘI & NGOẠI KHÓA', itemsB, '#173a7a'), .35), { sec: s.id }, 'Hoạt động Đoàn – Đội & Ngoại khóa');
+
+          // 4. Bục thông báo trung tâm
+          const ped = box(1.6, .85, 1.1, DARKWOOD); ped.position.set(0, .425, -5.5); inner.add(ped);
+          const pedTrim = box(1.66, .05, 1.16, GOLD); pedTrim.position.set(0, .85, -5.5); inner.add(pedTrim);
+          const stand = plane(1.3, .98, panelMat(underConstructionEaselTex(s.title, '#173a7a'), .4));
+          stand.position.set(0, 1.38, -5.5); stand.rotation.x = -.25; inner.add(stand);
+          pick(stand, { sec: s.id }, s.title + ' · Đang xây dựng');
+          pick(ped, { sec: s.id }, s.title + ' · Đang xây dựng');
         }
       };
 
@@ -5676,8 +5954,8 @@
       function lobbyGallery(L) {
         const G = GALLERY.lobby; if (!G) return;
         const big = G.filter(p => p.k[0] === 'L'), tall = G.filter(p => p.k[0] === 'P');
-        [-134, -146, -158, -168, 130, 165].forEach((a, i) => { const p = big[i]; if (!p) return; const g = faceCenter(new T.Group(), R0 - .14, a, 0); L.add(g); placePhoto(g, p, 0, 3.05, 1.62, 2.45, false, true) });
-        [-62.5, 62.5, -97.5, 97.5].forEach((a, i) => { const p = tall[i]; if (!p) return; const g = faceCenter(new T.Group(), R0 - .12, a, 0); L.add(g); placePhoto(g, p, 0, 3.2, 1.6, 1.1, false, true) })
+        [-166, -131, 166, -28, 22].forEach((a, i) => { const p = big[i]; if (!p) return; const g = faceCenter(new T.Group(), R0 - .14, a, 0); L.add(g); placePhoto(g, p, 0, 3.05, 1.62, 2.45, false, true) });
+        [-97.5, -62.5, -18, 18].forEach((a, i) => { const p = tall[i]; if (!p) return; const g = faceCenter(new T.Group(), R0 - .12, a, 0); L.add(g); placePhoto(g, p, 0, 3.2, 1.6, 1.1, false, true) })
       }
       function addFrieze(id, A, B) {
         const G = GALLERY[id]; if (!G || !G.length) return;
@@ -5850,7 +6128,7 @@
         fr.style.cssText = `left:${Math.round(cx - w / 2)}px;top:${Math.round(cy - h / 2)}px;width:${Math.round(w)}px;height:${Math.round(h)}px`
       }
 
-      const QUALITIES = ['Yêu nước', 'Nhân ái', 'Trung thực', 'Trách nhiệm', 'Chăm chỉ', 'Sáng tạo', 'Truyền thống'];
+      const QUALITIES = ['Yêu nước', 'Nhân ái', 'Trung thực', 'Trách nhiệm', 'Chăm chỉ', 'Sáng tạo', 'Đoàn kết', 'Hiếu học', 'Truyền thống'];
 
       async function build(logoImg) {
         renderer = new T.WebGLRenderer({ antialias: !MOBILE, powerPreference: 'default' }); renderer.setPixelRatio(Math.min(devicePixelRatio || 1, MOBILE ? 1.5 : 1.5)); renderer.outputEncoding = T.sRGBEncoding; renderer.toneMapping = T.ACESFilmicToneMapping; renderer.toneMappingExposure = 1.04;
@@ -6055,7 +6333,7 @@
       const bSwitch = $('#btnSwitchSpace');
       if (bSwitch) {
         bSwitch.onclick = () => {
-          if (whereAmI() === 'cm7') {
+          if (whereAmI() === 'cm7' || whereAmI() === 'cm9') {
             goLobby();
           } else {
             enterRoom('cm7');
@@ -6308,7 +6586,7 @@
         const switchBtn = $('#btnSwitchSpace');
         const switchTxt = $('#switchSpaceText');
         if (switchBtn && switchTxt) {
-          if (w === 'cm7') {
+          if (w === 'cm7' || w === 'cm9') {
             switchTxt.textContent = 'Vào Không gian Bác Hồ';
             switchBtn.title = 'Chuyển về Không gian văn hóa Hồ Chí Minh';
             switchBtn.style.setProperty('background', 'rgba(23, 58, 122, 0.95)', 'important');
@@ -6335,6 +6613,14 @@
         } else if (w === 'cm7') {
           $('#capEy').textContent = 'Phòng Truyền thống trường';
           $('#capTi').textContent = 'Lịch sử nhà trường & Biên niên Hiệu trưởng';
+          $('#capBack').hidden = false;
+        } else if (w === 'cm8') {
+          $('#capEy').textContent = 'Phòng chuyện kể Bác Hồ (Đang xây dựng)';
+          $('#capTi').textContent = 'Không gian đang trong quá trình xây dựng & sưu tầm tư liệu';
+          $('#capBack').hidden = false;
+        } else if (w === 'cm9') {
+          $('#capEy').textContent = 'Phòng các hoạt động trường (Đang xây dựng)';
+          $('#capTi').textContent = 'Không gian đang trong quá trình xây dựng & sưu tầm tư liệu';
           $('#capBack').hidden = false;
         } else {
           const s = byId(w);
@@ -6476,6 +6762,8 @@
         { t: 'Phòng 5 · Video', x: 'Phòng 5 là phòng chiếu phim tài liệu về cuộc đời, sự nghiệp của Chủ tịch Hồ Chí Minh, như Ra đi tìm đường cứu nước, Hồ Chí Minh – Chân dung một con người, Di chúc của Bác Hồ. Bấm vào màn chiếu hoặc một áp phích, phim sẽ được chiếu ngay trên màn ảnh lớn của phòng.', room: 'cm5' },
         { t: 'Phòng 6 · Học tập và làm theo Bác', x: 'Phòng 6 nhắc lại Năm điều Bác Hồ dạy thiếu niên, nhi đồng và giới thiệu các hoạt động của Trường THCS An Nhơn - Phường An Nhơn: sinh hoạt Góc văn hóa tại lớp, giới thiệu sách, kể chuyện và sáng tạo sản phẩm.', room: 'cm6' },
         { t: 'Phòng 7 · Phòng Truyền thống trường', x: 'Phòng 7 là Phòng Truyền thống trường THCS An Nhơn, tôn vinh lịch sử hợp nhất từ hai ngôi trường: cánh trái là các đời Hiệu trưởng Trường THCS An Nhơn cũ (Cô Trần Thị Phú 2003 – 2011, Cô Hồ Thị Thu Liên 2012 – 2015, Cô Nguyễn Thị Ngọc Ánh 2016 – 2020, Thầy Phạm Dương Hoàng Dũng 2021 – 2026); cánh phải là các thời kỳ Hiệu trưởng Trường THCS Nguyễn Văn Nghi (Cô Đoàn Thị Kim Thoa 2001 – 2009, Cô Châu Thị Hoàng 2010 – 2016, Thầy Nguyễn Văn Hiền 2016 – 2022, Thầy Trần Phú Thảo 2022 – 2026); và ngay chính diện trung tâm là vị trí trang trọng vinh danh Thầy Trần Phú Thảo – Hiệu trưởng mới của nhà trường sau hợp nhất.', room: 'cm7' },
+        { t: 'Phòng 8 · Chuyện kể Bác Hồ', x: 'Phòng 8 là Không gian chuyện kể Bác Hồ, nơi tuyển chọn các mẩu chuyện kể xúc động về Bác, các bài học đạo đức sâu sắc cho học sinh và các tác phẩm tham gia Hội thi Kể chuyện Bác Hồ (Hiện đang trong quá trình xây dựng và hoàn thiện tư liệu).', room: 'cm8' },
+        { t: 'Phòng 9 · Các hoạt động trường', x: 'Phòng 9 là Không gian các hoạt động nhà trường, nơi trưng bày hình ảnh và tư liệu về các phong trào thi đua dạy tốt – học tốt, hoạt động Đoàn – Đội, văn hóa – thể thao và hoạt động ngoại khóa của Trường THCS An Nhơn (Hiện đang trong quá trình xây dựng và hoàn thiện tư liệu).', room: 'cm9' },
         { t: 'Kết thúc hành trình', x: 'Cảm ơn các bạn đã tham quan. Hãy tiếp tục khám phá từng hiện vật và mang những bài học từ cuộc đời Bác vào học tập, rèn luyện mỗi ngày.', view: 'lobby' }
       ];
       const G = { i: -1, on: false, auto: false, voice: false, timer: null, audio: null, viVoice: null, sweep: null };
