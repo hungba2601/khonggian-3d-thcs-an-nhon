@@ -4655,6 +4655,43 @@
         });
       }
 
+      function wallTitleTex(title, sub, bg) {
+        return canvasTex(1800, 260, (g, w, h) => {
+          const gr = g.createLinearGradient(0, 0, 0, h);
+          gr.addColorStop(0, bg || '#6b141d');
+          gr.addColorStop(0.5, bg ? bg : '#851a25');
+          gr.addColorStop(1, '#3a080c');
+          g.fillStyle = gr;
+          g.fillRect(0, 0, w, h);
+          g.strokeStyle = '#d2ad66'; g.lineWidth = 6; g.strokeRect(10, 10, w - 20, h - 20);
+          g.strokeStyle = '#fcedd4'; g.lineWidth = 2; g.strokeRect(18, 18, w - 36, h - 36);
+          [[24, 24], [w - 24, 24], [24, h - 24], [w - 24, h - 24]].forEach(([cx, cy]) => {
+            g.strokeStyle = '#ffd885'; g.lineWidth = 2.5; g.beginPath(); g.arc(cx, cy, 14, 0, 7); g.stroke();
+          });
+          g.textAlign = 'center';
+          // Tự động căn chỉnh cỡ chữ tiêu đề đảm bảo không tràn và sắc nét
+          let fSize = 60;
+          g.font = `700 ${fSize}px ${FD}`;
+          while (g.measureText(title).width > 1620 && fSize > 32) {
+            fSize -= 2;
+            g.font = `700 ${fSize}px ${FD}`;
+          }
+          g.fillStyle = '#fceecb';
+          g.fillText(title, w / 2, 96);
+          g.fillStyle = '#d2ad66'; g.fillRect(w / 2 - 400, 126, 800, 3);
+
+          // Tự động căn chỉnh cỡ chữ phụ đề
+          let sSize = 32;
+          g.font = `600 ${sSize}px ${FB}`;
+          while (g.measureText(sub).width > 1620 && sSize > 20) {
+            sSize -= 2;
+            g.font = `600 ${sSize}px ${FB}`;
+          }
+          g.fillStyle = '#ffffff'; spaced(g, '3px');
+          g.fillText(sub, w / 2, 186); spaced(g, '0px');
+        });
+      }
+
       function currentPrincipalFrameTex(p) {
         const canvas = document.createElement('canvas');
         canvas.width = 800;
@@ -4863,13 +4900,13 @@
           });
 
           // Dải ruy-băng tiêu đề phía trên
-          const isTruSo = (p.side === 'truSoChinh' || !p.side);
-          const headBg = isTruSo ? '#7a1626' : '#173a7a';
+          const isAnNhon = (p.side === 'anNhonCu' || p.side === 'truSoChinh' || !p.side);
+          const headBg = isAnNhon ? '#7a1626' : '#173a7a';
           g.fillStyle = headBg; g.fillRect(22, 22, w - 44, 96);
           g.strokeStyle = '#f0ce84'; g.lineWidth = 2; g.strokeRect(26, 26, w - 52, 88);
 
           g.textAlign = 'center';
-          if (isTruSo) {
+          if (isAnNhon) {
             let fSize = 24;
             g.font = `700 ${fSize}px ${FD}`;
             const tieuDeTruSo = 'HIỆU TRƯỞNG TRƯỜNG THCS AN NHƠN CŨ';
@@ -4911,18 +4948,18 @@
             g.strokeStyle = '#b3842e'; g.lineWidth = 2;
             g.setLineDash([8, 6]); g.strokeRect(px, py, pw, ph); g.setLineDash([]);
             g.save(); g.translate(w / 2, py + 160);
-            g.fillStyle = isTruSo ? 'rgba(122,22,38,0.22)' : 'rgba(23,58,122,0.22)';
+            g.fillStyle = isAnNhon ? 'rgba(122,22,38,0.22)' : 'rgba(23,58,122,0.22)';
             g.beginPath(); g.arc(0, -28, 48, 0, 7); g.fill();
             g.beginPath(); g.moveTo(-75, 78); g.quadraticCurveTo(0, 20, 75, 78); g.lineTo(-75, 78); g.fill();
             g.restore();
-            g.fillStyle = isTruSo ? '#7a1626' : '#173a7a'; g.font = `700 24px ${FB}`;
+            g.fillStyle = isAnNhon ? '#7a1626' : '#173a7a'; g.font = `700 24px ${FB}`;
             g.fillText('ẢNH CHÂN DUNG', w / 2, py + 280);
             g.fillStyle = '#b3842e'; g.font = `600 18px ${FB}`;
             g.fillText('(Đang cập nhật hình ảnh)', w / 2, py + 315);
           }
 
           // Họ tên
-          g.fillStyle = isTruSo ? '#7a1626' : '#173a7a'; g.font = `700 32px ${FD}`;
+          g.fillStyle = isAnNhon ? '#7a1626' : '#173a7a'; g.font = `700 32px ${FD}`;
           g.fillText(p.name, w / 2, py + ph + 52);
 
           // Đường chỉ vàng ngăn cách
@@ -4934,9 +4971,9 @@
 
           // Bảng thẻ nhiệm kỳ
           const tagW = 480, tagH = 50, tagX = (w - tagW) / 2, tagY = h - 84;
-          g.fillStyle = isTruSo ? '#f7edd8' : '#e6edf8'; g.fillRect(tagX, tagY, tagW, tagH);
+          g.fillStyle = isAnNhon ? '#f7edd8' : '#e6edf8'; g.fillRect(tagX, tagY, tagW, tagH);
           g.strokeStyle = '#b3842e'; g.lineWidth = 2; g.strokeRect(tagX, tagY, tagW, tagH);
-          g.fillStyle = isTruSo ? '#8a1c22' : '#173a7a'; g.font = `700 19px ${FB}`;
+          g.fillStyle = isAnNhon ? '#8a1c22' : '#173a7a'; g.font = `700 19px ${FB}`;
           g.fillText(p.term || 'Nhiệm kỳ: Chờ cập nhật (năm – năm)', w / 2, tagY + 32);
 
           tex.needsUpdate = true;
@@ -5544,13 +5581,13 @@
           framed(F, 2.1, 2.65, 0, 1.8, panelMat(currentPrincipalFrameTex(hienNay), .35), { sec: s.id, item: 'hienNay' }, 'Hiệu trưởng mới · Trường THCS An Nhơn (Hợp nhất)', .07, GOLD);
 
           // 3. Pano tóm tắt An Nhơn cũ (bên trái tường F)
-          framed(F, 2.05, 2.6, -2.6, 1.8, panelMat(historyPanelTex('anNhonCu'), .35), { sec: s.id, wing: 'anNhonCu' }, 'Tiền thân · Trường THCS An Nhơn cũ', .05, GOLD);
+          framed(F, 2.05, 2.6, -2.6, 1.8, panelMat(historyPanelTex('anNhonCu'), .35), { sec: s.id, item: 'anNhonCu', wing: 'anNhonCu' }, 'Tiền thân · Trường THCS An Nhơn cũ', .05, GOLD);
 
           // 4. Pano tóm tắt Nguyễn Văn Nghi (bên phải tường F)
-          framed(F, 2.05, 2.6, 2.6, 1.8, panelMat(historyPanelTex('nguyenVanNghi'), .35), { sec: s.id, wing: 'nguyenVanNghi' }, 'Tiền thân · Trường THCS Nguyễn Văn Nghi', .05, GOLD);
+          framed(F, 2.05, 2.6, 2.6, 1.8, panelMat(historyPanelTex('nguyenVanNghi'), .35), { sec: s.id, item: 'nguyenVanNghi', wing: 'nguyenVanNghi' }, 'Tiền thân · Trường THCS Nguyễn Văn Nghi', .05, GOLD);
 
           // --- CÁNH TRÁI A (x = -4.0m): HIỆU TRƯỞNG TRƯỜNG THCS AN NHƠN CŨ ---
-          framed(A, 6.2, 0.72, ua(5.5), 3.98, panelMat(wallTitleTex('🏛️ HIỆU TRƯỞNG TRƯỜNG THCS AN NHƠN CŨ', 'BIÊN NIÊN CÁC THỜI KỲ HIỆU TRƯỞNG', '#7a1626'), .35), { sec: s.id, wing: 'anNhonCu' }, 'Hiệu trưởng Trường THCS An Nhơn cũ');
+          framed(A, 6.2, 0.72, ua(5.5), 3.98, panelMat(wallTitleTex('🏛️ HIỆU TRƯỞNG TRƯỜNG THCS AN NHƠN CŨ', 'BIÊN NIÊN CÁC THỜI KỲ HIỆU TRƯỞNG', '#7a1626'), .35), { sec: s.id, item: 'anNhonCu', wing: 'anNhonCu' }, 'Hiệu trưởng Trường THCS An Nhơn cũ');
 
           // 4 Khung ảnh Hiệu trưởng An Nhơn cũ (Cô Phú, Cô Liên, Cô Ánh, Thầy Dũng)
           const anNhonCu = s.anNhonCu || s.truSoChinh || s.principals || [];
@@ -5561,7 +5598,7 @@
           });
 
           // --- CÁNH PHẢI B (x = +4.0m): HIỆU TRƯỞNG TRƯỜNG THCS NGUYỄN VĂN NGHI ---
-          framed(B, 6.2, 0.72, ub(5.5), 3.98, panelMat(wallTitleTex('🏫 HIỆU TRƯỞNG TRƯỜNG THCS NGUYỄN VĂN NGHI', 'CÁC THỜI KỲ HIỆU TRƯỞNG TIỀN NHIỆM', '#173a7a'), .35), { sec: s.id, wing: 'nguyenVanNghi' }, 'Hiệu trưởng Trường THCS Nguyễn Văn Nghi');
+          framed(B, 6.2, 0.72, ub(5.5), 3.98, panelMat(wallTitleTex('🏫 HIỆU TRƯỞNG TRƯỜNG THCS NGUYỄN VĂN NGHI', 'CÁC THỜI KỲ HIỆU TRƯỞNG TIỀN NHIỆM', '#173a7a'), .35), { sec: s.id, item: 'nguyenVanNghi', wing: 'nguyenVanNghi' }, 'Hiệu trưởng Trường THCS Nguyễn Văn Nghi');
 
           // 4 Khung Hiệu trưởng Nguyễn Văn Nghi
           const nvnList = s.nguyenVanNghi || s.phanHieu || [];
@@ -6734,7 +6771,7 @@
         const fontsReady = document.fonts ? Promise.all([document.fonts.load(`700 60px ${FD}`, 'Ăâ Đ'), document.fonts.load(`italic 400 60px ${FD}`, 'Ăâ'), document.fonts.load(`400 30px ${FB}`, 'Ăâ Đ'), document.fonts.load(`600 30px ${FB}`, 'Ăâ'), document.fonts.load(`500 30px ${FB}`, 'Ăâ'), document.fonts.load(`700 30px ${FB}`, 'Ăâ')]).catch(() => { }) : Promise.resolve();
         await Promise.race([fontsReady, new Promise(r => setTimeout(r, 3500))]);
         const logoImg = await loadImg(LOGO);
-        try { await build(logoImg) } catch (err) { console.error(err); showFallback('Không dựng được không gian 3D trên thiết bị này. Đang hiển thị bản đọc.'); return }
+        try { await build(logoImg) } catch (err) { console.error('Lỗi khởi tạo 3D:', err); showFallback('Không dựng được không gian 3D trên thiết bị này' + (err && err.message ? ': ' + err.message : '') + '. Đang hiển thị bản đọc.'); return }
         makeMarker(); setupPointer(); buildMinimap(); updateCaption(); markNav('lobby'); requestAnimationFrame(loop);
         setTimeout(() => $('#loader').classList.add('done'), 250);
         const h = (location.hash || '').slice(1);
