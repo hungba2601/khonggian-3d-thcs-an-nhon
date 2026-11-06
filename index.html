@@ -5265,7 +5265,7 @@
         const B = new T.Group(); B.rotation.y = -Math.PI / 2; B.position.set(RW / 2, 0, 0); inner.add(B);
         const F = new T.Group(); F.position.set(0, 0, -RD); inner.add(F);
         const ua = u => u, ub = u => -u;
-        const tt = plane(6.6, .99, new T.MeshBasicMaterial({ map: roomTitleTex(s, st), transparent: true })); tt.position.set(0, st.ty, s.id === 'cm5' ? .46 : .04); if (s.id === 'cm5') tt.scale.setScalar(.82); F.add(tt);
+        if (s.id !== 'cm7') { const tt = plane(6.6, .99, new T.MeshBasicMaterial({ map: roomTitleTex(s, st), transparent: true })); tt.position.set(0, st.ty, s.id === 'cm5' ? .46 : .04); if (s.id === 'cm5') tt.scale.setScalar(.82); F.add(tt); }
         if (s.id !== 'cm7') framed(A, 2.0, 2.42, ua(2.0), 2.2, panelMat(introTex(s), .35), { sec: s.id }, 'Giới thiệu phòng ' + s.no);
         [2.0, 5.0, 8.2].forEach(u => { fixture(inner, -RW / 2 + .9, RH, -u); fixture(inner, RW / 2 - .9, RH, -u) });[-2, 0, 2].forEach(x => fixture(inner, x, RH, -RD + .9));
         const R = { id: s.id, s, g, inner, leaves, open: 1, force: true, th }; ROOMS[s.id] = R;
