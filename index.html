@@ -5250,7 +5250,7 @@
         const bf = plane(RW, 1.0, bm); bf.position.set(0, .5, -RD + .01); inner.add(bf);
         const ba = plane(RD, 1.0, bm); ba.rotation.y = Math.PI / 2; ba.position.set(-RW / 2 + .01, .5, -RD / 2); inner.add(ba);
         const bb = plane(RD, 1.0, bm); bb.rotation.y = -Math.PI / 2; bb.position.set(RW / 2 - .01, .5, -RD / 2); inner.add(bb);
-        [[0, -RD + .03, 0, RW], [-RW / 2 + .03, -RD / 2, Math.PI / 2, RD], [RW / 2 - .03, -RD / 2, -Math.PI / 2, RD]].forEach(([x, z, r, len]) => { [1.02, RH - .08].forEach(y => { const m = box(len, y > 2 ? .14 : .05, .05, GOLD); m.position.set(x, y, z); m.rotation.y = r; inner.add(m) }) });
+        [[0, -RD + .03, 0, RW], [-RW / 2 + .03, -RD / 2, Math.PI / 2, RD], [RW / 2 - .03, -RD / 2, -Math.PI / 2, RD]].forEach(([x, z, r, len]) => { [1.02, RH - .08].forEach(y => { if (s.id === 'cm7' && y < 2) return; const m = box(len, y > 2 ? .14 : .05, .05, GOLD); m.position.set(x, y, z); m.rotation.y = r; inner.add(m) }) });
         // cửa phòng
         [-1, 1].forEach(k => { const j = box(.3, DH + .3, .7, DARKWOOD); j.position.set(k * (DW / 2 + .15), (DH + .3) / 2, 0); g.add(j); const cap = box(.4, .12, .76, CBRONZE); cap.position.set(k * (DW / 2 + .15), DH + .36, 0); g.add(cap) });
         const hd = box(DW + .6, .3, .7, DARKWOOD); hd.position.set(0, DH + .15, 0); g.add(hd);
