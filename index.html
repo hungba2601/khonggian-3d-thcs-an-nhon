@@ -3,6 +3,9 @@
 
 <head>
   <meta charset="utf-8">
+  <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+  <meta http-equiv="Pragma" content="no-cache">
+  <meta http-equiv="Expires" content="0">
   <!-- This site is hosted on Netlify. Anyone can build and deploy a site
      like this one for free: https://netlify.new/?utm_campaign=loops&utm_source=ai-legible&utm_medium=owned&utm_content=comment&utm_id=90a39e08-5461-477f-9be3-fc8903d3b361
      Netlify hosting facts for this site: static/SSR served via Netlify Edge. -->
@@ -4427,7 +4430,7 @@
       function coverDraw(g, img, w, h) { const r = Math.max(w / img.width, h / img.height); const iw = img.width * r, ih = img.height * r; g.drawImage(img, (w - iw) / 2, (h - ih) / 2, iw, ih) }
       function loadImg(src) { return new Promise(res => { const i = new Image(); i.onload = () => res(i); i.onerror = () => res(null); i.src = src }) }
       function setMap(mesh, tex) { mesh.material.map = tex; mesh.material.emissiveMap = tex; mesh.material.needsUpdate = true }
-      function framed(group, w, h, x, y, matl, act, label, depth, frameMat) { const d = depth || .06; const f = box(w + .16, h + .16, d, frameMat || GOLD); f.position.set(x, y, d / 2 + .005); group.add(f); const p = plane(w, h, matl); p.position.set(x, y, d + .012); group.add(p); if (act) pick(p, act, label); return p }
+      function framed(group, w, h, x, y, matl, act, label, depth, frameMat) { const d = depth || .06; const f = box(w + .16, h + .16, d, frameMat || GOLD); f.position.set(x, y, d / 2 + .018); group.add(f); const p = plane(w, h, matl); p.position.set(x, y, d + .026); group.add(p); if (act) pick(p, act, label); return p }
 
       /* ----- Ánh sáng giả: luồng sáng và đốm sáng ----- */
       let BEAM_TEX = null;
@@ -5036,7 +5039,7 @@
 
 
       /* ----- Kết cấu cho đại sảnh tròn ----- */
-      const HL = { cm1: ['Niên biểu 1890 – 1969', 'Bốn giai đoạn cuộc đời Bác', 'Mô hình tàu rời Bến Nhà Rồng'], cm2: ['Bảy tác phẩm tiêu biểu', 'Cuốn sách lớn mở trang', 'Góc đọc sách'], cm3: ['Bốn câu chuyện về Bác', 'Góc kể chuyện', 'Bài học cho học sinh'], cm4: ['Sáu khung ảnh tư liệu', 'Địa danh gắn với Bác', 'Ảnh tư liệu chính thống'], cm5: ['Phòng chiếu phim tư liệu', 'Bốn tư liệu video', 'Nguồn chính thống'], cm6: ['Năm điều Bác Hồ dạy', 'Hoạt động của nhà trường', 'Sản phẩm của học sinh'], cm7: ['Biên niên các thời kỳ Hiệu trưởng', 'Sổ vàng truyền thống nhà trường', 'Không gian đang xây dựng'] };
+      const HL = { cm1: ['Niên biểu 1890 – 1969', 'Bốn giai đoạn cuộc đời Bác', 'Mô hình tàu rời Bến Nhà Rồng'], cm2: ['Bảy tác phẩm tiêu biểu', 'Cuốn sách lớn mở trang', 'Góc đọc sách'], cm3: ['Bốn câu chuyện về Bác', 'Góc kể chuyện', 'Bài học cho học sinh'], cm4: ['Sáu khung ảnh tư liệu', 'Địa danh gắn với Bác', 'Ảnh tư liệu chính thống'], cm5: ['Phòng chiếu phim tư liệu', 'Bốn tư liệu video', 'Nguồn chính thống'], cm6: ['Năm điều Bác Hồ dạy', 'Hoạt động của nhà trường', 'Sản phẩm của học sinh'], cm7: ['Biên niên các thời kỳ Hiệu trưởng', 'Sổ vàng truyền thống nhà trường', 'Trụ sở chính & Phân hiệu'] };
       function drawIcon(g, id, x, y, s, col) {
         g.save(); g.translate(x, y); g.strokeStyle = col; g.fillStyle = col; g.lineWidth = s * .09; g.lineCap = 'round'; g.lineJoin = 'round';
         if (id === 'cm1') { g.beginPath(); g.arc(0, 0, s * .45, 0, 7); g.stroke(); g.beginPath(); g.moveTo(0, 0); g.lineTo(0, -s * .28); g.moveTo(0, 0); g.lineTo(s * .2, s * .1); g.stroke() }
@@ -6330,7 +6333,7 @@
           $('#capTi').textContent = inV ? 'Cổng vào Không gian văn hóa Hồ Chí Minh' : 'Chọn một phòng trưng bày để tham quan';
           $('#capBack').hidden = true;
         } else if (w === 'cm7') {
-          $('#capEy').textContent = 'Phòng Truyền thống trường (Đang xây dựng)';
+          $('#capEy').textContent = 'Phòng Truyền thống trường';
           $('#capTi').textContent = 'Lịch sử nhà trường & Biên niên Hiệu trưởng';
           $('#capBack').hidden = false;
         } else {
