@@ -3348,15 +3348,21 @@
             </g>
           </svg><i></i></div>
         <div class="wsub">Bảo tàng 3D · Năm học 2026 – 2027</div>
-        <div class="wbtns" style="display:flex;flex-direction:column;gap:10px;align-items:stretch;max-width:390px;margin:18px auto 0;">
-          <button class="wbtn" id="btnEnter" style="width:100%;justify-content:center;font-size:15px;padding:12px 18px;">
+        <div class="wbtns" style="display:flex;flex-direction:column;gap:9px;align-items:stretch;max-width:410px;margin:16px auto 0;">
+          <button class="wbtn" id="btnEnter" style="width:100%;justify-content:center;font-size:15px;padding:11px 18px;">
             <span>🏛️ Vào Không gian văn hóa Hồ Chí Minh</span>
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
               <path d="M5 12h14M13 6l6 6-6 6" />
             </svg>
           </button>
-          <button class="wbtn" id="btnEnterTradition" style="width:100%;justify-content:center;font-size:15px;padding:12px 18px;background:linear-gradient(135deg,#8a1c22,#5a0f14);border:1px solid #e0bd72;box-shadow:0 4px 14px rgba(138,28,34,0.4);">
+          <button class="wbtn" id="btnEnterTradition" style="width:100%;justify-content:center;font-size:15px;padding:11px 18px;background:linear-gradient(135deg,#8a1c22,#5a0f14);border:1px solid #e0bd72;box-shadow:0 4px 14px rgba(138,28,34,0.4);">
             <span>🏫 Vào Phòng Truyền thống trường</span>
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M5 12h14M13 6l6 6-6 6" />
+            </svg>
+          </button>
+          <button class="wbtn" id="btnEnterActivities" style="width:100%;justify-content:center;font-size:15px;padding:11px 18px;background:linear-gradient(135deg,#173a7a,#0c224a);border:1px solid #e0bd72;box-shadow:0 4px 14px rgba(23,58,122,0.4);">
+            <span>🏆 Vào Phòng các hoạt động trường</span>
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
               <path d="M5 12h14M13 6l6 6-6 6" />
             </svg>
@@ -6194,6 +6200,8 @@
       $('#btnEnter').onclick = () => enterMuseum();
       const bEnterTrad = $('#btnEnterTradition');
       if (bEnterTrad) bEnterTrad.onclick = () => enterMuseum('cm7');
+      const bEnterAct = $('#btnEnterActivities');
+      if (bEnterAct) bEnterAct.onclick = () => enterMuseum('cm9');
       function showMobileTip() {
         if (!matchMedia('(max-width:820px)').matches) return;
         const toast = $('#mobileToast');
