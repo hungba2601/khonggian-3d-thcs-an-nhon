@@ -4190,6 +4190,25 @@
       font-weight: 700;
       color: #f3d492;
       font-size: 12.5px;
+      max-width: 120px;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+    .mp-chat-arrow {
+      color: #ffd700;
+      font-size: 11px;
+      margin: 0 1px;
+      opacity: 0.9;
+    }
+    .mp-chat-target {
+      color: #ffe6a8;
+      font-weight: 700;
+      font-size: 12px;
+      max-width: 120px;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
     }
     .mp-chat-badge {
       font-size: 10px;
@@ -4198,6 +4217,7 @@
       border-radius: 4px;
       background: rgba(255, 255, 255, 0.15);
       color: #e2e8f0;
+      white-space: nowrap;
     }
     .mp-chat-badge.bot {
       background: #0284c7;
@@ -4207,9 +4227,38 @@
       background: #9a1c22;
       color: #fff;
     }
+    .mp-chat-badge.private {
+      background: linear-gradient(135deg, #7c3aed 0%, #4f46e5 100%);
+      color: #fff;
+      box-shadow: 0 1px 4px rgba(0, 0, 0, 0.3);
+    }
+    .mp-chat-reply-btn {
+      background: rgba(255, 255, 255, 0.18);
+      border: 1px solid rgba(255, 215, 0, 0.55);
+      color: #ffd700;
+      border-radius: 6px;
+      padding: 1px 7px;
+      font-size: 11px;
+      font-weight: 600;
+      cursor: pointer;
+      margin-left: auto;
+      transition: all 0.2s ease;
+      white-space: nowrap;
+    }
+    .mp-chat-reply-btn:hover {
+      background: rgba(255, 215, 0, 0.35);
+      border-color: #ffd700;
+      transform: scale(1.05);
+    }
+    .mp-chat-msg.mp-chat-private {
+      border-left: 3.5px solid #a855f7;
+      background: linear-gradient(135deg, rgba(38, 22, 60, 0.92) 0%, rgba(15, 23, 42, 0.92) 100%);
+      box-shadow: 0 4px 18px rgba(124, 58, 237, 0.25);
+    }
     .mp-chat-body {
       color: #f8fafc;
       font-size: 13px;
+      word-break: break-word;
     }
     .mp-chat-open-btn {
       pointer-events: auto;
@@ -10097,6 +10146,51 @@
         }
       });
 
+      // Xử lý nhận tin nhắn từ Firebase: Phân biệt tin nhắn riêng 1-on-1 và tin nhắn toàn phòng
+      function xuLyNhanTinNhan(msg, senderId, senderRoom) {
+        if (!msg || !msg.id || !msg.text) return;
+        if (msg.senderId === myId) return; // Không hiển thị lại tin của chính mình (đã thêm khi gửi)
+
+        const currentRoom = (typeof S !== 'undefined' ? S.where : 'lobby');
+        const isDirectToMe = (msg.targetId === myId);
+        const isBroadcast = (!msg.targetId || msg.targetId === 'all');
+
+        // Cập nhật thông tin người gửi vào danh sách người chơi để có thể bấm [Trả lời] ngay
+        if (senderId) {
+          if (!remotePlayers[senderId]) {
+            remotePlayers[senderId] = {
+              id: senderId,
+              name: msg.senderName || 'Khách tham quan',
+              avatar: msg.senderAvatar || 'student_male',
+              room: senderRoom || 'lobby'
+            };
+          } else {
+            if (msg.senderName) remotePlayers[senderId].name = msg.senderName;
+            if (msg.senderAvatar) remotePlayers[senderId].avatar = msg.senderAvatar;
+            if (senderRoom) remotePlayers[senderId].room = senderRoom;
+          }
+        }
+
+        // 1. Tin nhắn gửi riêng trực tiếp cho mình (1-on-1):
+        if (isDirectToMe) {
+          themTinNhanVaoChatHud(msg, false);
+          hienThongBaoToast('💬 ' + (msg.senderName || 'Khách') + ' nhắn riêng cho bạn: "' + msg.text + '"');
+          if (senderRoom === currentRoom) {
+            hienBongBongChat(senderId, msg.text);
+          }
+          return;
+        }
+
+        // 2. Tin nhắn chung gửi cho toàn phòng (Broadcast):
+        if (isBroadcast && senderRoom === currentRoom) {
+          themTinNhanVaoChatHud(msg, false);
+          hienBongBongChat(senderId, msg.text);
+          return;
+        }
+
+        // 3. Tin nhắn riêng giữa 2 người khác: Bỏ qua hoàn toàn, bảo mật tuyệt đối!
+      }
+
       // Lắng nghe người chơi khác
       const playersRef = firebaseDb.ref('players');
       playersRef.on('child_added', (snap) => {
@@ -10111,11 +10205,7 @@
         if (val.lastMsg && val.lastMsg.id) {
           val._lastMsgId = val.lastMsg.id;
           if (Date.now() - (val.lastMsg.time || 0) < 12000) {
-            const currentRoom = (typeof S !== 'undefined' ? S.where : 'lobby');
-            if (val.room === currentRoom) {
-              hienBongBongChat(val.id, val.lastMsg.text);
-              themTinNhanVaoChatHud(val.lastMsg, false);
-            }
+            xuLyNhanTinNhan(val.lastMsg, val.id, val.room);
           }
         }
       });
@@ -10132,11 +10222,7 @@
         // Nhận tin nhắn mới khi có thay đổi
         if (val.lastMsg && val.lastMsg.id && val.lastMsg.id !== prevMsgId) {
           val._lastMsgId = val.lastMsg.id;
-          const currentRoom = (typeof S !== 'undefined' ? S.where : 'lobby');
-          if (val.room === currentRoom) {
-            hienBongBongChat(val.id, val.lastMsg.text);
-            themTinNhanVaoChatHud(val.lastMsg, false);
-          }
+          xuLyNhanTinNhan(val.lastMsg, val.id, val.room);
         }
       });
 
@@ -10758,25 +10844,55 @@
     if (!feed) return;
 
     const row = document.createElement('div');
-    row.className = 'mp-chat-msg';
+    const isPrivate = Boolean(msgData.targetId && msgData.targetId !== 'all');
+    row.className = isPrivate ? 'mp-chat-msg mp-chat-private' : 'mp-chat-msg';
 
     const def = AVATAR_DEFS[msgData.senderAvatar] || AVATAR_DEFS.student_male;
     const icon = isSelf ? (AVATAR_DEFS[myAvatar] ? AVATAR_DEFS[myAvatar].icon : '👦') : (msgData.isBot ? (msgData.senderAvatar === 'student_female' ? '👧' : '👦') : (def.icon || '👤'));
 
-    let badgeHtml = '';
-    if (isSelf) {
-      badgeHtml = '<span class="mp-chat-badge self">Bạn</span>';
-    } else if (msgData.isBot) {
-      badgeHtml = '<span class="mp-chat-badge bot">Robot</span>';
+    let metaHtml = '';
+    if (isPrivate) {
+      if (isSelf) {
+        metaHtml = `
+          <span class="mp-chat-icon">${icon}</span>
+          <span class="mp-chat-name">Bạn</span>
+          <span class="mp-chat-arrow">➔</span>
+          <span class="mp-chat-target">${escapeHtml(msgData.targetName || 'Khách')}</span>
+          <span class="mp-chat-badge private">Tin riêng</span>
+        `;
+      } else {
+        const replyTargetId = msgData.senderId || '';
+        metaHtml = `
+          <span class="mp-chat-icon">${icon}</span>
+          <span class="mp-chat-name">${escapeHtml(msgData.senderName || 'Khách')}</span>
+          <span class="mp-chat-arrow">➔</span>
+          <span class="mp-chat-target">Bạn</span>
+          <span class="mp-chat-badge private">Riêng cho bạn</span>
+          ${replyTargetId ? `<button type="button" class="mp-chat-reply-btn" onclick="moHopThoaiTuongTac('${escapeHtml(replyTargetId)}'); event.stopPropagation();" title="Trả lời tin riêng">↩ Trả lời</button>` : ''}
+        `;
+      }
     } else {
-      badgeHtml = `<span class="mp-chat-badge">${def.role || 'Khách'}</span>`;
+      if (isSelf) {
+        metaHtml = `
+          <span class="mp-chat-icon">${icon}</span>
+          <span class="mp-chat-name">Bạn</span>
+          <span class="mp-chat-arrow">➔</span>
+          <span class="mp-chat-target" style="opacity:0.85;">Mọi người</span>
+          <span class="mp-chat-badge self">Bạn</span>
+        `;
+      } else {
+        const roleBadge = msgData.isBot ? '<span class="mp-chat-badge bot">Robot</span>' : `<span class="mp-chat-badge">${escapeHtml(def.role || 'Khách')}</span>`;
+        metaHtml = `
+          <span class="mp-chat-icon">${icon}</span>
+          <span class="mp-chat-name">${escapeHtml(msgData.senderName || 'Khách')}</span>
+          ${roleBadge}
+        `;
+      }
     }
 
     row.innerHTML = `
       <div class="mp-chat-meta">
-        <span class="mp-chat-icon">${icon}</span>
-        <span class="mp-chat-name">${escapeHtml(msgData.senderName || 'Khách')}</span>
-        ${badgeHtml}
+        ${metaHtml}
       </div>
       <div class="mp-chat-body">${escapeHtml(msgData.text || '')}</div>
     `;
@@ -10928,10 +11044,12 @@
     const roomEl = hopInteraction.querySelector('#chatTargetRoom');
     const avatarEl = hopInteraction.querySelector('#chatTargetAvatarPreview');
     const inputEl = hopInteraction.querySelector('#chatInputText');
+    const subEl = hopInteraction.querySelector('#chatTargetSub');
 
     const def = AVATAR_DEFS[target.avatar] || AVATAR_DEFS.student_male;
 
     if (target.isAll) {
+      if (subEl) subEl.textContent = 'GỬI ĐẾN MỌI NGƯỜI TRONG PHÒNG';
       nameEl.textContent = 'Gửi lời nhắn đến mọi người';
       cardNameEl.textContent = 'Tất cả khách cùng phòng';
       roleEl.textContent = 'Toàn phòng';
@@ -10939,12 +11057,13 @@
       roomEl.textContent = '📍 ' + layTenPhong(target.room);
       inputEl.placeholder = 'Nhập lời nhắn gửi đến mọi người trong phòng...';
     } else {
+      if (subEl) subEl.textContent = '🔒 TRÒ CHUYỆN RIÊNG TƯ (CHỈ 2 BẠN THẤY)';
       nameEl.textContent = 'Trò chuyện cùng ' + target.name;
       cardNameEl.textContent = target.name;
-      roleEl.textContent = target.isBot ? 'Học sinh mô phỏng' : (def.role || 'Khách tham quan');
+      roleEl.textContent = target.isBot ? 'Học sinh mô phỏng' : ((def.role || 'Khách tham quan') + ' • Tin riêng');
       avatarEl.textContent = def.icon || '👤';
       roomEl.textContent = '📍 ' + layTenPhong(target.room);
-      inputEl.placeholder = 'Nhập lời nhắn gửi đến ' + target.name + '...';
+      inputEl.placeholder = 'Nhập lời nhắn riêng gửi đến ' + target.name + '...';
     }
 
     inputEl.value = '';
@@ -10963,8 +11082,9 @@
     const content = (text || '').trim();
     if (!content) return;
 
-    const target = targetId ? remotePlayers[targetId] : null;
+    let target = targetId ? remotePlayers[targetId] : null;
     const currentRoom = (typeof S !== 'undefined' ? S.where : 'lobby');
+    const isPrivate = Boolean(target && target.id && target.id !== 'all' && !target.isAll);
 
     const msgData = {
       id: 'm_' + Date.now() + '_' + Math.random().toString(36).substr(2, 4),
@@ -10973,8 +11093,8 @@
       senderAvatar: myAvatar,
       room: currentRoom,
       text: content,
-      targetId: targetId || 'all',
-      targetName: target ? target.name : 'Mọi người',
+      targetId: isPrivate ? target.id : 'all',
+      targetName: isPrivate ? (target.name || 'Khách tham quan') : 'Mọi người trong phòng',
       time: Date.now()
     };
 
@@ -10982,14 +11102,20 @@
     themTinNhanVaoChatHud(msgData, true);
 
     // 2. Hiện thông báo nổi cho bản thân
-    hienThongBaoToast('💬 Bạn: "' + content + '"');
+    if (isPrivate) {
+      hienThongBaoToast('💬 Bạn gửi riêng cho ' + (target.name || 'khách') + ': "' + content + '"');
+    } else {
+      hienThongBaoToast('💬 Bạn (Toàn phòng): "' + content + '"');
+    }
 
-    // 3. Đẩy lên Firebase đồng bộ cho người chơi khác
-    if (firebaseDb && isFirebaseConnected) {
-      try {
-        firebaseDb.ref('players/' + myId + '/lastMsg').set(msgData);
-      } catch (e) {
-        console.warn('Lỗi gửi tin nhắn Firebase:', e);
+    // 3. Đẩy lên Firebase đồng bộ cho người chơi khác (nếu gửi cho người thật)
+    if (!target || !target.isBot) {
+      if (firebaseDb && isFirebaseConnected) {
+        try {
+          firebaseDb.ref('players/' + myId + '/lastMsg').set(msgData);
+        } catch (e) {
+          console.warn('Lỗi gửi tin nhắn Firebase:', e);
+        }
       }
     }
 
@@ -11075,9 +11201,12 @@
         room: bot.room,
         text: reply,
         isBot: true,
+        targetId: myId,
+        targetName: myName,
         time: Date.now()
       };
       themTinNhanVaoChatHud(botMsgData, false);
+      hienThongBaoToast('💬 ' + bot.name + ' nhắn riêng cho bạn: "' + reply + '"');
     }, 1350);
   }
 
