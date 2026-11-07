@@ -9339,9 +9339,14 @@
       ag.visible = inSameRoom;
       if (!inSameRoom) continue;
 
-      // Xoay bảng tên và thân nhân vật hướng về Camera (Billboard)
-      if (ag.userData.bodyMesh) ag.userData.bodyMesh.quaternion.copy(camera.quaternion);
-      if (ag.userData.tagMesh) ag.userData.tagMesh.quaternion.copy(camera.quaternion);
+      // Xoay toàn bộ nhân vật quanh trục thẳng đứng Y để luôn đối diện Camera
+      // (Khóa hoàn toàn trục X và Z để nhân vật luôn đứng thẳng trên sàn, tuyệt đối không bị lộn ngược đầu)
+      const dxCam = camera.position.x - ag.position.x;
+      const dzCam = camera.position.z - ag.position.z;
+      ag.rotation.set(0, Math.atan2(dxCam, dzCam), 0);
+      if (ag.userData.tagMesh) {
+        ag.userData.tagMesh.rotation.set(0, 0, 0);
+      }
 
       // Nội suy vị trí Lerp để bước đi mượt mà
       const tp = ag.userData.targetPos;
@@ -9357,7 +9362,7 @@
         // Hiệu ứng nhún chân khi bước đi (Walking Bobbing)
         if (ag.userData.bodyMesh) {
           ag.userData.bodyMesh.position.y = Math.abs(Math.sin(ag.userData.walkPhase * 1.5)) * 0.045;
-          ag.userData.bodyMesh.rotation.z = Math.sin(ag.userData.walkPhase * 0.75) * 0.035;
+          ag.userData.bodyMesh.rotation.set(0, 0, Math.sin(ag.userData.walkPhase * 0.75) * 0.035);
         }
       } else {
         ag.position.x = tp.x;
@@ -9365,7 +9370,7 @@
         ag.userData.isMoving = false;
         if (ag.userData.bodyMesh) {
           ag.userData.bodyMesh.position.y = 0;
-          ag.userData.bodyMesh.rotation.z = 0;
+          ag.userData.bodyMesh.rotation.set(0, 0, 0);
         }
       }
     }
@@ -9384,16 +9389,18 @@
           scene.add(remoteAvatars[pid]);
         }
       }
-      if (typeof ANIM !== 'undefined' && Array.isArray(ANIM)) {
-        if (!ANIM.includes(capNhatVongLapMultiplayer)) {
-          ANIM.push(capNhatVongLapMultiplayer);
-        }
-      }
     } else {
       setTimeout(choSceneSanSang, 60);
     }
   }
   choSceneSanSang();
+
+  // Vòng lặp cập nhật chuyển động liên tục độc lập với trạng thái bận
+  function vongLapLienTucMultiplayer() {
+    requestAnimationFrame(vongLapLienTucMultiplayer);
+    capNhatVongLapMultiplayer(performance.now());
+  }
+  requestAnimationFrame(vongLapLienTucMultiplayer);
 
   // 11. Phát tọa độ của bản thân (Throttled Broadcast ~130ms)
   function phatToaDoBanThan(force) {
@@ -9434,7 +9441,7 @@
 
   // 12. Khởi tạo kết nối Firebase Realtime Database
   function khoiTaoFirebase() {
-    const savedUrl = localStorage.getItem('bt3d_firebase_url') || FIREBASE_CONFIG.databaseURL;
+    const savedUrl = (FIREBASE_CONFIG.databaseURL || localStorage.getItem('bt3d_firebase_url') || '').trim();
     if (!savedUrl || !savedUrl.startsWith('https://') || (!savedUrl.includes('firebasedatabase.app') && !savedUrl.includes('firebaseio.com'))) {
       capNhatTrangThaiKetNoi('demo');
       return;
@@ -9477,6 +9484,7 @@
       playersRef.on('child_added', (snap) => {
         const val = snap.val();
         if (!val || val.id === myId) return;
+        val.localReceivedAt = Date.now();
         remotePlayers[val.id] = val;
         capNhatHoacTaoAvatar(val);
         capNhatSoLuongOnline();
@@ -9485,6 +9493,7 @@
       playersRef.on('child_changed', (snap) => {
         const val = snap.val();
         if (!val || val.id === myId) return;
+        val.localReceivedAt = Date.now();
         remotePlayers[val.id] = val;
         capNhatHoacTaoAvatar(val);
         capNhatSoLuongOnline();
@@ -9506,12 +9515,13 @@
         }
       });
 
-      // Quét dọn các client bị tắt đột ngột (inactive > 45s)
+      // Quét dọn các client bị tắt đột ngột (inactive > 90s, dùng localReceivedAt để tránh lệch giờ máy)
       setInterval(() => {
         const now = Date.now();
         for (const pid in remotePlayers) {
           if (remotePlayers[pid].isBot) continue;
-          if (now - (remotePlayers[pid].updatedAt || 0) > 45000) {
+          const lastActivity = remotePlayers[pid].localReceivedAt || remotePlayers[pid].updatedAt || 0;
+          if (now - lastActivity > 90000) {
             xoaAvatar(pid);
             delete remotePlayers[pid];
           }
