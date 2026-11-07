@@ -2656,8 +2656,62 @@
         height: 18px !important;
       }
 
-      /* Ẩn các nút phụ trên điện thoại để không bị chật màn hình */
-      .tools > :not(#btnHome):not(#btnTour):not(#btnMusic):not(#btnSwitchSpace) {
+      /* Ẩn các nút phụ khác trên điện thoại, giữ lại Trang chủ, Tour, Nhạc, Đổi không gian và Nút Khách online */
+      .tools > :not(#btnHome):not(#btnTour):not(#btnMusic):not(#btnSwitchSpace):not(#btnMultiplayer) {
+        display: none !important;
+      }
+
+      /* Nút nhỏ hiển thị số lượng khách online ở trên cùng giao diện điện thoại */
+      .tools > #btnMultiplayer {
+        display: inline-flex !important;
+        width: auto !important;
+        min-width: 44px !important;
+        height: 36px !important;
+        padding: 0 9px 0 8px !important;
+        border-radius: 18px !important;
+        gap: 5px !important;
+        background: linear-gradient(135deg, rgba(138, 26, 36, 0.95), rgba(92, 15, 23, 0.95)) !important;
+        border: 1.5px solid #d4af37 !important;
+        box-shadow: 0 4px 14px rgba(0, 0, 0, 0.4), 0 0 10px rgba(212, 175, 55, 0.25) !important;
+        align-items: center !important;
+        justify-content: center !important;
+        cursor: pointer !important;
+        flex: none !important;
+      }
+
+      .tools > #btnMultiplayer:active {
+        transform: scale(0.95) !important;
+      }
+
+      .tools > #btnMultiplayer .mp-pulse-dot {
+        display: inline-block !important;
+        width: 7px !important;
+        height: 7px !important;
+        margin: 0 !important;
+        flex-shrink: 0 !important;
+      }
+
+      .tools > #btnMultiplayer svg {
+        width: 14px !important;
+        height: 14px !important;
+        color: #f3d492 !important;
+        flex-shrink: 0 !important;
+      }
+
+      .tools > #btnMultiplayer #mpBtnTxt {
+        display: inline-flex !important;
+        align-items: center !important;
+        font-size: 12px !important;
+        font-weight: 700 !important;
+        color: #ffffff !important;
+        line-height: 1 !important;
+      }
+
+      .tools > #btnMultiplayer .mp-btn-txt-mb {
+        display: inline !important;
+      }
+
+      .tools > #btnMultiplayer .mp-btn-txt-pc {
         display: none !important;
       }
 
@@ -3470,6 +3524,9 @@
     /* =====================================================================
        CSS BẠN CÙNG THAM QUAN (MULTIPLAYER REALTIME & MODAL)
        ===================================================================== */
+    .mp-btn-txt-pc { display: inline; }
+    .mp-btn-txt-mb { display: none; }
+
     .mp-pulse-dot {
       width: 8px;
       height: 8px;
@@ -3681,12 +3738,13 @@
     .mp-avatar-grid {
       display: grid;
       grid-template-columns: repeat(2, 1fr);
-      gap: 12px;
+      gap: 10px;
       margin-bottom: 18px;
     }
     @media (min-width: 540px) {
       .mp-avatar-grid {
-        grid-template-columns: repeat(4, 1fr);
+        grid-template-columns: repeat(3, 1fr);
+        gap: 12px;
       }
     }
     .mp-avatar-card {
@@ -4339,7 +4397,7 @@
         <circle cx="12" cy="7" r="4"/>
         <path d="M23 21v-2a4 4 0 0 0-3-3.87"/>
         <path d="M16 3.13a4 4 0 0 1 0 7.75"/>
-      </svg><span id="mpBtnTxt">Bạn cùng xem (1)</span></button>
+      </svg><span id="mpBtnTxt"><span class="mp-btn-txt-pc">Bạn cùng xem (1)</span><span class="mp-btn-txt-mb">1</span></span></button>
     <button class="tbtn" id="btnHelp" title="Hướng dẫn">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round">
         <circle cx="12" cy="12" r="9" />
@@ -9105,7 +9163,7 @@
     databaseURL: "https://project-0dc7cfad-aa2e-4d7f-99c-default-rtdb.asia-southeast1.firebasedatabase.app"
   };
 
-  // 2. Danh mục 4 nhân vật minh họa
+  // 2. Danh mục 6 nhân vật minh họa (Học sinh, Giáo viên, Khách tham quan nam/nữ)
   const AVATAR_DEFS = {
     student_male: {
       id: 'student_male',
@@ -9134,6 +9192,20 @@
       role: 'Giáo viên',
       desc: 'Áo dài hoa sen truyền thống thướt tha, trang nhã',
       icon: '👩‍🏫'
+    },
+    visitor_male: {
+      id: 'visitor_male',
+      name: 'Khách nam lịch lãm',
+      role: 'Khách tham quan',
+      desc: 'Áo sơ mi thanh lịch, quần tây, phong thái lịch thiệp',
+      icon: '👨'
+    },
+    visitor_female: {
+      id: 'visitor_female',
+      name: 'Khách nữ trang nhã',
+      role: 'Khách tham quan',
+      desc: 'Đầm thanh lịch, phong thái duyên dáng, hiện đại',
+      icon: '👩'
     }
   };
 
@@ -9249,6 +9321,41 @@
       g.beginPath(); g.moveTo(cx - 24, 290); g.lineTo(cx - 28, 465); g.moveTo(cx + 24, 290); g.lineTo(cx + 28, 465); g.stroke();
       rrect(cx - 34, 468, 26, 15, 6, '#f8fafc', '#cbd5e1');
       rrect(cx + 8, 468, 26, 15, 6, '#f8fafc', '#cbd5e1');
+    } else if (type === 'visitor_male') {
+      // Quần tây màu than sẫm / xanh navy lịch sự (#1e293b)
+      g.fillStyle = '#1e293b';
+      g.beginPath(); g.moveTo(cx - 32, 272); g.lineTo(cx - 38, 458); g.lineTo(cx - 9, 458); g.lineTo(cx - 5, 290); g.closePath(); g.fill();
+      g.beginPath(); g.moveTo(cx + 32, 272); g.lineTo(cx + 38, 458); g.lineTo(cx + 9, 458); g.lineTo(cx + 5, 290); g.closePath(); g.fill();
+      g.strokeStyle = '#0f172a'; g.lineWidth = 1.5;
+      g.beginPath(); g.moveTo(cx - 24, 290); g.lineTo(cx - 24, 452); g.moveTo(cx + 24, 290); g.lineTo(cx + 24, 452); g.stroke();
+      rrect(cx - 44, 458, 40, 22, 8, '#3b1d07');
+      rrect(cx + 4, 458, 40, 22, 8, '#3b1d07');
+      g.fillStyle = '#111827'; g.fillRect(cx - 44, 475, 40, 5); g.fillRect(cx + 4, 475, 40, 5);
+      g.fillStyle = 'rgba(255,255,255,0.18)';
+      g.beginPath(); g.arc(cx - 24, 463, 6, 0, Math.PI * 2); g.arc(cx + 24, 463, 6, 0, Math.PI * 2); g.fill();
+    } else if (type === 'visitor_female') {
+      // Váy đầm xòe nhẹ thanh lịch màu thạch anh / tím lavender
+      const vayGrad = g.createLinearGradient(0, 270, 0, 385);
+      vayGrad.addColorStop(0, '#8b5cf6');
+      vayGrad.addColorStop(1, '#6d28d9');
+      g.fillStyle = vayGrad;
+      g.beginPath();
+      g.moveTo(cx - 28, 270);
+      g.lineTo(cx + 28, 270);
+      g.quadraticCurveTo(cx + 46, 330, cx + 42, 385);
+      g.lineTo(cx - 42, 385);
+      g.quadraticCurveTo(cx - 46, 330, cx - 28, 270);
+      g.closePath();
+      g.fill();
+      g.strokeStyle = 'rgba(255,255,255,0.7)'; g.lineWidth = 2;
+      g.stroke();
+      rrect(cx - 26, 385, 16, 70, 6, '#fddbc7');
+      rrect(cx + 10, 385, 16, 70, 6, '#fddbc7');
+      rrect(cx - 30, 455, 24, 20, 7, '#1e1b24');
+      rrect(cx + 6, 455, 24, 20, 7, '#1e1b24');
+      g.fillStyle = '#ffd700';
+      g.fillRect(cx - 22, 458, 8, 4);
+      g.fillRect(cx + 14, 458, 8, 4);
     }
 
     // --- B. THÂN VÀ TRANG PHỤC ---
@@ -9308,6 +9415,62 @@
       }
       g.fillStyle = '#ffd700';
       g.beginPath(); g.arc(cx + 15, 192, 5, 0, Math.PI * 2); g.fill();
+    } else if (type === 'visitor_male') {
+      const aoGrad = g.createLinearGradient(0, 168, 0, 275);
+      aoGrad.addColorStop(0, '#0284c7');
+      aoGrad.addColorStop(1, '#0369a1');
+      g.fillStyle = aoGrad;
+      g.beginPath(); g.moveTo(cx - 36, 170); g.lineTo(cx + 36, 170); g.lineTo(cx + 32, 274); g.lineTo(cx - 32, 274); g.closePath(); g.fill();
+      g.strokeStyle = '#0284c7'; g.lineWidth = 1.5; g.stroke();
+      rrect(cx - 56, 174, 24, 52, 8, '#0284c7', '#0369a1');
+      rrect(cx + 32, 174, 24, 52, 8, '#0284c7', '#0369a1');
+      rrect(cx - 52, 226, 16, 42, 6, '#fddbc7');
+      rrect(cx + 36, 226, 16, 42, 6, '#fddbc7');
+      rrect(cx - 54, 248, 18, 6, 2, '#1e293b');
+      g.fillStyle = '#fbbf24'; g.beginPath(); g.arc(cx - 45, 251, 4, 0, Math.PI * 2); g.fill();
+      g.fillStyle = '#e0f2fe';
+      g.beginPath(); g.moveTo(cx - 24, 164); g.lineTo(cx, 186); g.lineTo(cx + 24, 164); g.lineTo(cx + 14, 164); g.lineTo(cx, 178); g.lineTo(cx - 14, 164); g.closePath(); g.fill();
+      g.fillStyle = '#0369a1';
+      g.fillRect(cx - 4, 186, 8, 88);
+      g.fillStyle = '#ffffff';
+      for (let y = 196; y <= 260; y += 16) {
+        g.beginPath(); g.arc(cx, y, 2.2, 0, Math.PI * 2); g.fill();
+      }
+      g.fillStyle = '#451a03'; g.fillRect(cx - 32, 268, 64, 8);
+      g.fillStyle = '#e2e8f0'; g.fillRect(cx - 9, 266, 18, 12);
+      g.fillStyle = '#451a03'; g.fillRect(cx - 5, 269, 10, 6);
+    } else if (type === 'visitor_female') {
+      const thanGrad = g.createLinearGradient(0, 168, 0, 272);
+      thanGrad.addColorStop(0, '#a78bfa');
+      thanGrad.addColorStop(1, '#8b5cf6');
+      g.fillStyle = thanGrad;
+      g.beginPath();
+      g.moveTo(cx - 32, 170);
+      g.lineTo(cx + 32, 170);
+      g.lineTo(cx + 26, 272);
+      g.lineTo(cx - 26, 272);
+      g.closePath();
+      g.fill();
+      rrect(cx - 52, 172, 22, 46, 9, '#a78bfa');
+      rrect(cx + 30, 172, 22, 46, 9, '#a78bfa');
+      rrect(cx - 50, 218, 16, 48, 6, '#fddbc7');
+      rrect(cx + 34, 218, 16, 48, 6, '#fddbc7');
+      g.fillStyle = '#fddbc7';
+      g.beginPath();
+      g.moveTo(cx - 16, 166);
+      g.lineTo(cx, 186);
+      g.lineTo(cx + 16, 166);
+      g.closePath();
+      g.fill();
+      g.strokeStyle = '#ffd700'; g.lineWidth = 1.5;
+      g.beginPath(); g.arc(cx, 174, 11, 0.2 * Math.PI, 0.8 * Math.PI); g.stroke();
+      g.fillStyle = '#ffffff'; g.beginPath(); g.arc(cx, 185, 3.5, 0, Math.PI * 2); g.fill();
+      g.fillStyle = '#5b21b6';
+      g.fillRect(cx - 26, 266, 52, 7);
+      g.fillStyle = '#ffd700';
+      g.beginPath(); g.arc(cx, 269, 4, 0, Math.PI * 2); g.fill();
+      rrect(cx + 34, 252, 22, 26, 5, '#78350f');
+      g.fillStyle = '#ffd700'; g.fillRect(cx + 42, 258, 6, 4);
     }
 
     // --- C. CỔ VÀ KHUÔN MẶT ---
@@ -9359,6 +9522,51 @@
       g.beginPath(); g.arc(cx, 110, 45, Math.PI * 0.8, Math.PI * 2.2); g.fill();
       g.beginPath(); g.moveTo(cx - 42, 98); g.quadraticCurveTo(cx - 8, 86, cx + 40, 106); g.lineTo(cx + 42, 85); g.quadraticCurveTo(cx, 62, cx - 42, 85); g.closePath(); g.fill();
       g.fillStyle = '#ffd700'; g.beginPath(); g.arc(cx + 36, 92, 6, 0, Math.PI * 2); g.fill();
+    } else if (type === 'visitor_male') {
+      g.fillStyle = '#1e293b';
+      g.beginPath(); g.arc(cx, 108, 44, Math.PI * 0.82, Math.PI * 2.18); g.fill();
+      g.beginPath();
+      g.moveTo(cx - 42, 102);
+      g.quadraticCurveTo(cx - 20, 78, cx + 5, 92);
+      g.quadraticCurveTo(cx + 25, 80, cx + 42, 102);
+      g.lineTo(cx + 42, 80);
+      g.quadraticCurveTo(cx, 60, cx - 42, 80);
+      g.closePath();
+      g.fill();
+      g.strokeStyle = '#334155'; g.lineWidth = 1.5;
+      g.beginPath();
+      g.moveTo(cx - 20, 84); g.quadraticCurveTo(cx - 5, 88, cx + 15, 86);
+      g.stroke();
+      rrect(cx - 44, 104, 8, 18, 3, '#1e293b');
+      rrect(cx + 36, 104, 8, 18, 3, '#1e293b');
+    } else if (type === 'visitor_female') {
+      g.fillStyle = '#262626';
+      g.beginPath();
+      g.moveTo(cx - 42, 110);
+      g.quadraticCurveTo(cx - 52, 170, cx - 36, 210);
+      g.lineTo(cx - 24, 210);
+      g.quadraticCurveTo(cx - 38, 165, cx - 34, 120);
+      g.closePath();
+      g.fill();
+      g.beginPath();
+      g.moveTo(cx + 42, 110);
+      g.quadraticCurveTo(cx + 52, 170, cx + 36, 210);
+      g.lineTo(cx + 24, 210);
+      g.quadraticCurveTo(cx + 38, 165, cx + 34, 120);
+      g.closePath();
+      g.fill();
+      g.beginPath(); g.arc(cx, 110, 45, Math.PI * 0.8, Math.PI * 2.2); g.fill();
+      g.beginPath();
+      g.moveTo(cx - 42, 100);
+      g.quadraticCurveTo(cx - 10, 84, cx + 40, 102);
+      g.lineTo(cx + 42, 85);
+      g.quadraticCurveTo(cx, 62, cx - 42, 85);
+      g.closePath();
+      g.fill();
+      g.fillStyle = '#ffd700';
+      g.beginPath(); g.arc(cx - 38, 122, 3.5, 0, Math.PI * 2); g.arc(cx + 38, 122, 3.5, 0, Math.PI * 2); g.fill();
+      g.fillStyle = '#ffffff';
+      g.beginPath(); g.arc(cx - 38, 126, 3, 0, Math.PI * 2); g.arc(cx + 38, 126, 3, 0, Math.PI * 2); g.fill();
     }
 
     g.restore();
@@ -9620,6 +9828,22 @@
         { x: -4, z: 6, pause: 5, desc: 'Xem bảng tiểu sử' },
         { x: 8.5, z: 4, pause: 7, desc: 'Đến cửa Phòng 7' },
         { x: 4, z: 10, pause: 5, desc: 'Dạo quanh sảnh chính' }
+      ]
+    },
+    {
+      id: 'bot_phuhuynh',
+      name: 'Bác Hùng (Phụ huynh)',
+      avatar: 'visitor_male',
+      room: 'lobby',
+      state: 'walk',
+      pauseTimer: 0,
+      currentWp: 1,
+      speed: 1.3,
+      waypoints: [
+        { x: -5, z: 12, pause: 6, desc: 'Tham quan đại sảnh' },
+        { x: 0, z: 10, pause: 8, desc: 'Chiêm ngưỡng tượng Bác Hồ' },
+        { x: 5, z: 14, pause: 6, desc: 'Xem hình ảnh truyền thống' },
+        { x: -2, z: 18, pause: 5, desc: 'Đi dạo tiền sảnh' }
       ]
     }
   ];
@@ -9931,7 +10155,9 @@
     }
 
     const txt = document.getElementById('mpBtnTxt');
-    if (txt) txt.textContent = 'Bạn cùng xem (' + count + ')';
+    if (txt) {
+      txt.innerHTML = `<span class="mp-btn-txt-pc">Bạn cùng xem (${count})</span><span class="mp-btn-txt-mb">${count}</span>`;
+    }
 
     const wTxt = document.getElementById('mpWelcomeBtnCount');
     if (wTxt) wTxt.textContent = count;
@@ -10092,16 +10318,9 @@
 
     // Xử lý chuyển Tab
     const tabs = hopMultiplayer.querySelectorAll('.mp-tab');
-    const panels = hopMultiplayer.querySelectorAll('.mp-panel');
     tabs.forEach(tab => {
       tab.onclick = () => {
-        tabs.forEach(t => t.classList.remove('active'));
-        panels.forEach(p => p.classList.remove('active'));
-        tab.classList.add('active');
-        const targetId = 'panel-' + tab.dataset.tab;
-        const targetPanel = hopMultiplayer.querySelector('#' + targetId);
-        if (targetPanel) targetPanel.classList.add('active');
-        if (tab.dataset.tab === 'tab-online') veDanhSachOnline();
+        chuyenTabMultiplayer(tab.dataset.tab);
       };
     });
 
@@ -10113,7 +10332,8 @@
     hopMultiplayer.querySelector('#mpRandomNameBtn').onclick = () => {
       const mauTen = [
         'Học sinh An Nhơn', 'Bảo Nam 8A3', 'Lan Anh 7A1', 'Minh Khang 9A2',
-        'Thầy giáo Tổng phụ trách', 'Cô giáo Ngữ văn', 'Cựu học sinh 2019', 'Khách tham quan quý mến'
+        'Thầy giáo Tổng phụ trách', 'Cô giáo Ngữ văn', 'Bác Hùng (Phụ huynh)',
+        'Cô Mai (Phụ huynh)', 'Khách tham quan quý mến', 'Cựu học sinh 2019'
       ];
       const r = mauTen[Math.floor(Math.random() * mauTen.length)];
       hopMultiplayer.querySelector('#mpInputName').value = r;
@@ -10259,13 +10479,35 @@
     });
   }
 
-  function moMultiplayerModal() {
+  function chuyenTabMultiplayer(tabKey) {
+    if (!hopMultiplayer) return;
+    const tabs = hopMultiplayer.querySelectorAll('.mp-tab');
+    const panels = hopMultiplayer.querySelectorAll('.mp-panel');
+    tabs.forEach(t => {
+      if (t.dataset.tab === tabKey) t.classList.add('active');
+      else t.classList.remove('active');
+    });
+    panels.forEach(p => {
+      if (p.id === 'panel-' + tabKey) p.classList.add('active');
+      else p.classList.remove('active');
+    });
+    if (tabKey === 'tab-online') {
+      veDanhSachOnline();
+    }
+  }
+
+  function moMultiplayerModal(initialTab) {
     taoGiaoDienModal();
     hopMultiplayer.querySelector('#mpInputName').value = myName;
     const urlInp = hopMultiplayer.querySelector('#mpFirebaseUrlInput');
     urlInp.value = localStorage.getItem('bt3d_firebase_url') || FIREBASE_CONFIG.databaseURL || '';
     veAvatarCards();
     veDanhSachOnline();
+
+    // Mặc định chuyển đến tab được yêu cầu, nếu không truyền thì mở tab-online (danh sách khách online)
+    const targetTab = (typeof initialTab === 'string' && initialTab) ? initialTab : 'tab-online';
+    chuyenTabMultiplayer(targetTab);
+
     hopMultiplayer.style.display = 'flex';
   }
 
@@ -10283,6 +10525,7 @@
 
   window.moMultiplayerModal = moMultiplayerModal;
   window.dongMultiplayerModal = dongMultiplayerModal;
+  window.chuyenTabMultiplayer = chuyenTabMultiplayer;
 
   // 15. Gắn sự kiện cho các nút chọn nhân vật và bạn cùng xem
   function ganNutMultiplayer() {
@@ -10291,12 +10534,14 @@
 
     const nutMP = document.getElementById('btnMultiplayer');
     if (nutMP) {
-      nutMP.onclick = moMultiplayerModal;
+      // Nhấp nút online trên thanh công cụ sẽ mở trực tiếp Tab 2: Danh sách khách đang online
+      nutMP.onclick = () => moMultiplayerModal('tab-online');
     }
 
     const nutWelcome = document.getElementById('btnWelcomeMultiplayer');
     if (nutWelcome) {
-      nutWelcome.onclick = moMultiplayerModal;
+      // Nút trên màn hình chào mở Tab 1: Chọn nhân vật & đặt tên
+      nutWelcome.onclick = () => moMultiplayerModal('tab-profile');
     }
 
     capNhatSoLuongOnline();
@@ -10715,7 +10960,7 @@
     dongHopInteraction();
   }
 
-  // Phản hồi thông minh của Bot học sinh khi khách trò chuyện
+  // Phản hồi thông minh của Bot khi khách trò chuyện
   function xuLyBotTraLoi(bot, userMsg) {
     const low = userMsg.toLowerCase();
     let reply = '';
@@ -10723,38 +10968,58 @@
     if (low.includes('chào') || low.includes('hi') || low.includes('hello')) {
       if (bot.id === 'bot_lananh') {
         reply = 'Dạ em chào bạn! Chúc bạn có chuyến tham quan bảo tàng thật vui và nhiều ý nghĩa ạ! 👋😊';
+      } else if (bot.id === 'bot_phuhuynh') {
+        reply = 'Chào bạn nhé! Tôi là phụ huynh học sinh đến tham quan không gian truyền thống của trường. Không gian thật trang nghiêm và đẹp đẽ! 👨✨';
       } else {
         reply = 'Chào bạn nhé! Mình là Bảo Nam 8A3, rất vui được gặp bạn ở bảo tàng trường mình! 👦✨';
       }
     } else if (low.includes('đẹp') || low.includes('thích') || low.includes('tuyệt') || low.includes('xịn') || low.includes('hay')) {
       if (bot.id === 'bot_lananh') {
         reply = 'Bảo tàng 3D của trường An Nhơn đẹp lắm đúng không bạn! Chúng mình rất tự hào về ngôi trường thân yêu. 🏛️❤️';
+      } else if (bot.id === 'bot_phuhuynh') {
+        reply = 'Đúng vậy bạn, nhà trường ứng dụng công nghệ 3D thế này giúp phụ huynh và các em học sinh tìm hiểu truyền thống rất thuận tiện! 👏🌟';
       } else {
         reply = 'Bảo tàng có đủ cả tranh ảnh, video và phòng truyền thống đó, bạn nhớ dạo xem hết nhé! 🌟';
       }
     } else if (low.includes('hoa') || low.includes('sen') || low.includes('tim') || low.includes('cảm ơn') || low.includes('cam on')) {
       if (bot.id === 'bot_lananh') {
         reply = 'Dạ em cảm ơn bạn nhiều lắm! Hoa sen ngát hương tượng trưng cho sự thanh cao của Bác Hồ đó bạn! 🌸💐';
+      } else if (bot.id === 'bot_phuhuynh') {
+        reply = 'Cảm ơn tấm lòng hiếu khách của bạn nhé! Chúc bạn và gia đình luôn mạnh khỏe, bình an! 🌸🙏';
       } else {
         reply = 'Cảm ơn bạn nhiều nha! Thả tim lại cho bạn nè! ❤️ Chúc bạn học tập thật tốt!';
       }
-    } else if (low.includes('thầy') || low.includes('cô') || low.includes('kính chào')) {
+    } else if (low.includes('thầy') || low.includes('cô') || low.includes('kính chào') || low.includes('bác') || low.includes('chú')) {
       if (bot.id === 'bot_lananh') {
         reply = 'Dạ chúng em kính chào Thầy/Cô ạ! Kính chúc Thầy/Cô luôn nhiều niềm vui và sức khỏe dồi dào! 💐';
+      } else if (bot.id === 'bot_phuhuynh') {
+        reply = 'Cảm ơn bạn nhé! Thật vui vì các cháu học sinh trường THCS An Nhơn luôn lễ phép và ngoan ngoãn! 👨🎓';
       } else {
         reply = 'Em kính chào Thầy/Cô! Rất vinh hạnh được đón tiếp Thầy/Cô tại không gian 3D của trường ạ! 🎓';
       }
     } else {
-      const defaultReplies = bot.id === 'bot_lananh' ? [
-        'Rất vui được cùng tham quan bảo tàng THCS An Nhơn với bạn! 🤝',
-        'Bạn đã ghé qua Phòng 7 xem truyền thống vẻ vang của nhà trường chưa? 🏛️',
-        'Chúc bạn có thật nhiều trải nghiệm thú vị khi dạo quanh các gian phòng Bác Hồ hôm nay nhé! 📖'
-      ] : [
-        'Bảo tàng 3D trường mình đi lại tiện ghê bạn nhỉ! Chúc bạn xem vui vẻ! 👦',
-        'Bạn đã thử làm bài trắc nghiệm tìm hiểu về Bác Hồ ở góc sảnh chưa? Hay lắm đó! 📝',
-        'Không gian văn hóa Bác Hồ trường mình trang trọng và giàu truyền thống lắm bạn nhỉ! 🇻🇳'
-      ];
-      reply = defaultReplies[Math.floor(Math.random() * defaultReplies.length)];
+      if (bot.id === 'bot_lananh') {
+        const laReplies = [
+          'Rất vui được cùng tham quan bảo tàng THCS An Nhơn với bạn! 🤝',
+          'Bạn đã ghé qua Phòng 7 xem truyền thống vẻ vang của nhà trường chưa? 🏛️',
+          'Chúc bạn có thật nhiều trải nghiệm thú vị khi dạo quanh các gian phòng Bác Hồ hôm nay nhé! 📖'
+        ];
+        reply = laReplies[Math.floor(Math.random() * laReplies.length)];
+      } else if (bot.id === 'bot_phuhuynh') {
+        const phReplies = [
+          'Rất vui được cùng tham quan không gian văn hóa Bác Hồ với bạn! Chúc bạn một ngày tốt lành! 👨🌸',
+          'Ngôi trường THCS An Nhơn có bề dày truyền thống thật đáng tự hào! 🏛️',
+          'Bạn đã tham quan phòng truyền thống của trường ở tầng trên chưa? Rất nhiều tư liệu quý giá đấy! 📖'
+        ];
+        reply = phReplies[Math.floor(Math.random() * phReplies.length)];
+      } else {
+        const bnReplies = [
+          'Bảo tàng 3D trường mình đi lại tiện ghê bạn nhỉ! Chúc bạn xem vui vẻ! 👦',
+          'Bạn đã thử làm bài trắc nghiệm tìm hiểu về Bác Hồ ở góc sảnh chưa? Hay lắm đó! 📝',
+          'Không gian văn hóa Bác Hồ trường mình trang trọng và giàu truyền thống lắm bạn nhỉ! 🇻🇳'
+        ];
+        reply = bnReplies[Math.floor(Math.random() * bnReplies.length)];
+      }
     }
 
     // Thời gian trễ tự nhiên (1.35s)
