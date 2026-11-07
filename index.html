@@ -824,7 +824,13 @@
     @media (min-width: 1025px) and (hover:hover) and (pointer:fine) {
       .joystick-pad,
       .pad {
-        display: none !important;
+        opacity: 0.82;
+        transition: opacity 0.2s, transform 0.2s;
+      }
+      .joystick-pad:hover,
+      .pad:hover {
+        opacity: 1;
+        transform: scale(1.04);
       }
     }
 
@@ -4045,8 +4051,8 @@
        ===================================================================== */
     .mp-chat-hud {
       position: fixed;
-      left: 20px;
-      bottom: 24px;
+      left: 18px;
+      bottom: 128px;
       width: 320px;
       max-width: calc(100vw - 36px);
       z-index: 85;
@@ -5636,7 +5642,7 @@
       let renderer, scene, camera, maxAniso = 4;
       const clickables = [], photoMeshes = [], ROOMS = {}, ANIM = [];
       let portraitMesh = null, lotusGroup = null, portal = null, waterTex = null, particles = null, screenMat = null;
-      const S = { pos: new T.Vector3(0, 1.7, 23.2), yaw: 0, pitch: .19, keys: {}, pad: {}, fly: null, tour: false, drag: null, busy: false, where: 'lobby', entered: false };
+      const S = { pos: new T.Vector3(0, 1.7, 23.2), yaw: 0, pitch: .19, keys: {}, pad: {}, fly: null, walk: null, tour: false, drag: null, busy: false, where: 'lobby', entered: false };
 
       /* Điện thoại (nhất là iPhone) giới hạn bộ nhớ canvas: vẽ ở độ phân giải thấp hơn và giải phóng canvas ngay sau khi đã nạp lên GPU */
       const MOBILE = matchMedia('(pointer: coarse)').matches || /iPhone|iPad|iPod|Android/i.test(navigator.userAgent) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
@@ -7392,11 +7398,12 @@
 
       function angDiff(a, b) { let d = (b - a) % (Math.PI * 2); if (d > Math.PI) d -= Math.PI * 2; if (d < -Math.PI) d += Math.PI * 2; return d }
       function flyTo(v, dur, cb) {
-        S.tour = false; setTourBtn(); const tp = v.p.clone();
-        S.fly = { fp: S.pos.clone(), fy: S.yaw, fpi: S.pitch, tp, dy: angDiff(S.yaw, v.y), tpi: v.pi || 0, t: 0, dur: reduce ? .01 : (dur || Math.min(2.2, .8 + S.pos.distanceTo(tp) * .08)), cb }
+        S.tour = false; setTourBtn(); if (S.walk) { S.walk = null; if (marker) marker.visible = false; } const tp = v.p.clone();
+        const baseDur = dur || Math.min(2.2, .8 + S.pos.distanceTo(tp) * .08);
+        S.fly = { fp: S.pos.clone(), fy: S.yaw, fpi: S.pitch, tp, dy: angDiff(S.yaw, v.y), tpi: v.pi || 0, t: 0, dur: Math.max(0.4, baseDur), cb };
       }
       function flyP(v, dur) { return new Promise(r => flyTo(v, dur, r)) }
-      function setPose(v) { S.pos.copy(v.p); S.yaw = v.y; S.pitch = v.pi || 0; S.fly = null }
+      function setPose(v) { S.pos.copy(v.p); S.yaw = v.y; S.pitch = v.pi || 0; S.fly = null; S.walk = null; if (marker) marker.visible = false; }
       const V3 = (x, y, z) => new T.Vector3(x, y, z);
       const LOBBY_VIEW = { p: V3(0, 1.7, 9.6), y: 0, pi: .17 };
 
@@ -7583,7 +7590,7 @@
       };
 
       const KEYMAP = { KeyW: 'f', ArrowUp: 'f', KeyS: 'b', ArrowDown: 'b', KeyA: 'sl', KeyD: 'sr', ArrowLeft: 'tl', ArrowRight: 'tr' };
-      addEventListener('keydown', e => { if (e.target.closest && e.target.closest('input,select,textarea')) return; const k = KEYMAP[e.code]; if (k) { if (S.busy) return; S.keys[k] = true; S.fly = null; S.tour = false; setTourBtn(); e.preventDefault() } });
+      addEventListener('keydown', e => { if (e.target.closest && e.target.closest('input,select,textarea')) return; const k = KEYMAP[e.code]; if (k) { if (S.busy) return; S.keys[k] = true; S.fly = null; if (S.walk) { S.walk = null; if (marker) marker.visible = false; } S.tour = false; setTourBtn(); e.preventDefault() } });
       addEventListener('keyup', e => { const k = KEYMAP[e.code]; if (k) S.keys[k] = false });
       addEventListener('blur', () => { S.keys = {}; S.pad = {}; if (S.joy) { S.joy.x = 0; S.joy.y = 0; } });
 
@@ -7652,6 +7659,7 @@
           handleMove(e.clientX, e.clientY);
 
           S.fly = null;
+          if (S.walk) { S.walk = null; if (marker) marker.visible = false; }
           S.tour = false;
           setTourBtn();
         }
@@ -7730,7 +7738,10 @@
             const dx = e.clientX - S.drag.x, dy = e.clientY - S.drag.y;
             S.drag.x = e.clientX; S.drag.y = e.clientY;
             if (Math.abs(e.clientX - S.drag.sx) + Math.abs(e.clientY - S.drag.sy) > 5 && !S.busy) {
-              S.fly = null; S.tour = false; setTourBtn();
+              S.fly = null;
+              if (S.walk) { S.walk = null; if (marker) marker.visible = false; }
+              S.tour = false;
+              setTourBtn();
             }
             if (!S.busy) {
               S.yaw += dx * .0042;
@@ -7774,7 +7785,10 @@
         cv.addEventListener('wheel', e => {
           e.preventDefault();
           if (S.busy) return;
-          S.fly = null; S.tour = false; setTourBtn();
+          S.fly = null;
+          if (S.walk) { S.walk = null; if (marker) marker.visible = false; }
+          S.tour = false;
+          setTourBtn();
           const f = -Math.sign(e.deltaY) * .45;
           moveBy(-Math.sin(S.yaw) * f, -Math.cos(S.yaw) * f);
         }, { passive: false });
@@ -7792,7 +7806,49 @@
         } return null
       }
       function hoverFloor(cx, cy) { const now = performance.now(); if (now - lastHover < 70) return; lastHover = now; const p = S.busy ? null : floorAt(cx, cy); if (p) { marker.position.set(p.x, .02, p.z); marker.visible = true; renderer.domElement.classList.add('pointing') } else marker.visible = false }
-      function walkTo(p) { S.tour = false; setTourBtn(); marker.position.set(p.x, .02, p.z); marker.visible = true; const d = Math.hypot(p.x - S.pos.x, p.z - S.pos.z); flyTo({ p: V3(p.x, 1.65, p.z), y: S.yaw, pi: S.pitch }, Math.max(.5, Math.min(3, d / 3.4)), () => { marker.visible = false }) }
+      function walkTo(p) {
+        if (S.busy) return;
+        S.tour = false;
+        setTourBtn();
+        S.fly = null;
+
+        const startPos = S.pos.clone();
+        const endPos = V3(p.x, 1.65, p.z);
+        const dx = endPos.x - startPos.x;
+        const dz = endPos.z - startPos.z;
+        const dist = Math.hypot(dx, dz);
+
+        if (dist < 0.12) return;
+
+        // Vòng tròn điểm đến trên sàn
+        marker.position.set(p.x, .025, p.z);
+        marker.visible = true;
+        marker.scale.set(1, 1, 1);
+
+        // Tính góc hướng nhìn về điểm đến để xoay mượt mà khi bước đi
+        const targetYaw = Math.atan2(-dx, -dz);
+        const startYaw = S.yaw;
+        const dyaw = angDiff(startYaw, targetYaw);
+
+        // Tốc độ bước đi tự nhiên như người thật đang dạo bước bảo tàng (~2.45 m/s)
+        // Tuyệt đối không dùng duration = 0.01s (không bị biến 1 phát tới luôn)
+        const walkSpeed = 2.45;
+        const duration = Math.max(0.7, dist / walkSpeed);
+
+        S.walk = {
+          startPos,
+          endPos,
+          dist,
+          startYaw,
+          dyaw: Math.abs(dyaw) < Math.PI * 0.75 ? dyaw : 0,
+          duration,
+          elapsed: 0,
+          stepPhase: 0,
+          cb: () => {
+            if (marker) marker.visible = false;
+          }
+        };
+      }
 
       function activate(a) { if (!a) return; if (typeof a === 'function') { a(); return } if (a.chat) { if (typeof moHopThoaiTuongTac === 'function') moHopThoaiTuongTac(a.chat); return } if (a.upload) { moHopDongGopAnh(); return } if (a.qr) { openQR(); return } if (a.enter) { enterRoom(a.enter); return } if (a.lobby) { goLobby(); return } if (a.photo) { openLightbox(a.photo); return } if (a.sec === 'cm5') { openCinema(a.item || 0); return } openDrawer(a.sec, a.item) }
 
@@ -7864,7 +7920,55 @@
       function swing(obj, dt, speed) { const target = (obj.force || obj.near) ? 1 : 0; obj.open += Math.sign(target - obj.open) * Math.min(Math.abs(target - obj.open), dt * (reduce ? 10 : speed)); obj.leaves.forEach(L => L.pv.rotation.y = -L.k * obj.open * 1.45) }
       function loop(now) {
         const dt = Math.min(.05, (now - last) / 1000); last = now; clock += dt;
-        if (S.fly) { const f = S.fly; f.t += dt / f.dur; const k = f.t >= 1 ? 1 : (f.t < .5 ? 4 * f.t * f.t * f.t : 1 - Math.pow(-2 * f.t + 2, 3) / 2); S.pos.lerpVectors(f.fp, f.tp, k); S.yaw = f.fy + f.dy * k; S.pitch = f.fpi + (f.tpi - f.fpi) * k; if (f.t >= 1) { S.fly = null; f.cb && f.cb() } }
+        if (S.walk) {
+          const w = S.walk;
+          w.elapsed += dt;
+          const u = Math.min(1.0, w.elapsed / w.duration);
+
+          // Easing mượt mà: tăng tốc êm ở 15% đầu, đi đều đoạn giữa, hãm phanh êm ở 15% cuối
+          let k;
+          if (u < 0.15) {
+            const p = u / 0.15;
+            k = 0.15 * p * p;
+          } else if (u > 0.85) {
+            const p = (1.0 - u) / 0.15;
+            k = 1.0 - 0.15 * p * p;
+          } else {
+            k = u;
+          }
+
+          // Di chuyển vị trí X, Z đều đặn
+          S.pos.x = w.startPos.x + (w.endPos.x - w.startPos.x) * k;
+          S.pos.z = w.startPos.z + (w.endPos.z - w.startPos.z) * k;
+
+          // Hiệu ứng nhún bước chân (Head-Bobbing) tạo cảm giác như đang thật sự bước đi:
+          w.stepPhase += dt * 8.5;
+          const bobFactor = Math.sin(u * Math.PI); // Êm ở đầu và đích đến
+          const bobY = Math.sin(w.stepPhase) * 0.026 * bobFactor;
+          S.pos.y = 1.65 + bobY;
+
+          // Nhẹ nhàng xoay góc nhìn hướng theo hướng đi trong nửa đầu chặng đường
+          if (w.dyaw !== 0 && u < 0.5) {
+            const yawK = 0.5 - 0.5 * Math.cos((u / 0.5) * Math.PI);
+            S.yaw = w.startYaw + w.dyaw * yawK;
+          }
+
+          // Vòng tròn điểm đến nhấp nháy phát sáng nhẹ trên sàn
+          if (marker && marker.visible) {
+            const pulse = 1.0 + Math.sin(clock * 7) * 0.12;
+            marker.scale.set(pulse, 1, pulse);
+          }
+
+          // Khi đã bước đến nơi
+          if (u >= 1.0) {
+            S.pos.x = w.endPos.x;
+            S.pos.y = 1.65;
+            S.pos.z = w.endPos.z;
+            const cb = w.cb;
+            S.walk = null;
+            if (cb) cb();
+          }
+        } else if (S.fly) { const f = S.fly; f.t += dt / f.dur; const k = f.t >= 1 ? 1 : (f.t < .5 ? 4 * f.t * f.t * f.t : 1 - Math.pow(-2 * f.t + 2, 3) / 2); S.pos.lerpVectors(f.fp, f.tp, k); S.yaw = f.fy + f.dy * k; S.pitch = f.fpi + (f.tpi - f.fpi) * k; if (f.t >= 1) { S.fly = null; f.cb && f.cb() } }
         else if (!S.busy) {
           const K = S.keys, P = S.pad, J = S.joy || { x: 0, y: 0 };
           const sp = 3.2 * dt;
@@ -7873,6 +7977,7 @@
           const hasJoy = (Math.abs(J.y) > 0.05 || Math.abs(J.x) > 0.05);
 
           if (hasJoy) {
+            if (S.walk) { S.walk = null; if (marker) marker.visible = false; }
             // Cần gạt ảo analog phong cách game:
             // J.y: tiến/lùi theo lực gạt
             mx += fx * J.y;
@@ -7888,6 +7993,7 @@
             if (K.sr) { mx += rx; mz += rz; }
             if (K.tl || P.l) S.yaw += 1.6 * dt;
             if (K.tr || P.r) S.yaw -= 1.6 * dt;
+            if ((mx || mz) && S.walk) { S.walk = null; if (marker) marker.visible = false; }
           }
           if (mx || mz) moveBy(mx * sp, mz * sp);
           if (S.tour) {
