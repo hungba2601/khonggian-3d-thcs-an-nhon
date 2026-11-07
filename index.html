@@ -3119,6 +3119,347 @@
         pointer-events: auto;
       }
     }
+
+    /* ===== HỘP THOẠI ĐÓNG GÓP HÌNH ẢNH (PHÒNG HOẠT ĐỘNG) ===== */
+    .up-nen {
+      position: fixed;
+      inset: 0;
+      z-index: 9005;
+      background: rgba(18, 12, 8, 0.72);
+      -webkit-backdrop-filter: blur(4px);
+      backdrop-filter: blur(4px);
+      display: grid;
+      place-items: center;
+      padding: 16px;
+      animation: upFadeIn .25s ease-out;
+    }
+    @keyframes upFadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+    .up-hop {
+      background: #fffdf8;
+      color: #2b1b12;
+      width: min(640px, 100%);
+      max-height: calc(100vh - 32px);
+      overflow-y: auto;
+      border-radius: 18px;
+      box-shadow: 0 30px 90px rgba(0, 0, 0, 0.55), 0 0 0 1px rgba(226, 196, 138, 0.4);
+      font-family: var(--f-body, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif);
+      display: flex;
+      flex-direction: column;
+    }
+    .up-dau {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 16px 20px 14px;
+      background: linear-gradient(135deg, #173a7a, #0e234c);
+      color: #fff;
+      border-bottom: 3px solid #c9a227;
+      border-radius: 18px 18px 0 0;
+    }
+    .up-dau small {
+      display: block;
+      font-size: 11px;
+      letter-spacing: .12em;
+      text-transform: uppercase;
+      color: #f3d48a;
+      font-weight: 700;
+    }
+    .up-dau b {
+      font-family: var(--f-display, "Times New Roman", serif);
+      font-size: 20px;
+      font-weight: 700;
+      line-height: 1.25;
+      color: #ffffff;
+    }
+    .up-dau .up-x {
+      margin-left: auto;
+      background: none;
+      border: 0;
+      color: #ffffff;
+      font-size: 28px;
+      line-height: 1;
+      cursor: pointer;
+      padding: 0 6px;
+      opacity: .85;
+      transition: opacity .2s;
+    }
+    .up-dau .up-x:hover {
+      opacity: 1;
+    }
+    .up-than {
+      padding: 20px 22px 24px;
+    }
+    .up-thongbao {
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
+      padding: 12px 14px;
+      background: linear-gradient(90deg, #edf3fc, #fffdf8);
+      border: 1px solid #c7d8f3;
+      border-left: 4px solid #173a7a;
+      border-radius: 10px;
+      margin-bottom: 18px;
+    }
+    .up-icon {
+      font-size: 26px;
+      line-height: 1;
+      flex: none;
+    }
+    .up-txt b {
+      display: block;
+      font-size: 14.5px;
+      color: #173a7a;
+      margin-bottom: 3px;
+    }
+    .up-txt span {
+      display: block;
+      font-size: 13px;
+      color: #4a4035;
+      line-height: 1.5;
+    }
+    .up-nhom {
+      margin-bottom: 16px;
+    }
+    .up-nhom label {
+      display: block;
+      font-size: 13.5px;
+      font-weight: 600;
+      margin-bottom: 6px;
+      color: #42382c;
+    }
+    .up-sao {
+      color: #c0392b;
+      font-weight: 700;
+    }
+    .up-nhom input[type="text"],
+    .up-nhom textarea {
+      width: 100%;
+      box-sizing: border-box;
+      font: 14.5px var(--f-body, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif);
+      padding: 10px 14px;
+      border-radius: 10px;
+      border: 1.5px solid #d3c7b2;
+      background: #ffffff;
+      color: #2b1b12;
+      transition: border-color .2s, box-shadow .2s;
+    }
+    .up-nhom input[type="text"]:focus,
+    .up-nhom textarea:focus {
+      outline: none;
+      border-color: #173a7a;
+      box-shadow: 0 0 0 3px rgba(23, 58, 122, 0.15);
+    }
+    .up-dropzone {
+      border: 2px dashed #b9cbe7;
+      background: #f7faff;
+      border-radius: 12px;
+      padding: 18px 16px;
+      text-align: center;
+      cursor: pointer;
+      transition: all .2s ease;
+    }
+    .up-dropzone:hover, .up-dropzone.dragover {
+      border-color: #173a7a;
+      background: #eef5ff;
+    }
+    .up-drop-prompt svg {
+      margin: 0 auto;
+      display: block;
+    }
+    .up-btn-chon {
+      display: inline-block;
+      margin-top: 10px;
+      padding: 7px 18px;
+      background: #173a7a;
+      color: #fff;
+      font-size: 13px;
+      font-weight: 600;
+      border-radius: 8px;
+      border: 0;
+      cursor: pointer;
+      transition: background .2s;
+    }
+    .up-btn-chon:hover {
+      background: #0f2754;
+    }
+    .up-preview-box {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      text-align: left;
+      background: #ffffff;
+      padding: 8px;
+      border-radius: 10px;
+      border: 1px solid #d9e3f3;
+    }
+    .up-preview-box img {
+      width: 72px;
+      height: 72px;
+      object-fit: cover;
+      border-radius: 8px;
+      border: 1px solid #d3c7b2;
+      flex: none;
+    }
+    .up-preview-info {
+      flex: 1;
+      min-width: 0;
+    }
+    .up-preview-info b {
+      display: block;
+      font-size: 13.5px;
+      color: #173a7a;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .up-preview-info span {
+      display: block;
+      font-size: 12px;
+      color: #7a6a50;
+      margin-top: 2px;
+    }
+    .up-btn-doi {
+      margin-top: 6px;
+      background: none;
+      border: 1px solid #c7d8f3;
+      color: #173a7a;
+      font-size: 11.5px;
+      font-weight: 600;
+      padding: 3px 10px;
+      border-radius: 6px;
+      cursor: pointer;
+    }
+    .up-btn-doi:hover {
+      background: #eef4fc;
+    }
+    .up-loi {
+      padding: 10px 14px;
+      background: #fdeeee;
+      border-left: 4px solid #c0392b;
+      border-radius: 8px;
+      color: #a82315;
+      font-size: 13.5px;
+      margin-bottom: 14px;
+      line-height: 1.4;
+    }
+    .up-chan {
+      display: flex;
+      justify-content: flex-end;
+      gap: 10px;
+      margin-top: 18px;
+      flex-wrap: wrap;
+    }
+    .up-nut {
+      border: 0;
+      border-radius: 10px;
+      padding: 11px 20px;
+      font: 600 14px var(--f-body, sans-serif);
+      cursor: pointer;
+      transition: all .2s;
+    }
+    .up-nut.primary {
+      background: linear-gradient(135deg, #173a7a, #0f2754);
+      color: #fff;
+      box-shadow: 0 4px 12px rgba(23, 58, 122, 0.3);
+    }
+    .up-nut.primary:hover:not(:disabled) {
+      background: linear-gradient(135deg, #1f4a9b, #173a7a);
+      box-shadow: 0 6px 16px rgba(23, 58, 122, 0.4);
+    }
+    .up-nut.ghost {
+      background: transparent;
+      color: #5d4a30;
+      border: 1.5px solid #d3c7b2;
+    }
+    .up-nut.ghost:hover {
+      background: #f5ede0;
+    }
+    .up-nut:disabled {
+      opacity: .6;
+      cursor: not-allowed;
+    }
+    .up-dang-gui {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: 36px 16px;
+    }
+    .up-spinner {
+      width: 48px;
+      height: 48px;
+      border: 4px solid #e1eaf7;
+      border-top-color: #173a7a;
+      border-radius: 50%;
+      animation: upSpin .8s linear infinite;
+      margin-bottom: 16px;
+    }
+    @keyframes upSpin {
+      to { transform: rotate(360deg); }
+    }
+    .up-dang-gui b {
+      font-size: 18px;
+      color: #173a7a;
+      margin-bottom: 6px;
+    }
+    .up-dang-gui p {
+      font-size: 13.5px;
+      color: #6b5a4a;
+      max-width: 400px;
+      margin: 0;
+      line-height: 1.5;
+    }
+    .up-thanh-cong {
+      text-align: center;
+      padding: 24px 16px 12px;
+    }
+    .up-tick {
+      width: 64px;
+      height: 64px;
+      border-radius: 50%;
+      background: #27ae60;
+      color: #fff;
+      font-size: 38px;
+      font-weight: 700;
+      display: grid;
+      place-items: center;
+      margin: 0 auto 16px;
+      box-shadow: 0 8px 24px rgba(39, 174, 96, 0.35);
+    }
+    .up-thanh-cong b {
+      font-size: 21px;
+      color: #27ae60;
+      display: block;
+      margin-bottom: 6px;
+    }
+    .up-thanh-cong p {
+      font-size: 14.5px;
+      color: #4a4035;
+      line-height: 1.55;
+      margin: 0 0 16px;
+    }
+    .up-link-box {
+      background: #f7faff;
+      border: 1px solid #c7d8f3;
+      border-radius: 10px;
+      padding: 12px 14px;
+      font-size: 13px;
+      color: #4a4035;
+      margin: 0 auto;
+      max-width: 440px;
+    }
+    .up-link-box a {
+      color: #173a7a;
+      font-weight: 700;
+      text-decoration: underline;
+      display: block;
+      margin-top: 4px;
+      word-break: break-all;
+    }
   </style>
 
 </head>
@@ -3858,12 +4199,23 @@
           const priCol = isBacho ? '#8a1c22' : '#173a7a';
           return `
             <div class="card" style="border: 2px dashed #b3781f; background: #fffcf4; padding: 22px 18px; text-align: center; border-radius: 12px; margin-top: 10px;">
-              <div style="font-size: 46px; margin-bottom: 8px;">🏗️</div>
+              <div style="font-size: 46px; margin-bottom: 8px;">${isBacho ? '🏗️' : '📸'}</div>
               <h3 style="color: ${priCol}; font-family: var(--f-display); font-size: 22px; margin: 0 0 10px;">${esc(s.title).toUpperCase()}</h3>
               <div style="display: inline-block; background: ${priCol}; color: #fff; font-size: 12px; font-weight: 700; padding: 4px 14px; border-radius: 14px; margin-bottom: 14px; letter-spacing: 0.5px;">★ KHÔNG GIAN ĐANG XÂY DỰNG ★</div>
               <p style="font-size: 14.5px; line-height: 1.6; color: #444; margin: 0 0 16px; text-align: justify;">
                 ${esc(s.lead)}
               </p>
+              ${s.id === 'cm9' ? `
+              <div style="margin: 14px 0; padding: 16px 14px; background: linear-gradient(135deg, #edf4fc, #fffdf8); border: 1.5px solid #173a7a; border-radius: 10px; text-align: center;">
+                <div style="font-weight: 700; color: #173a7a; font-size: 15px; margin-bottom: 6px;">📸 KÊU GỌI ĐÓNG GÓP HÌNH ẢNH HOẠT ĐỘNG</div>
+                <div style="font-size: 13.5px; color: #444; line-height: 1.55; margin-bottom: 12px; text-align: justify;">
+                  Quý thầy cô, các thế hệ học sinh, quý phụ huynh và khách tham quan có thể đóng góp tư liệu, hình ảnh các hoạt động của trường THCS An Nhơn để nhà trường xây dựng và hoàn thiện không gian trưng bày.
+                </div>
+                <button type="button" class="btn" style="background: #173a7a; color: #fff; font-weight: 700; padding: 10px 18px; border-radius: 8px; border: 0; cursor: pointer; display: inline-flex; align-items: center; gap: 8px;" onclick="moHopDongGopAnh()">
+                  📤 Nhấp vào đây để Đóng góp hình ảnh
+                </button>
+              </div>
+              ` : ''}
               <div style="padding: 12px 14px; background: rgba(179,120,31,0.12); border: 1px solid rgba(179,120,31,0.3); border-radius: 8px; font-size: 13px; color: #7a5010; line-height: 1.5; text-align: left;">
                 📌 <b>Thông báo từ Ban biên tập:</b> Dữ liệu số, hình ảnh tư liệu và hiện vật của phòng này đang được bộ phận chuyên môn của Trường THCS An Nhơn thu thập, số hóa và biên tập hoàn thiện. Kính mời quý thầy cô, quý phụ huynh và các bạn học sinh đón xem trong thời gian tới!
               </div>
@@ -4907,6 +5259,52 @@
         });
       }
 
+      function activityRoomEaselTex(title) {
+        return canvasTex(800, 600, (g, w, h) => {
+          g.fillStyle = '#fffdf8'; g.fillRect(0, 0, w, h);
+          g.strokeStyle = '#b3842e'; g.lineWidth = 8; g.strokeRect(16, 16, w - 32, h - 32);
+          g.strokeStyle = '#e8d2a2'; g.lineWidth = 3; g.strokeRect(26, 26, w - 52, h - 52);
+          
+          g.textAlign = 'center';
+          g.fillStyle = '#173a7a'; g.font = `700 60px ${FB}`;
+          g.fillText('📸', w / 2, 105);
+          
+          g.fillStyle = '#173a7a'; g.font = `800 36px ${FD}`;
+          g.fillText(title, w / 2, 168);
+          
+          g.fillStyle = '#b3842e'; g.fillRect(w / 2 - 180, 192, 360, 3);
+          
+          const bW = 460, bH = 46, bX = (w - bW) / 2, bY = 212;
+          g.fillStyle = '#173a7a'; g.fillRect(bX, bY, bW, bH);
+          g.fillStyle = '#fceecb'; g.font = `800 21px ${FB}`;
+          g.fillText('★ KHÔNG GIAN ĐANG XÂY DỰNG ★', w / 2, bY + 31);
+          
+          g.fillStyle = '#2b2b2b'; g.font = `500 22px ${FB}`;
+          g.fillText('Kính mời quý khách tham quan, thầy cô và cựu học sinh', w / 2, 312);
+          g.fillText('đóng góp tư liệu, hình ảnh các hoạt động của trường', w / 2, 350);
+          g.fillText('để cùng chung tay hoàn thiện không gian trưng bày!', w / 2, 388);
+          
+          // Nút bấm viền vàng kêu gọi đóng góp
+          const btnW = 570, btnH = 64, btnX = (w - btnW) / 2, btnY = 445;
+          g.fillStyle = '#9a1c22';
+          if (g.roundRect) {
+            g.beginPath(); g.roundRect(btnX, btnY, btnW, btnH, 12); g.fill();
+            g.strokeStyle = '#f3d48a'; g.lineWidth = 4;
+            g.beginPath(); g.roundRect(btnX, btnY, btnW, btnH, 12); g.stroke();
+          } else {
+            g.fillRect(btnX, btnY, btnW, btnH);
+            g.strokeStyle = '#f3d48a'; g.lineWidth = 4;
+            g.strokeRect(btnX, btnY, btnW, btnH);
+          }
+          
+          g.fillStyle = '#ffffff'; g.font = `800 22px ${FB}`;
+          g.fillText('👉 NHẤP VÀO ĐÂY ĐỂ ĐÓNG GÓP HÌNH ẢNH 📸', w / 2, btnY + 40);
+          
+          g.fillStyle = '#8a6a3a'; g.font = `italic 500 17px ${FB}`;
+          g.fillText('(Hệ thống sẽ lưu ảnh vào Google Drive và ghi sổ lưu niệm)', w / 2, 545);
+        });
+      }
+
       function currentPrincipalFrameTex(p) {
         const canvas = document.createElement('canvas');
         canvas.width = 800;
@@ -5912,13 +6310,13 @@
           ];
           framed(B, 3.2, 3.8, ub(4.5), 2.5, panelMat(underConstructionPanelTex('ĐOÀN – ĐỘI & NGOẠI KHÓA', itemsB, '#173a7a'), .35), { sec: s.id }, 'Hoạt động Đoàn – Đội & Ngoại khóa');
 
-          // 4. Bục thông báo trung tâm
+          // 4. Bục thông báo & đóng góp hình ảnh trung tâm
           const ped = box(1.6, .85, 1.1, DARKWOOD); ped.position.set(0, .425, -5.5); inner.add(ped);
           const pedTrim = box(1.66, .05, 1.16, GOLD); pedTrim.position.set(0, .85, -5.5); inner.add(pedTrim);
-          const stand = plane(1.3, .98, panelMat(underConstructionEaselTex(s.title, '#173a7a'), .4));
+          const stand = plane(1.3, .98, panelMat(activityRoomEaselTex(s.title), .4));
           stand.position.set(0, 1.38, -5.5); stand.rotation.x = -.25; inner.add(stand);
-          pick(stand, { sec: s.id }, s.title + ' · Đang xây dựng');
-          pick(ped, { sec: s.id }, s.title + ' · Đang xây dựng');
+          pick(stand, { sec: s.id, upload: true }, 'Đóng góp tư liệu hình ảnh hoạt động nhà trường (Nhấp để tải ảnh lên)');
+          pick(ped, { sec: s.id, upload: true }, 'Đóng góp tư liệu hình ảnh hoạt động nhà trường (Nhấp để tải ảnh lên)');
         }
       };
 
@@ -6572,7 +6970,7 @@
       function hoverFloor(cx, cy) { const now = performance.now(); if (now - lastHover < 70) return; lastHover = now; const p = S.busy ? null : floorAt(cx, cy); if (p) { marker.position.set(p.x, .02, p.z); marker.visible = true; renderer.domElement.classList.add('pointing') } else marker.visible = false }
       function walkTo(p) { S.tour = false; setTourBtn(); marker.position.set(p.x, .02, p.z); marker.visible = true; const d = Math.hypot(p.x - S.pos.x, p.z - S.pos.z); flyTo({ p: V3(p.x, 1.65, p.z), y: S.yaw, pi: S.pitch }, Math.max(.5, Math.min(3, d / 3.4)), () => { marker.visible = false }) }
 
-      function activate(a) { if (!a) return; if (a.qr) { openQR(); return } if (a.enter) { enterRoom(a.enter); return } if (a.lobby) { goLobby(); return } if (a.photo) { openLightbox(a.photo); return } if (a.sec === 'cm5') { openCinema(a.item || 0); return } openDrawer(a.sec, a.item) }
+      function activate(a) { if (!a) return; if (a.upload) { moHopDongGopAnh(); return } if (a.qr) { openQR(); return } if (a.enter) { enterRoom(a.enter); return } if (a.lobby) { goLobby(); return } if (a.photo) { openLightbox(a.photo); return } if (a.sec === 'cm5') { openCinema(a.item || 0); return } openDrawer(a.sec, a.item) }
 
       /* Ảnh xem thử */
       document.addEventListener('change', e => {
@@ -7438,7 +7836,11 @@
           };
         });
         const activateTruoc = activate;
-        activate = function (a) { if (a && a.quiz) { moDoVui(a.quiz); return; } return activateTruoc(a); };
+        activate = function (a) {
+          if (a && a.upload) { moHopDongGopAnh(); return; }
+          if (a && a.quiz) { moDoVui(a.quiz); return; }
+          return activateTruoc(a);
+        };
 
         /* ----- phòng Video: hiện vật mở phòng chiếu chứ không mở thẻ nội dung, nên thêm nút Đố vui vào thanh phòng chiếu ----- */
         {
@@ -7455,6 +7857,305 @@
 
         window.BaoTang3D_moDoVui = moDoVui;
         window.BaoTang3D_moHoChieu = moHoChieu;
+
+        /* ===== HỘP THOẠI ĐÓNG GÓP HÌNH ẢNH TƯ LIỆU ===== */
+        let hopDongGop = null;
+        let selectedImageDongGop = null;
+
+        function dongHopDongGopAnh() {
+          if (hopDongGop) {
+            hopDongGop.remove();
+            hopDongGop = null;
+            selectedImageDongGop = null;
+          }
+        }
+
+        function moHopDongGopAnh() {
+          dongHopDongGopAnh();
+
+          hopDongGop = document.createElement('div');
+          hopDongGop.className = 'up-nen';
+          hopDongGop.setAttribute('role', 'dialog');
+          hopDongGop.setAttribute('aria-modal', 'true');
+
+          hopDongGop.innerHTML = `
+            <div class="up-hop">
+              <div class="up-dau">
+                <div>
+                  <small>PHÒNG CÁC HOẠT ĐỘNG TRƯỜNG · THCS AN NHƠN</small>
+                  <b>📸 Đóng góp tư liệu hình ảnh</b>
+                </div>
+                <button class="up-x" id="upBtnCloseX" aria-label="Đóng">×</button>
+              </div>
+              <div class="up-than">
+                <div class="up-thongbao">
+                  <div class="up-icon">🏫</div>
+                  <div class="up-txt">
+                    <b>Chung tay xây dựng không gian truyền thống nhà trường</b>
+                    <span>Nhà trường trân trọng kính mời quý thầy cô, các thế hệ học sinh, phụ huynh và khách tham quan đóng góp hình ảnh, tư liệu về các hoạt động dạy – học, phong trào Đoàn – Đội, văn nghệ, thể thao và kỷ niệm trường THCS An Nhơn để hoàn thiện không gian trưng bày.</span>
+                  </div>
+                </div>
+
+                <form id="upForm" class="up-form" onsubmit="return false;">
+                  <div class="up-nhom">
+                    <label for="upHoTen">Họ và tên người đóng góp <span class="up-sao">*</span></label>
+                    <input type="text" id="upHoTen" maxlength="80" placeholder="Ví dụ: Thầy/Cô Nguyễn Văn A hoặc Cựu học sinh khóa 2018..." required autocomplete="off">
+                  </div>
+
+                  <div class="up-nhom">
+                    <label>Chọn hình ảnh tư liệu <span class="up-sao">*</span></label>
+                    <div class="up-dropzone" id="upDropzone">
+                      <input type="file" id="upFileInput" accept="image/*" style="display:none">
+                      <div id="upDropPrompt" class="up-drop-prompt">
+                        <svg width="42" height="42" viewBox="0 0 24 24" fill="none" stroke="#173a7a" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                          <rect x="3" y="3" width="18" height="18" rx="2" ry="2"/>
+                          <circle cx="8.5" cy="8.5" r="1.5"/>
+                          <polyline points="21 15 16 10 5 21"/>
+                        </svg>
+                        <div style="font-weight:700;color:#173a7a;font-size:14.5px;margin-top:6px">Nhấp vào đây hoặc kéo thả ảnh vào khu vực này</div>
+                        <div style="font-size:12px;color:#7a6a50;margin-top:2px">Hỗ trợ JPG, PNG, WEBP (từ điện thoại hoặc máy tính)</div>
+                        <button type="button" class="up-btn-chon" id="upBtnChonAnh">Chọn tệp ảnh</button>
+                      </div>
+                      <div id="upPreviewBox" class="up-preview-box" style="display:none">
+                        <img id="upImgPreview" src="" alt="Xem trước ảnh">
+                        <div class="up-preview-info">
+                          <b id="upTenTep">ten-anh.jpg</b>
+                          <span id="upKichThuoc">0 KB</span>
+                          <button type="button" id="upBtnDoiAnh" class="up-btn-doi">Đổi ảnh khác</button>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div class="up-nhom">
+                    <label for="upNoiDung">Nội dung / Chú thích của bức ảnh <span class="up-sao">*</span></label>
+                    <textarea id="upNoiDung" rows="3" maxlength="1000" placeholder="Mô tả bức ảnh: thời gian chụp (năm nào), hoạt động gì (ví dụ: Hội thi Dạy tốt – Học tốt, Lễ Khai giảng, Hội diễn văn nghệ 20/11, Hội khỏe Phù Đổng...), nhân vật trong ảnh..." required></textarea>
+                  </div>
+
+                  <div id="upThongBaoLoi" class="up-loi" style="display:none"></div>
+
+                  <div class="up-chan">
+                    <button type="button" class="up-nut ghost" id="upHuyBtn">Hủy bỏ</button>
+                    <button type="button" class="up-nut primary" id="upSubmitBtn">📤 Gửi hình ảnh đóng góp</button>
+                  </div>
+                </form>
+
+                <!-- Màn hình trạng thái đang gửi -->
+                <div id="upDangGui" class="up-dang-gui" style="display:none">
+                  <div class="up-spinner"></div>
+                  <b>Đang tải ảnh lên Google Drive...</b>
+                  <p>Hệ thống đang tải tệp ảnh lên thư mục lưu trữ của trường và ghi nhận thông tin vào bảng tính. Vui lòng đợi trong giây lát.</p>
+                </div>
+
+                <!-- Màn hình thành công -->
+                <div id="upThanhCong" class="up-thanh-cong" style="display:none">
+                  <div class="up-tick">✓</div>
+                  <b>Gửi đóng góp thành công!</b>
+                  <p>Trường THCS An Nhơn trân trọng cảm ơn sự đóng góp quý báu của bạn! Hình ảnh và thông tin đã được lưu trữ an toàn vào Google Drive của nhà trường.</p>
+                  <div class="up-link-box" id="upKetQuaBox" style="display:none">
+                    <span>Liên kết ảnh trên Google Drive:</span>
+                    <a id="upLinkDrive" href="#" target="_blank" rel="noopener">Xem ảnh trên Google Drive ↗</a>
+                  </div>
+                  <div class="up-chan" style="justify-content:center;margin-top:18px">
+                    <button type="button" class="up-nut ghost" id="upTiepTucBtn">Gửi thêm ảnh khác</button>
+                    <button type="button" class="up-nut primary" id="upHoanTatBtn">Hoàn tất & Đóng</button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          `;
+
+          document.body.appendChild(hopDongGop);
+
+          const form = hopDongGop.querySelector('#upForm');
+          const inpHoTen = hopDongGop.querySelector('#upHoTen');
+          const inpNoiDung = hopDongGop.querySelector('#upNoiDung');
+          const fileInput = hopDongGop.querySelector('#upFileInput');
+          const dropzone = hopDongGop.querySelector('#upDropzone');
+          const dropPrompt = hopDongGop.querySelector('#upDropPrompt');
+          const previewBox = hopDongGop.querySelector('#upPreviewBox');
+          const imgPreview = hopDongGop.querySelector('#upImgPreview');
+          const txtTenTep = hopDongGop.querySelector('#upTenTep');
+          const txtKichThuoc = hopDongGop.querySelector('#upKichThuoc');
+          const btnDoiAnh = hopDongGop.querySelector('#upBtnDoiAnh');
+          const btnChonAnh = hopDongGop.querySelector('#upBtnChonAnh');
+          const btnSubmit = hopDongGop.querySelector('#upSubmitBtn');
+          const btnHuy = hopDongGop.querySelector('#upHuyBtn');
+          const btnCloseX = hopDongGop.querySelector('#upBtnCloseX');
+          const boxLoi = hopDongGop.querySelector('#upThongBaoLoi');
+          const manDangGui = hopDongGop.querySelector('#upDangGui');
+          const manThanhCong = hopDongGop.querySelector('#upThanhCong');
+          const ketQuaBox = hopDongGop.querySelector('#upKetQuaBox');
+          const linkDrive = hopDongGop.querySelector('#upLinkDrive');
+          const btnTiepTuc = hopDongGop.querySelector('#upTiepTucBtn');
+          const btnHoanTat = hopDongGop.querySelector('#upHoanTatBtn');
+
+          function baoLoi(msg) {
+            boxLoi.textContent = msg;
+            boxLoi.style.display = 'block';
+            boxLoi.scrollIntoView({ block: 'nearest', behavior: 'smooth' });
+          }
+
+          function formatDungLuong(bytes) {
+            if (bytes < 1024) return bytes + ' B';
+            if (bytes < 1024 * 1024) return (bytes / 1024).toFixed(1) + ' KB';
+            return (bytes / (1024 * 1024)).toFixed(1) + ' MB';
+          }
+
+          function xuLyFileAnh(file) {
+            if (!file) return;
+            if (!file.type || !file.type.startsWith('image/')) {
+              baoLoi('Vui lòng chọn tệp định dạng hình ảnh (JPG, PNG, WEBP, GIF...).');
+              return;
+            }
+            boxLoi.style.display = 'none';
+
+            const rd = new FileReader();
+            rd.onload = function (e) {
+              const tempImg = new Image();
+              tempImg.onload = function () {
+                // Tối ưu hóa kích thước ảnh tối đa 1600px để tải lên nhanh và không bị nghẽn mạng
+                const maxDim = 1600;
+                let w = tempImg.width, h = tempImg.height;
+                if (w > maxDim || h > maxDim) {
+                  if (w > h) { h = Math.round(h * maxDim / w); w = maxDim; }
+                  else { w = Math.round(w * maxDim / h); h = maxDim; }
+                }
+                const canvas = document.createElement('canvas');
+                canvas.width = w; canvas.height = h;
+                const ctx = canvas.getContext('2d');
+                ctx.drawImage(tempImg, 0, 0, w, h);
+                const mime = (file.type === 'image/png') ? 'image/png' : 'image/jpeg';
+                const base64Out = canvas.toDataURL(mime, 0.88);
+
+                selectedImageDongGop = {
+                  name: file.name,
+                  type: mime,
+                  size: Math.round(base64Out.length * 0.75),
+                  base64: base64Out
+                };
+
+                imgPreview.src = base64Out;
+                txtTenTep.textContent = file.name;
+                txtKichThuoc.textContent = formatDungLuong(selectedImageDongGop.size);
+                dropPrompt.style.display = 'none';
+                previewBox.style.display = 'flex';
+              };
+              tempImg.src = e.target.result;
+            };
+            rd.readAsDataURL(file);
+          }
+
+          // Chọn file
+          btnChonAnh.onclick = (e) => { e.stopPropagation(); fileInput.click(); };
+          btnDoiAnh.onclick = (e) => { e.stopPropagation(); fileInput.click(); };
+          dropzone.onclick = () => { if (!selectedImageDongGop) fileInput.click(); };
+          fileInput.onchange = () => { if (fileInput.files && fileInput.files[0]) xuLyFileAnh(fileInput.files[0]); };
+
+          // Drag & drop
+          dropzone.ondragover = (e) => { e.preventDefault(); dropzone.classList.add('dragover'); };
+          dropzone.ondragleave = () => { dropzone.classList.remove('dragover'); };
+          dropzone.ondrop = (e) => {
+            e.preventDefault();
+            dropzone.classList.remove('dragover');
+            if (e.dataTransfer && e.dataTransfer.files && e.dataTransfer.files[0]) {
+              xuLyFileAnh(e.dataTransfer.files[0]);
+            }
+          };
+
+          // Đóng hộp thoại
+          btnCloseX.onclick = dongHopDongGopAnh;
+          btnHuy.onclick = dongHopDongGopAnh;
+          btnHoanTat.onclick = dongHopDongGopAnh;
+          hopDongGop.onclick = (e) => { if (e.target === hopDongGop) dongHopDongGopAnh(); };
+
+          btnTiepTuc.onclick = () => {
+            selectedImageDongGop = null;
+            fileInput.value = '';
+            inpNoiDung.value = '';
+            dropPrompt.style.display = 'block';
+            previewBox.style.display = 'none';
+            boxLoi.style.display = 'none';
+            manThanhCong.style.display = 'none';
+            form.style.display = 'block';
+          };
+
+          // Gửi dữ liệu
+          btnSubmit.onclick = async () => {
+            boxLoi.style.display = 'none';
+            const hoTen = inpHoTen.value.trim();
+            const noiDung = inpNoiDung.value.trim();
+
+            if (!hoTen) {
+              baoLoi('Vui lòng nhập Họ và tên của bạn.');
+              inpHoTen.focus();
+              return;
+            }
+            if (!selectedImageDongGop || !selectedImageDongGop.base64) {
+              baoLoi('Vui lòng chọn hình ảnh cần đóng góp.');
+              return;
+            }
+            if (!noiDung) {
+              baoLoi('Vui lòng nhập nội dung hoặc chú thích về bức ảnh.');
+              inpNoiDung.focus();
+              return;
+            }
+
+            form.style.display = 'none';
+            manDangGui.style.display = 'flex';
+
+            const urlGAS = (window.CAU_HINH && window.CAU_HINH.DIA_CHI_DU_LIEU)
+              || (typeof CAU_HINH !== 'undefined' && CAU_HINH.DIA_CHI_DU_LIEU)
+              || 'https://script.google.com/macros/s/AKfycbw_Ug0A-syGCEmM5tSXnppj6h90-y64cKx0LDoMKTx41L32Js17D24NkoRfQjTz-ZUy/exec';
+
+            const payload = {
+              api: 'donggop',
+              hoTen: hoTen,
+              noiDung: noiDung,
+              tenTep: selectedImageDongGop.name,
+              mimeType: selectedImageDongGop.type,
+              base64: selectedImageDongGop.base64
+            };
+
+            try {
+              const resp = await fetch(urlGAS, {
+                method: 'POST',
+                body: JSON.stringify(payload)
+              });
+              const resData = await resp.json();
+
+              if (resData && resData.success) {
+                manDangGui.style.display = 'none';
+                manThanhCong.style.display = 'block';
+                if (resData.fileUrl) {
+                  linkDrive.href = resData.fileUrl;
+                  ketQuaBox.style.display = 'block';
+                } else {
+                  ketQuaBox.style.display = 'none';
+                }
+              } else {
+                throw new Error(resData && resData.error ? resData.error : 'Máy chủ không phản hồi thành công');
+              }
+            } catch (err) {
+              console.error('Lỗi khi tải ảnh lên:', err);
+              manDangGui.style.display = 'none';
+              form.style.display = 'block';
+              baoLoi('Lỗi khi gửi tư liệu: ' + (err.message || 'Không thể kết nối máy chủ Google Apps Script. Vui lòng kiểm tra lại kết nối mạng hoặc thử lại!'));
+            }
+          };
+
+          // Phím ESC để đóng
+          const handleEsc = (e) => {
+            if (e.key === 'Escape') {
+              dongHopDongGopAnh();
+              document.removeEventListener('keydown', handleEsc);
+            }
+          };
+          document.addEventListener('keydown', handleEsc);
+
+          setTimeout(() => inpHoTen && inpHoTen.focus(), 100);
+        }
+        window.moHopDongGopAnh = moHopDongGopAnh;
       })();
       /* ---------- Ban thực hiện: biển đồng trong đại sảnh + mục trong hộp Hướng dẫn ---------- */
       (function () {
@@ -7512,6 +8213,7 @@
         if (document.fonts && document.fonts.ready) document.fonts.ready.then(cho); else cho();
         const activateBTH = activate;
         activate = function (a) {
+          if (a && a.upload) { moHopDongGopAnh(); return; }
           if (a && a.banTH) { const m = document.getElementById('helpModal'); if (m) { m.hidden = false; const b = document.getElementById('banThucHien'); if (b) setTimeout(() => b.scrollIntoView({ block: 'center' }), 50); } return; }
           return activateBTH(a);
         };
@@ -7538,6 +8240,7 @@
         HIEN_NUT: false,              // hiện nút "Tư liệu bổ sung"
         VI_TRI_NUT: 'duoi-trai'      // 'duoi-trai' | 'duoi-phai' | 'tren-trai'
       };
+      window.CAU_HINH = CAU_HINH;
       var KHOA_LUU = 'bt3d_tulieu_v1';
 
       function luuTam(d) { try { localStorage.setItem(KHOA_LUU, JSON.stringify(d)); } catch (e) { } }

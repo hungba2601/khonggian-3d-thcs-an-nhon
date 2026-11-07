@@ -1,12 +1,23 @@
 // ====================================================================
 // BACKEND GOOGLE APPS SCRIPT CHO BẢO TÀNG 3D - THCS AN NHƠN
-// GHI NHẬN & ĐẾM SỐ LƯỢT TRUY CẬP VÀO Ô B3 SHEET "CauHinh"
+// 1. GHI NHẬN & ĐẾM SỐ LƯỢT TRUY CẬP VÀO Ô B3 SHEET "CauHinh"
+// 2. NHẬN & LƯU ẢNH ĐÓNG GÓP TƯ LIỆU VÀO GOOGLE DRIVE VÀ SHEET "piture"
+// 3. ĐỌC DỮ LIỆU HIỆN VẬT & CÂU HỎI
 // ====================================================================
 
 var SHEET_CAU_HINH = "CauHinh";
 var SHEET_NHAT_KY = "NhatKyThamQuan";
 var SHEET_HIEN_VAT = "HienVat";
 var SHEET_CAU_HOI = "CauHoi";
+var SHEET_PICTURE = "piture"; // Tên sheet đóng góp ảnh theo đúng yêu cầu
+
+// Tên thư mục trên Google Drive để chứa ảnh khách tham quan đóng góp
+var FOLDER_NAME = "TU_LIEU_DONG_GOP_THCS_AN_NHON";
+
+// Nếu bạn muốn lưu vào 1 thư mục cụ thể đã có sẵn trên Google Drive,
+// hãy dán ID thư mục vào đây (ví dụ: "1AbCdEfGhIjKlMnOpQrStUvWxYz").
+// Nếu để trống "", hệ thống sẽ tự động tìm hoặc tạo thư mục FOLDER_NAME trên Google Drive của bạn.
+var FOLDER_ID = "";
 
 /**
  * Xử lý yêu cầu HTTP GET từ website Bảo tàng 3D
@@ -32,12 +43,183 @@ function doGet(e) {
     return layDuLieuHienVat(ss);
   }
 
+  // 4. API TỰ KHỞI TẠO SHEET "piture" VÀ THƯ MỤC DRIVE ĐỂ KIỂM TRA
+  if (api === "khoitao" || api === "init") {
+    return khoiTaoSheetPiture(ss);
+  }
+
   // Mặc định: chỉ xem, không tăng
   return xemSoLuotHienTai(ss);
 }
 
+/**
+ * Xử lý yêu cầu HTTP POST từ website Bảo tàng 3D (Đóng góp hình ảnh tư liệu)
+ */
 function doPost(e) {
-  return doGet(e);
+  try {
+    var data = {};
+    if (e && e.postData && e.postData.contents) {
+      try {
+        data = JSON.parse(e.postData.contents);
+      } catch (errJson) {
+        data = e.parameter || {};
+      }
+    } else if (e && e.parameter) {
+      data = e.parameter;
+    }
+
+    var api = data.api || (e && e.parameter ? e.parameter.api : "") || "";
+
+    // API ĐÓNG GÓP HÌNH ẢNH: LƯU VÀO GOOGLE DRIVE & GHI VÀO SHEET "piture"
+    if (api === "donggop" || data.base64) {
+      return xuLyDongGopHinhAnh(data);
+    }
+
+    // Nếu không phải đóng góp thì xử lý như doGet
+    return doGet(e);
+  } catch (err) {
+    return taoPhanHoiJson({
+      success: false,
+      error: "Lỗi máy chủ khi xử lý POST: " + err.toString()
+    });
+  }
+}
+
+/**
+ * Nhận ảnh từ website, lưu vào Google Drive và ghi thông tin vào sheet "piture"
+ */
+function xuLyDongGopHinhAnh(data) {
+  var ss = SpreadsheetApp.getActiveSpreadsheet();
+
+  // 1. Kiểm tra hoặc tự tạo sheet "piture" nếu chưa có
+  var sheet = ss.getSheetByName(SHEET_PICTURE);
+  if (!sheet) {
+    sheet = ss.insertSheet(SHEET_PICTURE);
+    sheet.appendRow(["Thời gian", "Họ và tên", "Link ảnh (Google Drive)", "Nội dung ảnh", "Tên tệp gốc"]);
+    var headerRange = sheet.getRange(1, 1, 1, 5);
+    headerRange.setFontWeight("bold");
+    headerRange.setBackground("#173a7a");
+    headerRange.setFontColor("#ffffff");
+    sheet.setFrozenRows(1);
+    sheet.setColumnWidth(1, 160); // Thời gian
+    sheet.setColumnWidth(2, 200); // Họ và tên
+    sheet.setColumnWidth(3, 350); // Link ảnh trong thư mục Driver
+    sheet.setColumnWidth(4, 400); // Nội dung ảnh
+    sheet.setColumnWidth(5, 180); // Tên tệp gốc
+  }
+
+  // 2. Lấy hoặc tạo thư mục trên Google Drive
+  var folder;
+  if (FOLDER_ID && FOLDER_ID.trim() !== "") {
+    try {
+      folder = DriveApp.getFolderById(FOLDER_ID.trim());
+    } catch (eFolder) {
+      console.warn("Không tìm thấy FOLDER_ID, chuyển sang dùng FOLDER_NAME: " + eFolder.message);
+      folder = layHoacTaoThuMuc(FOLDER_NAME);
+    }
+  } else {
+    folder = layHoacTaoThuMuc(FOLDER_NAME);
+  }
+
+  // 3. Chuẩn bị thông tin người đóng góp và ảnh
+  var hoTen = (data.hoTen || "Khách tham quan").toString().trim();
+  var noiDung = (data.noiDung || "").toString().trim();
+  var tenTep = (data.tenTep || "anh_dong_gop.jpg").toString().trim();
+  var now = new Date();
+  var thoiGianChu = Utilities.formatDate(now, "GMT+7", "dd/MM/yyyy HH:mm:ss");
+  var prefix = Utilities.formatDate(now, "GMT+7", "yyyyMMdd_HHmmss");
+
+  var fileUrl = "";
+  var fileId = "";
+
+  // 4. Giải mã base64 và lưu tệp vào Google Drive
+  if (data.base64) {
+    var rawBase64 = String(data.base64);
+    var commaPos = rawBase64.indexOf(",");
+    if (commaPos >= 0) {
+      rawBase64 = rawBase64.substring(commaPos + 1);
+    }
+
+    var bytes = Utilities.base64Decode(rawBase64);
+    var mimeType = data.mimeType || "image/jpeg";
+    var tenFileDrive = prefix + "_" + tenTep.replace(/[^a-zA-Z0-9._-]/g, "_");
+    var blob = Utilities.newBlob(bytes, mimeType, tenFileDrive);
+    var file = folder.createFile(blob);
+
+    // Cấp quyền xem cho bất kỳ ai có link để mở xem ảnh trực tiếp từ link trong sheet
+    try {
+      file.setSharing(DriveApp.Access.ANYONE_WITH_LINK, DriveApp.Permission.VIEW);
+    } catch (eShare) {
+      console.warn("Lỗi phân quyền Drive: " + eShare.message);
+    }
+
+    fileUrl = file.getUrl();
+    fileId = file.getId();
+  } else {
+    return taoPhanHoiJson({
+      success: false,
+      error: "Không nhận được dữ liệu hình ảnh (base64 rỗng)."
+    });
+  }
+
+  // 5. Ghi dòng dữ liệu mới vào sheet "piture"
+  // [Thời gian, Họ và tên, Link ảnh (Google Drive), Nội dung ảnh, Tên tệp gốc]
+  sheet.appendRow([
+    thoiGianChu,
+    hoTen,
+    fileUrl,
+    noiDung,
+    tenTep
+  ]);
+
+  return taoPhanHoiJson({
+    success: true,
+    message: "Đóng góp tư liệu hình ảnh thành công!",
+    fileUrl: fileUrl,
+    fileId: fileId,
+    thoiGian: thoiGianChu,
+    hoTen: hoTen,
+    noiDung: noiDung
+  });
+}
+
+/**
+ * Tìm hoặc tạo thư mục Google Drive theo tên
+ */
+function layHoacTaoThuMuc(tenThuMuc) {
+  var folders = DriveApp.getFoldersByName(tenThuMuc);
+  if (folders.hasNext()) {
+    return folders.next();
+  }
+  return DriveApp.createFolder(tenThuMuc);
+}
+
+/**
+ * Hàm khởi tạo sẵn sheet "piture" và thư mục Drive (có thể bấm Chạy trực tiếp trên Apps Script nếu muốn)
+ */
+function khoiTaoSheetPiture(ss) {
+  if (!ss) ss = SpreadsheetApp.getActiveSpreadsheet();
+  var sheet = ss.getSheetByName(SHEET_PICTURE);
+  if (!sheet) {
+    sheet = ss.insertSheet(SHEET_PICTURE);
+    sheet.appendRow(["Thời gian", "Họ và tên", "Link ảnh (Google Drive)", "Nội dung ảnh", "Tên tệp gốc"]);
+    var headerRange = sheet.getRange(1, 1, 1, 5);
+    headerRange.setFontWeight("bold");
+    headerRange.setBackground("#173a7a");
+    headerRange.setFontColor("#ffffff");
+    sheet.setFrozenRows(1);
+    sheet.setColumnWidth(1, 160);
+    sheet.setColumnWidth(2, 200);
+    sheet.setColumnWidth(3, 350);
+    sheet.setColumnWidth(4, 400);
+    sheet.setColumnWidth(5, 180);
+  }
+  var folder = layHoacTaoThuMuc(FOLDER_NAME);
+  return taoPhanHoiJson({
+    success: true,
+    message: "Đã sẵn sàng sheet " + SHEET_PICTURE + " và thư mục Drive " + FOLDER_NAME,
+    folderId: folder.getId()
+  });
 }
 
 /**
@@ -126,7 +308,9 @@ function layDuLieuHienVat(ss) {
     { ma: "P4", ten: "Hình ảnh tư liệu" },
     { ma: "P5", ten: "Video" },
     { ma: "P6", ten: "Học tập và làm theo Bác" },
-    { ma: "P7", ten: "Phòng Truyền thống trường" }
+    { ma: "P7", ten: "Phòng Truyền thống trường" },
+    { ma: "P8", ten: "Phòng chuyện kể Bác Hồ" },
+    { ma: "P9", ten: "Phòng các hoạt động trường" }
   ];
 
   return taoPhanHoiJson({
