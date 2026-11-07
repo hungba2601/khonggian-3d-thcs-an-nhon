@@ -4093,6 +4093,14 @@
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
         <path d="M3 21h18M3 10h18M5 6l7-3 7 3M4 10v11M20 10v11M8 14v3M12 14v3M16 14v3" />
       </svg><span id="switchSpaceText">Phòng Truyền thống</span></button>
+    <button class="tbtn" id="btnMultiplayer" title="Khách cùng tham quan (Online)">
+      <span class="mp-pulse-dot"></span>
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="width:18px;height:18px">
+        <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/>
+        <circle cx="12" cy="7" r="4"/>
+        <path d="M23 21v-2a4 4 0 0 0-3-3.87"/>
+        <path d="M16 3.13a4 4 0 0 1 0 7.75"/>
+      </svg><span id="mpBtnTxt">Bạn cùng xem (1)</span></button>
     <button class="tbtn" id="btnHelp" title="Hướng dẫn">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round">
         <circle cx="12" cy="12" r="9" />
@@ -4288,6 +4296,9 @@
             </svg>
           </button>
           <button class="wbtn2" id="btnGuideStart" style="width:100%;justify-content:center;margin-top:2px;">Tham quan có hướng dẫn</button>
+          <button class="wbtn2" id="btnWelcomeMultiplayer" style="width:100%;justify-content:center;margin-top:4px;background:#fef7ea;border:1.5px solid #c9a35a;color:#8a1c22;font-weight:700;">
+            <span>👥 Chọn nhân vật & Bạn cùng xem (<span id="mpWelcomeBtnCount">1</span>)</span>
+          </button>
         </div>
         <div class="wnote">Nhạc nền phát ngẫu nhiên khi cổng mở · có thể tắt bằng nút Nhạc nền</div>
       </div>
@@ -8747,7 +8758,7 @@
    - Chế độ mô phỏng (Demo Simulation Bots) giúp trải nghiệm ngay lập tức
    ===================================================================== */
 (function initMultiplayerSystem() {
-  if (typeof THREE === 'undefined' || typeof scene === 'undefined') return;
+  let isSceneReady = false;
 
   // 1. Cấu hình cơ sở dữ liệu Firebase Realtime
   const FIREBASE_CONFIG = {
@@ -9155,7 +9166,9 @@
     // Thiết lập hiển thị ban đầu
     group.visible = (group.userData.room === (typeof S !== 'undefined' ? S.where : 'lobby'));
 
-    scene.add(group);
+    if (typeof scene !== 'undefined' && scene) {
+      scene.add(group);
+    }
     return group;
   }
 
@@ -9202,7 +9215,9 @@
   function xoaAvatar(pid) {
     const group = remoteAvatars[pid];
     if (group) {
-      scene.remove(group);
+      if (typeof scene !== 'undefined' && scene) {
+        scene.remove(group);
+      }
       delete remoteAvatars[pid];
     }
   }
@@ -9307,7 +9322,7 @@
 
   // 10. Vòng lặp render Animation (chạy mỗi frame cùng Three.js)
   function capNhatVongLapMultiplayer(now) {
-    if (typeof camera === 'undefined') return;
+    if (typeof camera === 'undefined' || !isSceneReady) return;
 
     const dt = 0.016; // xấp xỉ 60fps
 
@@ -9359,17 +9374,26 @@
     phatToaDoBanThan(false);
   }
 
-  // Đăng ký vào ANIM loop của bảo tàng 3D
-  if (typeof ANIM !== 'undefined' && Array.isArray(ANIM)) {
-    ANIM.push(capNhatVongLapMultiplayer);
-  } else {
-    // Dự phòng requestAnimationFrame nếu ANIM chưa sẵn sàng
-    function loopFallback() {
-      capNhatVongLapMultiplayer(Date.now());
-      requestAnimationFrame(loopFallback);
+  // Đợi Three.js scene và camera sẵn sàng để thêm vào không gian 3D
+  function choSceneSanSang() {
+    if (typeof scene !== 'undefined' && scene && typeof camera !== 'undefined' && camera) {
+      isSceneReady = true;
+      // Thêm các avatar đã tạo vào scene
+      for (const pid in remoteAvatars) {
+        if (!scene.children.includes(remoteAvatars[pid])) {
+          scene.add(remoteAvatars[pid]);
+        }
+      }
+      if (typeof ANIM !== 'undefined' && Array.isArray(ANIM)) {
+        if (!ANIM.includes(capNhatVongLapMultiplayer)) {
+          ANIM.push(capNhatVongLapMultiplayer);
+        }
+      }
+    } else {
+      setTimeout(choSceneSanSang, 60);
     }
-    requestAnimationFrame(loopFallback);
   }
+  choSceneSanSang();
 
   // 11. Phát tọa độ của bản thân (Throttled Broadcast ~130ms)
   function phatToaDoBanThan(force) {
@@ -9510,6 +9534,9 @@
 
     const txt = document.getElementById('mpBtnTxt');
     if (txt) txt.textContent = 'Bạn cùng xem (' + count + ')';
+
+    const wTxt = document.getElementById('mpWelcomeBtnCount');
+    if (wTxt) wTxt.textContent = count;
 
     const modalCount = document.getElementById('mpOnlineCountBadge');
     if (modalCount) modalCount.textContent = count;
@@ -9857,34 +9884,18 @@
   window.moMultiplayerModal = moMultiplayerModal;
   window.dongMultiplayerModal = dongMultiplayerModal;
 
-  // 15. Tạo nút trên thanh công cụ Header (đặt cạnh Hộ chiếu)
+  // 15. Gắn sự kiện cho các nút chọn nhân vật và bạn cùng xem
   function ganNutMultiplayer() {
-    const help = document.getElementById('btnHelp');
-    const hc = document.getElementById('btnHoChieu');
-    if (!help || !help.parentNode) return;
+    taoGiaoDienModal();
 
-    if (document.getElementById('btnMultiplayer')) return;
+    const nutMP = document.getElementById('btnMultiplayer');
+    if (nutMP) {
+      nutMP.onclick = moMultiplayerModal;
+    }
 
-    const nutMP = document.createElement('button');
-    nutMP.className = 'tbtn';
-    nutMP.id = 'btnMultiplayer';
-    nutMP.title = 'Khách cùng tham quan (Online)';
-    nutMP.innerHTML = `
-      <span class="mp-pulse-dot"></span>
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="width:18px;height:18px">
-        <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/>
-        <circle cx="9" cy="7" r="4"/>
-        <path d="M23 21v-2a4 4 0 0 0-3-3.87"/>
-        <path d="M16 3.13a4 4 0 0 1 0 7.75"/>
-      </svg>
-      <span id="mpBtnTxt">Bạn cùng xem (1)</span>
-    `;
-    nutMP.onclick = moMultiplayerModal;
-
-    if (hc && hc.parentNode === help.parentNode) {
-      help.parentNode.insertBefore(nutMP, hc);
-    } else {
-      help.parentNode.insertBefore(nutMP, help);
+    const nutWelcome = document.getElementById('btnWelcomeMultiplayer');
+    if (nutWelcome) {
+      nutWelcome.onclick = moMultiplayerModal;
     }
 
     capNhatSoLuongOnline();
