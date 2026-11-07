@@ -3460,6 +3460,585 @@
       margin-top: 4px;
       word-break: break-all;
     }
+
+    /* =====================================================================
+       CSS BẠN CÙNG THAM QUAN (MULTIPLAYER REALTIME & MODAL)
+       ===================================================================== */
+    .mp-pulse-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: #10b981;
+      display: inline-block;
+      box-shadow: 0 0 6px #10b981;
+      animation: mpPulse 2s infinite ease-in-out;
+      margin-right: 6px;
+      flex-shrink: 0;
+    }
+    @keyframes mpPulse {
+      0%, 100% { opacity: 1; transform: scale(1); }
+      50% { opacity: 0.45; transform: scale(1.3); }
+    }
+
+    .mp-nen {
+      position: fixed;
+      inset: 0;
+      z-index: 120;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: rgba(18, 14, 20, 0.78);
+      backdrop-filter: blur(4px);
+      -webkit-backdrop-filter: blur(4px);
+      padding: 16px;
+      box-sizing: border-box;
+      animation: mpFadeIn 0.25s ease-out;
+    }
+    @keyframes mpFadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+
+    .mp-hop {
+      background: #fdfaf3;
+      border-radius: 18px;
+      box-shadow: 0 24px 56px rgba(0, 0, 0, 0.55), 0 0 0 1px rgba(201, 163, 90, 0.45);
+      border: 2px solid #c9a35a;
+      width: 100%;
+      max-width: 660px;
+      max-height: 90vh;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+      color: #2c251e;
+      font-family: "Be Vietnam Pro", system-ui, -apple-system, sans-serif;
+    }
+
+    .mp-dau {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 14px 20px;
+      background: linear-gradient(135deg, #8a1a24 0%, #5c0f17 100%);
+      color: #fff;
+      border-bottom: 2px solid #c9a35a;
+    }
+    .mp-dau-trai {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .mp-dau-icon {
+      font-size: 26px;
+      line-height: 1;
+    }
+    .mp-dau small {
+      display: block;
+      font-size: 11px;
+      letter-spacing: 1.5px;
+      color: #f3d492;
+      text-transform: uppercase;
+      font-weight: 600;
+    }
+    .mp-dau b {
+      font-size: 17px;
+      letter-spacing: 0.5px;
+      color: #ffffff;
+      font-weight: 700;
+    }
+    .mp-x {
+      background: rgba(255, 255, 255, 0.12);
+      border: 1px solid rgba(255, 255, 255, 0.25);
+      color: #fff;
+      font-size: 24px;
+      line-height: 1;
+      width: 34px;
+      height: 34px;
+      border-radius: 50%;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.2s;
+    }
+    .mp-x:hover {
+      background: rgba(255, 255, 255, 0.25);
+      transform: scale(1.08);
+    }
+
+    /* Tab Bar */
+    .mp-tab-bar {
+      display: flex;
+      background: #f0e6d2;
+      border-bottom: 1px solid #dfcfb2;
+      padding: 0 12px;
+      gap: 4px;
+    }
+    .mp-tab {
+      background: transparent;
+      border: none;
+      padding: 12px 16px;
+      font-size: 14px;
+      font-weight: 600;
+      color: #6a533a;
+      cursor: pointer;
+      border-bottom: 3px solid transparent;
+      transition: all 0.2s;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .mp-tab:hover {
+      color: #8a1a24;
+      background: rgba(255, 255, 255, 0.4);
+    }
+    .mp-tab.active {
+      color: #8a1a24;
+      border-bottom-color: #8a1a24;
+      background: #fdfaf3;
+      border-radius: 8px 8px 0 0;
+    }
+
+    /* Body Panels */
+    .mp-than {
+      padding: 18px 22px;
+      overflow-y: auto;
+      flex: 1;
+    }
+    .mp-panel {
+      display: none;
+    }
+    .mp-panel.active {
+      display: block;
+      animation: mpFadeIn 0.2s ease-out;
+    }
+
+    /* Form Fields */
+    .mp-nhom {
+      margin-bottom: 16px;
+    }
+    .mp-nhom label {
+      display: block;
+      font-size: 13.5px;
+      font-weight: 600;
+      color: #4a3622;
+      margin-bottom: 6px;
+    }
+    .mp-input-wrap {
+      display: flex;
+      gap: 8px;
+    }
+    .mp-nhom input[type="text"],
+    .mp-nhom input[type="url"] {
+      flex: 1;
+      width: 100%;
+      box-sizing: border-box;
+      padding: 10px 14px;
+      border-radius: 10px;
+      border: 1.5px solid #d4c2a5;
+      background: #ffffff;
+      font-size: 15px;
+      color: #1e1b18;
+      font-family: inherit;
+      outline: none;
+      transition: border-color 0.2s, box-shadow 0.2s;
+    }
+    .mp-nhom input:focus {
+      border-color: #8a1a24;
+      box-shadow: 0 0 0 3px rgba(138, 26, 36, 0.15);
+    }
+    .mp-nut-sm {
+      padding: 0 14px;
+      background: #f5eedf;
+      border: 1px solid #c9a35a;
+      color: #7a5026;
+      border-radius: 10px;
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+      white-space: nowrap;
+      transition: all 0.2s;
+    }
+    .mp-nut-sm:hover {
+      background: #ecd9ba;
+    }
+
+    /* Avatar Grid */
+    .mp-label-avatars {
+      display: block;
+      font-size: 13.5px;
+      font-weight: 600;
+      color: #4a3622;
+      margin-top: 14px;
+      margin-bottom: 10px;
+    }
+    .mp-avatar-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 12px;
+      margin-bottom: 18px;
+    }
+    @media (min-width: 540px) {
+      .mp-avatar-grid {
+        grid-template-columns: repeat(4, 1fr);
+      }
+    }
+    .mp-avatar-card {
+      background: #ffffff;
+      border: 2px solid #e0d2be;
+      border-radius: 14px;
+      padding: 10px 8px;
+      text-align: center;
+      cursor: pointer;
+      position: relative;
+      transition: all 0.25s ease;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+    .mp-avatar-card:hover {
+      border-color: #c9a35a;
+      transform: translateY(-2px);
+      box-shadow: 0 8px 18px rgba(0, 0, 0, 0.08);
+    }
+    .mp-avatar-card.selected {
+      border-color: #8a1a24;
+      background: #fcf4f5;
+      box-shadow: 0 8px 20px rgba(138, 26, 36, 0.18), 0 0 0 2px #8a1a24;
+    }
+    .mp-card-tick {
+      position: absolute;
+      top: 6px;
+      right: 6px;
+      width: 20px;
+      height: 20px;
+      border-radius: 50%;
+      background: #8a1a24;
+      color: #fff;
+      font-size: 12px;
+      font-weight: bold;
+      display: none;
+      align-items: center;
+      justify-content: center;
+    }
+    .mp-avatar-card.selected .mp-card-tick {
+      display: flex;
+    }
+    .mp-card-canvas-wrap {
+      width: 72px;
+      height: 144px;
+      margin: 4px auto 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .mp-avatar-preview-canvas {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+      filter: drop-shadow(0 4px 6px rgba(0,0,0,0.15));
+    }
+    .mp-card-info b {
+      display: block;
+      font-size: 13.5px;
+      color: #241c14;
+      margin-bottom: 2px;
+    }
+    .mp-role-pill {
+      display: inline-block;
+      font-size: 11px;
+      font-weight: 600;
+      padding: 2px 8px;
+      border-radius: 10px;
+      background: #eef2ff;
+      color: #1e40af;
+      margin-bottom: 4px;
+    }
+    .mp-avatar-card.selected .mp-role-pill {
+      background: #fee2e2;
+      color: #991b1b;
+    }
+    .mp-card-info small {
+      display: block;
+      font-size: 11px;
+      color: #6b5845;
+      line-height: 1.35;
+    }
+
+    /* Buttons */
+    .mp-chan-nut {
+      display: flex;
+      justify-content: flex-end;
+      margin-top: 10px;
+    }
+    .mp-row-nut {
+      display: flex;
+      gap: 10px;
+      margin-top: 10px;
+    }
+    .mp-nut {
+      padding: 10px 20px;
+      border-radius: 10px;
+      font-size: 14.5px;
+      font-weight: 600;
+      cursor: pointer;
+      border: none;
+      transition: all 0.2s;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+    }
+    .mp-nut.primary {
+      background: linear-gradient(135deg, #9a1c22 0%, #781318 100%);
+      color: #ffffff;
+      box-shadow: 0 4px 12px rgba(154, 28, 34, 0.3);
+    }
+    .mp-nut.primary:hover {
+      background: linear-gradient(135deg, #b0232a 0%, #8c171e 100%);
+      transform: translateY(-1px);
+    }
+    .mp-nut.secondary {
+      background: #f5eedf;
+      color: #684824;
+      border: 1px solid #c9a35a;
+    }
+    .mp-nut.secondary:hover {
+      background: #ecddc2;
+    }
+
+    /* Online List (Tab 2) */
+    .mp-online-header {
+      margin-bottom: 12px;
+      padding-bottom: 10px;
+      border-bottom: 1px solid #e7dcce;
+    }
+    .mp-online-header b {
+      font-size: 15px;
+      color: #8a1a24;
+      display: block;
+      margin-bottom: 4px;
+    }
+    .mp-online-header p {
+      margin: 0;
+      font-size: 13px;
+      color: #6a533a;
+      line-height: 1.45;
+    }
+    .mp-online-list {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      max-height: 380px;
+      overflow-y: auto;
+    }
+    .mp-user-row {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 10px 14px;
+      background: #ffffff;
+      border: 1px solid #e8decb;
+      border-radius: 12px;
+      transition: all 0.2s;
+    }
+    .mp-user-row.self {
+      background: #fef8ee;
+      border-color: #d8b874;
+    }
+    .mp-user-row.same-room {
+      border-color: #10b981;
+      background: #f0fdf4;
+    }
+    .mp-user-avatar {
+      font-size: 26px;
+      line-height: 1;
+      width: 42px;
+      height: 42px;
+      border-radius: 50%;
+      background: #f5efe6;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border: 1px solid #d4c2a5;
+      flex-shrink: 0;
+    }
+    .mp-user-meta {
+      flex: 1;
+      min-width: 0;
+    }
+    .mp-user-name {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 14.5px;
+      color: #1f2937;
+    }
+    .mp-user-name b {
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .mp-badge-you {
+      font-size: 11px;
+      font-weight: 700;
+      padding: 1px 6px;
+      border-radius: 6px;
+      background: #9a1c22;
+      color: #fff;
+    }
+    .mp-badge-bot {
+      font-size: 11px;
+      font-weight: 600;
+      padding: 1px 6px;
+      border-radius: 6px;
+      background: #e0f2fe;
+      color: #0369a1;
+    }
+    .mp-user-loc {
+      font-size: 12.5px;
+      color: #5d4a2e;
+      margin-top: 2px;
+    }
+    .mp-user-status {
+      font-size: 12px;
+      font-weight: 600;
+      padding: 4px 10px;
+      border-radius: 8px;
+      white-space: nowrap;
+    }
+    .mp-user-status.online {
+      background: #dbeafe;
+      color: #1e40af;
+    }
+    .mp-user-status.same {
+      background: #dcfce7;
+      color: #15803d;
+    }
+    .mp-user-status.diff {
+      background: #f3f4f6;
+      color: #6b7280;
+    }
+    .mp-empty-tip {
+      padding: 24px 16px;
+      text-align: center;
+      font-size: 13.5px;
+      color: #7a6348;
+      background: #f9f4ea;
+      border-radius: 12px;
+      border: 1px dashed #d6c4a6;
+      line-height: 1.5;
+    }
+
+    /* Firebase Settings (Tab 3) */
+    .mp-status-box {
+      padding: 12px 16px;
+      background: #ffffff;
+      border: 1px solid #d4c2a5;
+      border-radius: 12px;
+    }
+    .mp-badge-status {
+      display: inline-block;
+      font-size: 13px;
+      font-weight: 700;
+      padding: 4px 12px;
+      border-radius: 8px;
+      margin-bottom: 6px;
+    }
+    .mp-badge-status.green { background: #dcfce7; color: #166534; border: 1px solid #86efac; }
+    .mp-badge-status.yellow { background: #fef9c3; color: #854d0e; border: 1px solid #fde047; }
+    .mp-badge-status.blue { background: #e0f2fe; color: #075985; border: 1px solid #7dd3fc; }
+    .mp-badge-status.red { background: #fee2e2; color: #991b1b; border: 1px solid #fca5a5; }
+    .mp-status-box p {
+      margin: 0;
+      font-size: 13px;
+      color: #4b3e2e;
+      line-height: 1.4;
+    }
+
+    .mp-toggle-box {
+      margin-top: 14px;
+      padding: 12px 14px;
+      background: #fbf6ec;
+      border-radius: 12px;
+      border: 1px solid #dfcfb2;
+    }
+    .mp-switch-label {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 14px;
+      font-weight: 600;
+      color: #3b2b18;
+      cursor: pointer;
+    }
+    .mp-switch-label input[type="checkbox"] {
+      width: 18px;
+      height: 18px;
+      accent-color: #8a1a24;
+      cursor: pointer;
+    }
+    .mp-toggle-box small {
+      display: block;
+      margin-top: 4px;
+      margin-left: 28px;
+      font-size: 12px;
+      color: #705b42;
+      line-height: 1.4;
+    }
+
+    .mp-huongdan-box {
+      margin-top: 16px;
+      background: #ffffff;
+      border: 1px solid #c9a35a;
+      border-radius: 12px;
+      padding: 12px 16px;
+    }
+    .mp-huongdan-box summary {
+      cursor: pointer;
+      font-size: 14px;
+      color: #8a1a24;
+      user-select: none;
+    }
+    .mp-hd-noi-dung {
+      margin-top: 12px;
+      padding-top: 10px;
+      border-top: 1px dashed #e2d3bc;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+    .mp-hd-buoc {
+      display: flex;
+      gap: 10px;
+      font-size: 13px;
+      line-height: 1.45;
+      color: #3e3224;
+    }
+    .mp-so {
+      width: 22px;
+      height: 22px;
+      background: #8a1a24;
+      color: #ffffff;
+      border-radius: 50%;
+      font-size: 12px;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+    .mp-hd-buoc code {
+      background: #f3ede2;
+      padding: 2px 6px;
+      border-radius: 4px;
+      color: #8a1a24;
+      font-size: 12px;
+    }
+    .mp-hd-buoc a {
+      color: #1d4ed8;
+      text-decoration: underline;
+    }
   </style>
 
 </head>
@@ -3833,6 +4412,9 @@
 
   <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+  <!-- Firebase Realtime Database SDK (Compat) -->
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
   <script>
     /* =====================================================================
        NỘI DUNG BẢO TÀNG — bộ phận CNTT cập nhật tại đây
@@ -8155,6 +8737,1170 @@
         }
         window.moHopDongGopAnh = moHopDongGopAnh;
       })();
+
+      /* =====================================================================
+   HỆ THỐNG ĐỒNG BỘ BẠN CÙNG THAM QUAN (MULTIPLAYER REALTIME ENGINE)
+   - Tương thích 100% với Vercel & Firebase Realtime Database (Gói Spark miễn phí)
+   - Hình nhân vật 2.5D minh họa sinh động: Nam sinh, Nữ sinh, Thầy giáo, Cô giáo
+   - Đổ bóng tiếp xúc mặt sàn, bảng tên nổi 3D (Floating Nametag)
+   - Chuyển động mượt mà (Lerp + Walking Bobbing), hiển thị theo từng phòng
+   - Chế độ mô phỏng (Demo Simulation Bots) giúp trải nghiệm ngay lập tức
+   ===================================================================== */
+(function initMultiplayerSystem() {
+  if (typeof THREE === 'undefined' || typeof scene === 'undefined') return;
+
+  // 1. Cấu hình cơ sở dữ liệu Firebase Realtime
+  const FIREBASE_CONFIG = {
+    // Quý thầy cô/quản trị viên có thể điền link trực tiếp tại đây HOẶC dán vào tab "Cấu hình Firebase" trên giao diện
+    databaseURL: ""
+  };
+
+  // 2. Danh mục 4 nhân vật minh họa
+  const AVATAR_DEFS = {
+    student_male: {
+      id: 'student_male',
+      name: 'Nam sinh khăn quàng',
+      role: 'Học sinh',
+      desc: 'Áo trắng, khăn quàng đỏ, quần tây xanh, năng động',
+      icon: '👦'
+    },
+    student_female: {
+      id: 'student_female',
+      name: 'Nữ sinh khăn quàng',
+      role: 'Học sinh',
+      desc: 'Áo trắng, khăn quàng đỏ, tóc thắt nơ, duyên dáng',
+      icon: '👧'
+    },
+    teacher_male: {
+      id: 'teacher_male',
+      name: 'Thầy giáo mẫu mực',
+      role: 'Giáo viên',
+      desc: 'Áo sơ mi thắt cà vạt đỏ, kính tri thức, phong thái chuẩn mực',
+      icon: '👨‍🏫'
+    },
+    teacher_female: {
+      id: 'teacher_female',
+      name: 'Cô giáo áo dài',
+      role: 'Giáo viên',
+      desc: 'Áo dài hoa sen truyền thống thướt tha, trang nhã',
+      icon: '👩‍🏫'
+    }
+  };
+
+  // Tên tiếng Việt hiển thị của từng phòng
+  const ROOM_NAMES = {
+    lobby: 'Đại sảnh văn hóa Bác Hồ',
+    cm1: 'Phòng 1 · Tiểu sử Bác Hồ',
+    cm2: 'Phòng 2 · Tác phẩm của Bác',
+    cm3: 'Phòng 3 · Câu chuyện kể về Bác',
+    cm4: 'Phòng 4 · Hình ảnh tư liệu',
+    cm5: 'Phòng 5 · Video tư liệu',
+    cm6: 'Phòng 6 · Học tập & làm theo Bác',
+    cm7: 'Phòng 7 · Truyền thống nhà trường',
+    cm8: 'Phòng 8 · Kể chuyện Bác Hồ',
+    cm9: 'Phòng 9 · Các hoạt động trường'
+  };
+
+  function layTenPhong(whereId) {
+    return ROOM_NAMES[whereId] || 'Khu vực trưng bày';
+  }
+
+  // 3. Thông tin người dùng hiện tại (Local Player)
+  let myId = sessionStorage.getItem('bt3d_mp_id');
+  if (!myId) {
+    myId = 'p_' + Math.random().toString(36).substring(2, 8) + Date.now().toString(36).slice(-4);
+    try { sessionStorage.setItem('bt3d_mp_id', myId); } catch (e) { }
+  }
+
+  let myName = localStorage.getItem('bt3d_mp_name') || '';
+  if (!myName) {
+    myName = 'Khách tham quan #' + Math.floor(1000 + Math.random() * 9000);
+    try { localStorage.setItem('bt3d_mp_name', myName); } catch (e) { }
+  }
+
+  let myAvatar = localStorage.getItem('bt3d_mp_avatar') || 'student_male';
+  if (!AVATAR_DEFS[myAvatar]) myAvatar = 'student_male';
+
+  let demoBotsEnabled = localStorage.getItem('bt3d_mp_demobots') !== 'false'; // mặc định bật để trải nghiệm ngay
+
+  // 4. Quản lý trạng thái và Avatars từ xa
+  const remotePlayers = {};     // dữ liệu người chơi
+  const remoteAvatars = {};     // các nhóm 3D Object3D trong scene
+  let firebaseDb = null;
+  let isFirebaseConnected = false;
+  let lastBroadcastTime = 0;
+  const lastBroadcastPos = new THREE.Vector3();
+  let lastBroadcastYaw = 0;
+  let lastBroadcastRoom = '';
+
+  // 5. Hàm vẽ nhân vật 2.5D minh họa độ phân giải cao lên Canvas
+  function veNhanVatAvatar(g, type, w, h) {
+    g.save();
+    g.clearRect(0, 0, w, h);
+    const cx = w / 2; // 128
+
+    const rrect = (x, y, rw, rh, r, fill, stroke) => {
+      g.beginPath();
+      if (typeof g.roundRect === 'function') {
+        g.roundRect(x, y, rw, rh, r);
+      } else {
+        g.moveTo(x + r, y);
+        g.lineTo(x + rw - r, y);
+        g.quadraticCurveTo(x + rw, y, x + rw, y + r);
+        g.lineTo(x + rw, y + rh - r);
+        g.quadraticCurveTo(x + rw, y + rh, x + rw - r, y + rh);
+        g.lineTo(x + r, y + rh);
+        g.quadraticCurveTo(x, y + rh, x, y + rh - r);
+        g.lineTo(x, y + r);
+        g.quadraticCurveTo(x, y, x + r, y);
+      }
+      if (fill) { g.fillStyle = fill; g.fill(); }
+      if (stroke) { g.strokeStyle = stroke; g.stroke(); }
+    };
+
+    // --- A. CHÂN VÀ GIÀY ---
+    if (type === 'student_male') {
+      g.fillStyle = '#1c2840';
+      g.beginPath(); g.moveTo(cx - 32, 275); g.lineTo(cx - 38, 455); g.lineTo(cx - 10, 455); g.lineTo(cx - 5, 290); g.closePath(); g.fill();
+      g.beginPath(); g.moveTo(cx + 32, 275); g.lineTo(cx + 38, 455); g.lineTo(cx + 10, 455); g.lineTo(cx + 5, 290); g.closePath(); g.fill();
+      g.strokeStyle = '#141d2e'; g.lineWidth = 1.5;
+      g.beginPath(); g.moveTo(cx - 24, 290); g.lineTo(cx - 24, 450); g.moveTo(cx + 24, 290); g.lineTo(cx + 24, 450); g.stroke();
+      rrect(cx - 44, 455, 38, 22, 9, '#111827');
+      rrect(cx + 6, 455, 38, 22, 9, '#111827');
+      rrect(cx - 44, 471, 38, 7, 3, '#ffffff');
+      rrect(cx + 6, 471, 38, 7, 3, '#ffffff');
+      g.strokeStyle = '#ffffff'; g.lineWidth = 2;
+      g.beginPath(); g.moveTo(cx - 32, 461); g.lineTo(cx - 20, 461); g.moveTo(cx + 18, 461); g.lineTo(cx + 30, 461); g.stroke();
+    } else if (type === 'student_female') {
+      g.fillStyle = '#1c2840';
+      g.beginPath(); g.moveTo(cx - 30, 275); g.lineTo(cx + 30, 275); g.lineTo(cx + 48, 355); g.lineTo(cx - 48, 355); g.closePath(); g.fill();
+      g.strokeStyle = '#131c2d'; g.lineWidth = 2;
+      for (let p = -36; p <= 36; p += 12) {
+        g.beginPath(); g.moveTo(cx + p * 0.6, 275); g.lineTo(cx + p, 355); g.stroke();
+      }
+      rrect(cx - 28, 355, 18, 90, 6, '#fddbc7');
+      rrect(cx + 10, 355, 18, 90, 6, '#fddbc7');
+      rrect(cx - 29, 430, 20, 24, 4, '#ffffff');
+      rrect(cx + 9, 430, 20, 24, 4, '#ffffff');
+      rrect(cx - 32, 452, 26, 22, 8, '#1e293b');
+      rrect(cx + 6, 452, 26, 22, 8, '#1e293b');
+    } else if (type === 'teacher_male') {
+      g.fillStyle = '#2d3748';
+      g.beginPath(); g.moveTo(cx - 32, 270); g.lineTo(cx - 38, 460); g.lineTo(cx - 8, 460); g.lineTo(cx - 4, 290); g.closePath(); g.fill();
+      g.beginPath(); g.moveTo(cx + 32, 270); g.lineTo(cx + 38, 460); g.lineTo(cx + 8, 460); g.lineTo(cx + 4, 290); g.closePath(); g.fill();
+      rrect(cx - 44, 460, 40, 22, 8, '#0f172a');
+      rrect(cx + 4, 460, 40, 22, 8, '#0f172a');
+      g.fillStyle = '#4a2810'; g.fillRect(cx - 44, 477, 40, 5); g.fillRect(cx + 4, 477, 40, 5);
+    } else if (type === 'teacher_female') {
+      g.fillStyle = '#ffffff';
+      g.beginPath(); g.moveTo(cx - 28, 270); g.lineTo(cx - 42, 470); g.lineTo(cx - 8, 470); g.lineTo(cx - 4, 290); g.closePath(); g.fill();
+      g.beginPath(); g.moveTo(cx + 28, 270); g.lineTo(cx + 42, 470); g.lineTo(cx + 8, 470); g.lineTo(cx + 4, 290); g.closePath(); g.fill();
+      g.strokeStyle = '#e2e8f0'; g.lineWidth = 1.5;
+      g.beginPath(); g.moveTo(cx - 24, 290); g.lineTo(cx - 28, 465); g.moveTo(cx + 24, 290); g.lineTo(cx + 28, 465); g.stroke();
+      rrect(cx - 34, 468, 26, 15, 6, '#f8fafc', '#cbd5e1');
+      rrect(cx + 8, 468, 26, 15, 6, '#f8fafc', '#cbd5e1');
+    }
+
+    // --- B. THÂN VÀ TRANG PHỤC ---
+    if (type === 'student_male' || type === 'student_female') {
+      g.fillStyle = '#ffffff';
+      g.beginPath(); g.moveTo(cx - 36, 172); g.lineTo(cx + 36, 172); g.lineTo(cx + 32, 280); g.lineTo(cx - 32, 280); g.closePath(); g.fill();
+      g.strokeStyle = '#e2e8f0'; g.lineWidth = 2; g.stroke();
+      rrect(cx - 56, 178, 24, 52, 8, '#ffffff', '#e2e8f0');
+      rrect(cx + 32, 178, 24, 52, 8, '#ffffff', '#e2e8f0');
+      rrect(cx - 52, 226, 16, 42, 6, '#fddbc7');
+      rrect(cx + 36, 226, 16, 42, 6, '#fddbc7');
+      rrect(cx - 54, 192, 10, 14, 2, '#173a7a');
+      g.fillStyle = '#c9a35a'; g.fillRect(cx - 52, 195, 6, 8);
+      if (type === 'student_male') {
+        g.fillStyle = '#332211'; g.fillRect(cx - 32, 274, 64, 8);
+        g.fillStyle = '#d4af37'; g.fillRect(cx - 8, 272, 16, 12);
+        g.fillStyle = '#332211'; g.fillRect(cx - 4, 275, 8, 6);
+      }
+      g.fillStyle = '#d61c24';
+      g.beginPath(); g.moveTo(cx - 28, 166); g.lineTo(cx, 192); g.lineTo(cx + 28, 166); g.lineTo(cx + 32, 172); g.lineTo(cx, 202); g.lineTo(cx - 32, 172); g.closePath(); g.fill();
+      rrect(cx - 9, 194, 18, 16, 4, '#b7151c');
+      g.fillStyle = '#d61c24';
+      g.beginPath(); g.moveTo(cx - 7, 206); g.lineTo(cx - 18, 260); g.lineTo(cx - 4, 252); g.lineTo(cx, 208); g.closePath(); g.fill();
+      g.beginPath(); g.moveTo(cx + 1, 206); g.lineTo(cx + 16, 270); g.lineTo(cx + 4, 260); g.lineTo(cx - 2, 208); g.closePath(); g.fill();
+    } else if (type === 'teacher_male') {
+      g.fillStyle = '#e2e8f0';
+      g.beginPath(); g.moveTo(cx - 38, 170); g.lineTo(cx + 38, 170); g.lineTo(cx + 34, 275); g.lineTo(cx - 34, 275); g.closePath(); g.fill();
+      rrect(cx - 58, 174, 24, 82, 8, '#e2e8f0', '#cbd5e1');
+      rrect(cx + 34, 174, 24, 82, 8, '#e2e8f0', '#cbd5e1');
+      rrect(cx - 54, 254, 16, 22, 6, '#fddbc7');
+      rrect(cx + 38, 254, 16, 22, 6, '#fddbc7');
+      g.fillStyle = '#ffffff';
+      g.beginPath(); g.moveTo(cx - 26, 164); g.lineTo(cx, 184); g.lineTo(cx + 26, 164); g.lineTo(cx + 16, 164); g.lineTo(cx, 178); g.lineTo(cx - 16, 164); g.closePath(); g.fill();
+      g.fillStyle = '#9a1c22';
+      g.beginPath(); g.moveTo(cx - 6, 180); g.lineTo(cx + 6, 180); g.lineTo(cx + 9, 252); g.lineTo(cx, 266); g.lineTo(cx - 9, 252); g.closePath(); g.fill();
+      rrect(cx - 7, 176, 14, 12, 3, '#781318');
+      g.fillStyle = '#1e293b'; g.fillRect(cx - 34, 270, 68, 8);
+      g.fillStyle = '#d4af37'; g.fillRect(cx - 9, 268, 18, 12);
+      rrect(cx - 56, 230, 20, 36, 4, '#173a7a');
+      g.fillStyle = '#ffd700'; g.fillRect(cx - 53, 236, 14, 3);
+    } else if (type === 'teacher_female') {
+      const aoGrad = g.createLinearGradient(0, 160, 0, 440);
+      aoGrad.addColorStop(0, '#f472b6');
+      aoGrad.addColorStop(0.5, '#ec4899');
+      aoGrad.addColorStop(1, '#db2777');
+      g.fillStyle = aoGrad;
+      g.beginPath(); g.moveTo(cx - 34, 168); g.lineTo(cx + 34, 168); g.lineTo(cx + 26, 260); g.lineTo(cx - 26, 260); g.closePath(); g.fill();
+      g.beginPath(); g.moveTo(cx - 26, 260); g.lineTo(cx + 26, 260); g.quadraticCurveTo(cx + 38, 360, cx + 34, 445); g.lineTo(cx - 34, 445); g.quadraticCurveTo(cx - 38, 360, cx - 26, 260); g.closePath(); g.fill();
+      rrect(cx - 52, 172, 20, 84, 8, '#f472b6');
+      rrect(cx + 32, 172, 20, 84, 8, '#f472b6');
+      rrect(cx - 50, 254, 14, 20, 5, '#fddbc7');
+      rrect(cx + 36, 254, 14, 20, 5, '#fddbc7');
+      rrect(cx - 16, 156, 32, 14, 5, '#db2777', '#fbcfe8');
+      g.fillStyle = '#ffffff';
+      for (let i = -14; i <= 14; i += 7) {
+        g.beginPath(); g.arc(cx + i, 174 + Math.abs(i) * 0.4, 2.5, 0, Math.PI * 2); g.fill();
+      }
+      g.fillStyle = '#ffd700';
+      g.beginPath(); g.arc(cx + 15, 192, 5, 0, Math.PI * 2); g.fill();
+    }
+
+    // --- C. CỔ VÀ KHUÔN MẶT ---
+    rrect(cx - 14, 150, 28, 22, 6, '#fddbc7');
+    g.fillStyle = '#fddbc7';
+    g.beginPath(); g.arc(cx, 114, 42, 0, Math.PI * 2); g.fill();
+    g.fillStyle = 'rgba(244, 114, 182, 0.35)';
+    g.beginPath(); g.arc(cx - 24, 126, 8, 0, Math.PI * 2); g.arc(cx + 24, 126, 8, 0, Math.PI * 2); g.fill();
+
+    const eyeY = 114;
+    g.fillStyle = '#1e293b';
+    g.beginPath(); g.arc(cx - 16, eyeY, 6.5, 0, Math.PI * 2); g.arc(cx + 16, eyeY, 6.5, 0, Math.PI * 2); g.fill();
+    g.fillStyle = '#ffffff';
+    g.beginPath(); g.arc(cx - 18, eyeY - 2, 2.5, 0, Math.PI * 2); g.arc(cx + 14, eyeY - 2, 2.5, 0, Math.PI * 2); g.arc(cx - 14, eyeY + 2, 1.2, 0, Math.PI * 2); g.arc(cx + 18, eyeY + 2, 1.2, 0, Math.PI * 2); g.fill();
+
+    g.strokeStyle = '#2d3748'; g.lineWidth = 2.2;
+    g.beginPath(); g.arc(cx - 16, eyeY - 11, 8, Math.PI * 1.15, Math.PI * 1.85); g.arc(cx + 16, eyeY - 11, 8, Math.PI * 1.15, Math.PI * 1.85); g.stroke();
+
+    g.strokeStyle = '#be123c'; g.fillStyle = '#fb7185'; g.lineWidth = 2;
+    g.beginPath(); g.arc(cx, 131, 8, 0.15 * Math.PI, 0.85 * Math.PI); g.stroke();
+
+    // --- D. MÁI TÓC VÀ PHỤ KIỆN ---
+    if (type === 'student_male') {
+      g.fillStyle = '#1f2937';
+      g.beginPath(); g.arc(cx, 110, 44, Math.PI * 0.8, Math.PI * 2.2); g.fill();
+      g.beginPath(); g.moveTo(cx - 42, 105); g.quadraticCurveTo(cx - 24, 78, cx - 12, 102); g.quadraticCurveTo(cx + 4, 78, cx + 18, 104); g.quadraticCurveTo(cx + 32, 82, cx + 42, 105); g.lineTo(cx + 42, 85); g.quadraticCurveTo(cx, 62, cx - 42, 85); g.closePath(); g.fill();
+      rrect(cx - 44, 104, 8, 20, 3, '#1f2937');
+      rrect(cx + 36, 104, 8, 20, 3, '#1f2937');
+    } else if (type === 'student_female') {
+      g.fillStyle = '#1e1b24';
+      g.beginPath(); g.arc(cx, 110, 45, Math.PI * 0.8, Math.PI * 2.2); g.fill();
+      g.beginPath(); g.arc(cx, 102, 38, Math.PI * 1.1, Math.PI * 1.9); g.quadraticCurveTo(cx, 104, cx - 36, 102); g.fill();
+      rrect(cx - 56, 115, 18, 54, 8, '#1e1b24');
+      rrect(cx + 38, 115, 18, 54, 8, '#1e1b24');
+      rrect(cx - 54, 118, 14, 8, 2, '#d61c24');
+      rrect(cx + 40, 118, 14, 8, 2, '#d61c24');
+    } else if (type === 'teacher_male') {
+      g.fillStyle = '#1e293b';
+      g.beginPath(); g.arc(cx, 108, 44, Math.PI * 0.85, Math.PI * 2.15); g.fill();
+      g.beginPath(); g.moveTo(cx - 42, 102); g.quadraticCurveTo(cx - 15, 82, cx + 40, 96); g.lineTo(cx + 42, 80); g.quadraticCurveTo(cx, 62, cx - 42, 80); g.closePath(); g.fill();
+      g.strokeStyle = '#d4af37'; g.lineWidth = 2.5;
+      rrect(cx - 27, eyeY - 10, 22, 18, 5, 'rgba(255,255,255,0.25)', '#d4af37');
+      rrect(cx + 5, eyeY - 10, 22, 18, 5, 'rgba(255,255,255,0.25)', '#d4af37');
+      g.beginPath(); g.moveTo(cx - 5, eyeY - 2); g.lineTo(cx + 5, eyeY - 2); g.stroke();
+    } else if (type === 'teacher_female') {
+      g.fillStyle = '#1e1b24';
+      g.beginPath(); g.moveTo(cx - 42, 110); g.quadraticCurveTo(cx - 48, 180, cx - 38, 220); g.lineTo(cx - 26, 220); g.quadraticCurveTo(cx - 36, 170, cx - 34, 120); g.closePath(); g.fill();
+      g.beginPath(); g.moveTo(cx + 42, 110); g.quadraticCurveTo(cx + 48, 180, cx + 38, 220); g.lineTo(cx + 26, 220); g.quadraticCurveTo(cx + 36, 170, cx + 34, 120); g.closePath(); g.fill();
+      g.beginPath(); g.arc(cx, 110, 45, Math.PI * 0.8, Math.PI * 2.2); g.fill();
+      g.beginPath(); g.moveTo(cx - 42, 98); g.quadraticCurveTo(cx - 8, 86, cx + 40, 106); g.lineTo(cx + 42, 85); g.quadraticCurveTo(cx, 62, cx - 42, 85); g.closePath(); g.fill();
+      g.fillStyle = '#ffd700'; g.beginPath(); g.arc(cx + 36, 92, 6, 0, Math.PI * 2); g.fill();
+    }
+
+    g.restore();
+  }
+
+  // 6. Cache Texture cho các nhân vật, bóng đổ và bảng tên
+  const avatarTexCache = {};
+  function layTextureAvatar(type) {
+    if (!avatarTexCache[type]) {
+      const c = document.createElement('canvas');
+      c.width = 256; c.height = 512;
+      const g = c.getContext('2d');
+      veNhanVatAvatar(g, type, 256, 512);
+      const t = new THREE.CanvasTexture(c);
+      t.encoding = THREE.sRGBEncoding;
+      if (typeof maxAniso !== 'undefined') t.anisotropy = maxAniso;
+      avatarTexCache[type] = t;
+    }
+    return avatarTexCache[type];
+  }
+
+  let shadowTexCache = null;
+  function layTextureBongDo() {
+    if (!shadowTexCache) {
+      const c = document.createElement('canvas');
+      c.width = 128; c.height = 128;
+      const g = c.getContext('2d');
+      const gr = g.createRadialGradient(64, 64, 0, 64, 64, 64);
+      gr.addColorStop(0, 'rgba(0,0,0,0.48)');
+      gr.addColorStop(0.5, 'rgba(0,0,0,0.22)');
+      gr.addColorStop(1, 'rgba(0,0,0,0)');
+      g.fillStyle = gr;
+      g.fillRect(0, 0, 128, 128);
+      shadowTexCache = new THREE.CanvasTexture(c);
+    }
+    return shadowTexCache;
+  }
+
+  function taoTextureBangTen(name, isSelf) {
+    const c = document.createElement('canvas');
+    c.width = 384; c.height = 96;
+    const g = c.getContext('2d');
+
+    const w = 384, h = 96;
+    g.beginPath();
+    if (typeof g.roundRect === 'function') {
+      g.roundRect(10, 10, w - 20, h - 20, 38);
+    } else {
+      g.moveTo(48, 10); g.lineTo(w - 48, 10); g.quadraticCurveTo(w - 10, 10, w - 10, 48);
+      g.quadraticCurveTo(w - 10, h - 10, w - 48, h - 10); g.lineTo(48, h - 10);
+      g.quadraticCurveTo(10, h - 10, 10, 48); g.quadraticCurveTo(10, 10, 48, 10);
+    }
+    g.fillStyle = isSelf ? 'rgba(154, 28, 34, 0.92)' : 'rgba(23, 20, 26, 0.88)';
+    g.fill();
+    g.lineWidth = 4;
+    g.strokeStyle = isSelf ? '#ffd700' : '#c9a35a';
+    g.stroke();
+
+    // Chấm biểu tượng online
+    g.beginPath();
+    g.arc(42, 48, 13, 0, Math.PI * 2);
+    g.fillStyle = isSelf ? '#22c55e' : '#38bdf8';
+    g.fill();
+    g.strokeStyle = '#ffffff';
+    g.lineWidth = 2.5;
+    g.stroke();
+
+    // Chữ tên khách tham quan
+    g.textAlign = 'left';
+    g.textBaseline = 'middle';
+    g.fillStyle = '#ffffff';
+    g.font = 'bold 30px "Be Vietnam Pro", system-ui, sans-serif';
+    let display = name || 'Khách tham quan';
+    if (g.measureText(display).width > 280) {
+      while (g.measureText(display + '...').width > 280 && display.length > 3) {
+        display = display.slice(0, -1);
+      }
+      display += '...';
+    }
+    g.fillText(display, 70, 48);
+
+    const t = new THREE.CanvasTexture(c);
+    t.encoding = THREE.sRGBEncoding;
+    return t;
+  }
+
+  // 7. Tạo nhóm đối tượng 3D cho một nhân vật
+  function taoNhomAvatar(playerData) {
+    const group = new THREE.Group();
+    group.userData = {
+      id: playerData.id,
+      name: playerData.name || 'Khách tham quan',
+      avatar: playerData.avatar || 'student_male',
+      room: playerData.room || 'lobby',
+      targetPos: new THREE.Vector3(playerData.x || 0, 0.85, playerData.z || 20),
+      targetYaw: playerData.yaw || 0,
+      isMoving: false,
+      walkPhase: Math.random() * Math.PI * 2,
+      lastSeen: Date.now()
+    };
+    group.position.set(playerData.x || 0, 0.85, playerData.z || 20);
+
+    // 1. Bóng đổ tròn trên sàn (y = 0.02)
+    const shadowGeo = new THREE.PlaneGeometry(0.75, 0.75);
+    const shadowMat = new THREE.MeshBasicMaterial({
+      map: layTextureBongDo(),
+      transparent: true,
+      depthWrite: false
+    });
+    const shadowMesh = new THREE.Mesh(shadowGeo, shadowMat);
+    shadowMesh.rotation.x = -Math.PI / 2;
+    shadowMesh.position.y = -0.83; // 0.85 - 0.83 = 0.02
+    group.add(shadowMesh);
+
+    // 2. Thân nhân vật (Plane billboard 0.85m x 1.7m)
+    const bodyGeo = new THREE.PlaneGeometry(0.85, 1.7);
+    const bodyMat = new THREE.MeshStandardMaterial({
+      map: layTextureAvatar(group.userData.avatar),
+      transparent: true,
+      alphaTest: 0.12,
+      roughness: 0.85,
+      metalness: 0,
+      side: THREE.DoubleSide
+    });
+    const bodyMesh = new THREE.Mesh(bodyGeo, bodyMat);
+    bodyMesh.position.y = 0; // Trọng tâm ở 0, trải từ y = -0.85 đến +0.85 (mặt sàn 0 đến 1.7m)
+    group.add(bodyMesh);
+    group.userData.bodyMesh = bodyMesh;
+    group.userData.bodyMat = bodyMat;
+
+    // 3. Bảng tên nổi (Floating Nametag) tại y = 1.83m
+    const tagGeo = new THREE.PlaneGeometry(0.95, 0.24);
+    const tagMat = new THREE.MeshBasicMaterial({
+      map: taoTextureBangTen(group.userData.name, false),
+      transparent: true,
+      side: THREE.DoubleSide
+    });
+    const tagMesh = new THREE.Mesh(tagGeo, tagMat);
+    tagMesh.position.y = 0.98; // 0.85 + 0.98 = 1.83m
+    group.add(tagMesh);
+    group.userData.tagMesh = tagMesh;
+    group.userData.tagMat = tagMat;
+
+    // Thiết lập hiển thị ban đầu
+    group.visible = (group.userData.room === (typeof S !== 'undefined' ? S.where : 'lobby'));
+
+    scene.add(group);
+    return group;
+  }
+
+  // 8. Cập nhật hoặc tạo mới nhân vật khi nhận dữ liệu từ xa
+  function capNhatHoacTaoAvatar(data) {
+    if (!data || !data.id || data.id === myId) return;
+
+    let group = remoteAvatars[data.id];
+    if (!group) {
+      group = taoNhomAvatar(data);
+      remoteAvatars[data.id] = group;
+    } else {
+      // Cập nhật vị trí đích để nội suy mượt mà
+      group.userData.targetPos.set(data.x || 0, 0.85, data.z || 20);
+      group.userData.targetYaw = data.yaw || 0;
+      group.userData.lastSeen = Date.now();
+
+      // Nếu đổi phòng
+      if (group.userData.room !== data.room) {
+        group.userData.room = data.room;
+        group.visible = (group.userData.room === (typeof S !== 'undefined' ? S.where : 'lobby'));
+      }
+
+      // Nếu đổi nhân vật
+      if (group.userData.avatar !== data.avatar && AVATAR_DEFS[data.avatar]) {
+        group.userData.avatar = data.avatar;
+        if (group.userData.bodyMat) {
+          group.userData.bodyMat.map = layTextureAvatar(data.avatar);
+          group.userData.bodyMat.needsUpdate = true;
+        }
+      }
+
+      // Nếu đổi tên
+      if (group.userData.name !== data.name) {
+        group.userData.name = data.name;
+        if (group.userData.tagMat) {
+          group.userData.tagMat.map = taoTextureBangTen(data.name, false);
+          group.userData.tagMat.needsUpdate = true;
+        }
+      }
+    }
+  }
+
+  function xoaAvatar(pid) {
+    const group = remoteAvatars[pid];
+    if (group) {
+      scene.remove(group);
+      delete remoteAvatars[pid];
+    }
+  }
+
+  // 9. Robot khách tham quan mô phỏng (Demo Simulation Bots)
+  // Giúp tạo không khí đông vui, nhộn nhịp trong trường ngay cả khi chưa kết nối mạng
+  const DEMO_BOTS = [
+    {
+      id: 'bot_lananh',
+      name: 'Lan Anh (7A1)',
+      avatar: 'student_female',
+      room: 'lobby',
+      state: 'walk', // walk | pause
+      pauseTimer: 0,
+      currentWp: 0,
+      speed: 1.4,
+      waypoints: [
+        { x: 0, z: 8, pause: 6, desc: 'Ngắm chân dung Bác Hồ' },
+        { x: -6.5, z: 9.5, pause: 5, desc: 'Xem gian Phòng 3' },
+        { x: -7.5, z: 18, pause: 5, desc: 'Dạo sảnh tiền sảnh' },
+        { x: 3, z: 16, pause: 6, desc: 'Xem trống đồng' },
+        { x: 6.8, z: 9.5, pause: 5, desc: 'Xem gian Phòng 4' },
+        { x: 1, z: 12, pause: 4, desc: 'Về trung tâm đại sảnh' }
+      ]
+    },
+    {
+      id: 'bot_baonam',
+      name: 'Bảo Nam (8A3)',
+      avatar: 'student_male',
+      room: 'lobby',
+      state: 'walk',
+      pauseTimer: 0,
+      currentWp: 2,
+      speed: 1.5,
+      waypoints: [
+        { x: -3, z: 16, pause: 6, desc: 'Khám phá cổng chính' },
+        { x: -8.5, z: 4, pause: 7, desc: 'Đến cửa Phòng 1' },
+        { x: -4, z: 6, pause: 5, desc: 'Xem bảng tiểu sử' },
+        { x: 8.5, z: 4, pause: 7, desc: 'Đến cửa Phòng 7' },
+        { x: 4, z: 10, pause: 5, desc: 'Dạo quanh sảnh chính' }
+      ]
+    }
+  ];
+
+  function capNhatDemoBots(dt) {
+    if (!demoBotsEnabled) {
+      DEMO_BOTS.forEach(b => {
+        if (remoteAvatars[b.id]) xoaAvatar(b.id);
+        delete remotePlayers[b.id];
+      });
+      return;
+    }
+
+    DEMO_BOTS.forEach(bot => {
+      // Đăng ký vào danh sách online
+      if (!remotePlayers[bot.id]) {
+        remotePlayers[bot.id] = {
+          id: bot.id,
+          name: bot.name,
+          avatar: bot.avatar,
+          room: bot.room,
+          x: bot.waypoints[bot.currentWp].x,
+          y: 1.7,
+          z: bot.waypoints[bot.currentWp].z,
+          yaw: 0,
+          updatedAt: Date.now(),
+          isBot: true
+        };
+        capNhatHoacTaoAvatar(remotePlayers[bot.id]);
+      }
+
+      const ag = remoteAvatars[bot.id];
+      if (!ag) return;
+
+      const wp = bot.waypoints[bot.currentWp];
+      if (bot.state === 'pause') {
+        bot.pauseTimer -= dt;
+        if (bot.pauseTimer <= 0) {
+          bot.state = 'walk';
+          bot.currentWp = (bot.currentWp + 1) % bot.waypoints.length;
+        }
+      } else {
+        const tx = wp.x, tz = wp.z;
+        const dx = tx - ag.position.x;
+        const dz = tz - ag.position.z;
+        const dist = Math.sqrt(dx * dx + dz * dz);
+
+        if (dist < 0.25) {
+          bot.state = 'pause';
+          bot.pauseTimer = wp.pause || 5;
+        } else {
+          const moveStep = Math.min(dist, bot.speed * dt);
+          ag.userData.targetPos.x += (dx / dist) * moveStep;
+          ag.userData.targetPos.z += (dz / dist) * moveStep;
+          // Cập nhật vị trí trong danh sách
+          remotePlayers[bot.id].x = ag.userData.targetPos.x;
+          remotePlayers[bot.id].z = ag.userData.targetPos.z;
+        }
+      }
+    });
+  }
+
+  // 10. Vòng lặp render Animation (chạy mỗi frame cùng Three.js)
+  function capNhatVongLapMultiplayer(now) {
+    if (typeof camera === 'undefined') return;
+
+    const dt = 0.016; // xấp xỉ 60fps
+
+    // Cập nhật Demo Bots
+    capNhatDemoBots(dt);
+
+    // Cập nhật vị trí và hiệu ứng cho tất cả Avatars
+    const currentRoom = (typeof S !== 'undefined' ? S.where : 'lobby');
+    for (const pid in remoteAvatars) {
+      const ag = remoteAvatars[pid];
+      if (!ag) continue;
+
+      const inSameRoom = (ag.userData.room === currentRoom);
+      ag.visible = inSameRoom;
+      if (!inSameRoom) continue;
+
+      // Xoay bảng tên và thân nhân vật hướng về Camera (Billboard)
+      if (ag.userData.bodyMesh) ag.userData.bodyMesh.quaternion.copy(camera.quaternion);
+      if (ag.userData.tagMesh) ag.userData.tagMesh.quaternion.copy(camera.quaternion);
+
+      // Nội suy vị trí Lerp để bước đi mượt mà
+      const tp = ag.userData.targetPos;
+      const dx = tp.x - ag.position.x;
+      const dz = tp.z - ag.position.z;
+      const dist = Math.sqrt(dx * dx + dz * dz);
+
+      if (dist > 0.02) {
+        ag.position.x += dx * 0.16;
+        ag.position.z += dz * 0.16;
+        ag.userData.isMoving = true;
+        ag.userData.walkPhase = (ag.userData.walkPhase || 0) + 0.22;
+        // Hiệu ứng nhún chân khi bước đi (Walking Bobbing)
+        if (ag.userData.bodyMesh) {
+          ag.userData.bodyMesh.position.y = Math.abs(Math.sin(ag.userData.walkPhase * 1.5)) * 0.045;
+          ag.userData.bodyMesh.rotation.z = Math.sin(ag.userData.walkPhase * 0.75) * 0.035;
+        }
+      } else {
+        ag.position.x = tp.x;
+        ag.position.z = tp.z;
+        ag.userData.isMoving = false;
+        if (ag.userData.bodyMesh) {
+          ag.userData.bodyMesh.position.y = 0;
+          ag.userData.bodyMesh.rotation.z = 0;
+        }
+      }
+    }
+
+    // Định kỳ gửi tọa độ bản thân lên Firebase
+    phatToaDoBanThan(false);
+  }
+
+  // Đăng ký vào ANIM loop của bảo tàng 3D
+  if (typeof ANIM !== 'undefined' && Array.isArray(ANIM)) {
+    ANIM.push(capNhatVongLapMultiplayer);
+  } else {
+    // Dự phòng requestAnimationFrame nếu ANIM chưa sẵn sàng
+    function loopFallback() {
+      capNhatVongLapMultiplayer(Date.now());
+      requestAnimationFrame(loopFallback);
+    }
+    requestAnimationFrame(loopFallback);
+  }
+
+  // 11. Phát tọa độ của bản thân (Throttled Broadcast ~130ms)
+  function phatToaDoBanThan(force) {
+    if (!firebaseDb || !isFirebaseConnected) return;
+    if (typeof S === 'undefined') return;
+
+    const now = Date.now();
+    if (!force && now - lastBroadcastTime < 130) return;
+
+    const dist = S.pos.distanceTo(lastBroadcastPos);
+    const yawDiff = Math.abs(S.yaw - lastBroadcastYaw);
+    const roomChanged = (S.where !== lastBroadcastRoom);
+
+    if (!force && dist < 0.03 && yawDiff < 0.03 && !roomChanged) return;
+
+    lastBroadcastTime = now;
+    lastBroadcastPos.copy(S.pos);
+    lastBroadcastYaw = S.yaw;
+    lastBroadcastRoom = S.where;
+
+    try {
+      const myRef = firebaseDb.ref('players/' + myId);
+      myRef.set({
+        id: myId,
+        name: myName,
+        avatar: myAvatar,
+        room: S.where || 'lobby',
+        x: Math.round(S.pos.x * 100) / 100,
+        y: Math.round(S.pos.y * 100) / 100,
+        z: Math.round(S.pos.z * 100) / 100,
+        yaw: Math.round(S.yaw * 100) / 100,
+        updatedAt: now
+      });
+    } catch (e) {
+      console.warn('Lỗi khi gửi tọa độ lên Firebase:', e);
+    }
+  }
+
+  // 12. Khởi tạo kết nối Firebase Realtime Database
+  function khoiTaoFirebase() {
+    const savedUrl = localStorage.getItem('bt3d_firebase_url') || FIREBASE_CONFIG.databaseURL;
+    if (!savedUrl || !savedUrl.startsWith('https://') || (!savedUrl.includes('firebasedatabase.app') && !savedUrl.includes('firebaseio.com'))) {
+      capNhatTrangThaiKetNoi('demo');
+      return;
+    }
+
+    const cleanUrl = savedUrl.trim();
+    if (typeof firebase === 'undefined') {
+      console.warn('Thư viện Firebase SDK chưa được tải.');
+      capNhatTrangThaiKetNoi('error', 'Chưa tải được Firebase SDK từ CDN');
+      return;
+    }
+
+    try {
+      if (!firebase.apps.length) {
+        firebase.initializeApp({ databaseURL: cleanUrl });
+      }
+      firebaseDb = firebase.database();
+
+      // Kiểm tra trạng thái mạng
+      const connectedRef = firebaseDb.ref('.info/connected');
+      connectedRef.on('value', (snap) => {
+        if (snap.val() === true) {
+          isFirebaseConnected = true;
+          capNhatTrangThaiKetNoi('connected');
+
+          // Đăng ký onDisconnect để tự xóa khi tắt tab trình duyệt
+          const myRef = firebaseDb.ref('players/' + myId);
+          myRef.onDisconnect().remove();
+
+          // Phát thông tin bản thân ngay lập tức
+          phatToaDoBanThan(true);
+        } else {
+          isFirebaseConnected = false;
+          capNhatTrangThaiKetNoi('connecting');
+        }
+      });
+
+      // Lắng nghe người chơi khác
+      const playersRef = firebaseDb.ref('players');
+      playersRef.on('child_added', (snap) => {
+        const val = snap.val();
+        if (!val || val.id === myId) return;
+        remotePlayers[val.id] = val;
+        capNhatHoacTaoAvatar(val);
+        capNhatSoLuongOnline();
+      });
+
+      playersRef.on('child_changed', (snap) => {
+        const val = snap.val();
+        if (!val || val.id === myId) return;
+        remotePlayers[val.id] = val;
+        capNhatHoacTaoAvatar(val);
+        capNhatSoLuongOnline();
+      });
+
+      playersRef.on('child_removed', (snap) => {
+        const pid = snap.key;
+        if (pid && pid !== myId) {
+          xoaAvatar(pid);
+          delete remotePlayers[pid];
+          capNhatSoLuongOnline();
+        }
+      });
+
+      // Tự động dọn dẹp khi đóng tab hoặc thoát web
+      window.addEventListener('beforeunload', () => {
+        if (firebaseDb) {
+          try { firebaseDb.ref('players/' + myId).remove(); } catch (e) { }
+        }
+      });
+
+      // Quét dọn các client bị tắt đột ngột (inactive > 45s)
+      setInterval(() => {
+        const now = Date.now();
+        for (const pid in remotePlayers) {
+          if (remotePlayers[pid].isBot) continue;
+          if (now - (remotePlayers[pid].updatedAt || 0) > 45000) {
+            xoaAvatar(pid);
+            delete remotePlayers[pid];
+          }
+        }
+        capNhatSoLuongOnline();
+      }, 15000);
+
+    } catch (err) {
+      console.error('Lỗi khởi tạo Firebase:', err);
+      capNhatTrangThaiKetNoi('error', err.message);
+    }
+  }
+
+  // 13. Cập nhật nút đếm trên thanh công cụ
+  function capNhatSoLuongOnline() {
+    let count = 1; // bản thân
+    for (const pid in remotePlayers) {
+      if (pid !== myId) count++;
+    }
+
+    const txt = document.getElementById('mpBtnTxt');
+    if (txt) txt.textContent = 'Bạn cùng xem (' + count + ')';
+
+    const modalCount = document.getElementById('mpOnlineCountBadge');
+    if (modalCount) modalCount.textContent = count;
+
+    if (hopMultiplayer && hopMultiplayer.style.display !== 'none') {
+      veDanhSachOnline();
+    }
+  }
+
+  function capNhatTrangThaiKetNoi(status, msg) {
+    const badge = document.getElementById('mpStatusBadge');
+    const txt = document.getElementById('mpStatusDesc');
+    if (!badge || !txt) return;
+
+    if (status === 'connected') {
+      badge.className = 'mp-badge-status green';
+      badge.textContent = '🟢 Đã kết nối Firebase';
+      txt.textContent = 'Đồng bộ thời gian thực mượt mà qua Firebase Realtime Database.';
+    } else if (status === 'connecting') {
+      badge.className = 'mp-badge-status yellow';
+      badge.textContent = '🟡 Đang kết nối...';
+      txt.textContent = 'Đang thiết lập liên kết đến máy chủ Firebase.';
+    } else if (status === 'demo') {
+      badge.className = 'mp-badge-status blue';
+      badge.textContent = '🤖 Chế độ mô phỏng (Demo Bots)';
+      txt.textContent = 'Đang có học sinh mô phỏng cùng tham quan. Bạn có thể kết nối Firebase để gặp khách thật từ khắp nơi.';
+    } else {
+      badge.className = 'mp-badge-status red';
+      badge.textContent = '🔴 Chưa kết nối Firebase';
+      txt.textContent = msg || 'Chưa cấu hình đường dẫn Database URL hợp lệ.';
+    }
+  }
+
+  // 14. Giao diện Modal quản lý Bạn cùng xem
+  let hopMultiplayer = null;
+
+  function taoGiaoDienModal() {
+    if (hopMultiplayer) return;
+
+    hopMultiplayer = document.createElement('div');
+    hopMultiplayer.id = 'multiplayerModal';
+    hopMultiplayer.className = 'mp-nen';
+    hopMultiplayer.setAttribute('role', 'dialog');
+    hopMultiplayer.setAttribute('aria-modal', 'true');
+    hopMultiplayer.style.display = 'none';
+
+    hopMultiplayer.innerHTML = `
+      <div class="mp-hop">
+        <div class="mp-dau">
+          <div class="mp-dau-trai">
+            <span class="mp-dau-icon">👥</span>
+            <div>
+              <small>TRƯỜNG THCS AN NHƠN · BẢO TÀNG 3D</small>
+              <b>BẠN CÙNG THAM QUAN (ONLINE)</b>
+            </div>
+          </div>
+          <button type="button" class="mp-x" id="mpCloseBtn" aria-label="Đóng">×</button>
+        </div>
+
+        <div class="mp-tab-bar">
+          <button type="button" class="mp-tab active" data-tab="tab-profile">👤 Nhân vật & Tên</button>
+          <button type="button" class="mp-tab" data-tab="tab-online">👥 Đang online (<span id="mpOnlineCountBadge">1</span>)</button>
+          <button type="button" class="mp-tab" data-tab="tab-firebase">⚡ Cấu hình Firebase</button>
+        </div>
+
+        <div class="mp-than">
+          <!-- TAB 1: NHÂN VẬT & TÊN -->
+          <div class="mp-panel active" id="panel-tab-profile">
+            <div class="mp-nhom">
+              <label for="mpInputName">Tên hoặc biệt danh hiển thị của bạn:</label>
+              <div class="mp-input-wrap">
+                <input type="text" id="mpInputName" maxlength="32" placeholder="Ví dụ: Thầy Hùng, Bảo Nam 8A3, Cựu học sinh...">
+                <button type="button" class="mp-nut-sm" id="mpRandomNameBtn" title="Tạo tên ngẫu nhiên">🎲 Đổi ngẫu nhiên</button>
+              </div>
+            </div>
+
+            <label class="mp-label-avatars">Chọn nhân vật đại diện cho bạn trong bảo tàng 3D:</label>
+            <div class="mp-avatar-grid" id="mpAvatarGrid">
+              <!-- Render 4 avatar cards -->
+            </div>
+
+            <div class="mp-chan-nut">
+              <button type="button" class="mp-nut primary" id="mpSaveProfileBtn">💾 Lưu & Áp dụng nhân vật</button>
+            </div>
+          </div>
+
+          <!-- TAB 2: DANH SÁCH ONLINE -->
+          <div class="mp-panel" id="panel-tab-online">
+            <div class="mp-online-header">
+              <b>Danh sách khách đang cùng tham quan bảo tàng</b>
+              <p>Mỗi khi bạn bước vào cùng một phòng với ai đó, bạn sẽ nhìn thấy nhân vật của họ di chuyển và tham quan các hiện vật 3D!</p>
+            </div>
+            <div class="mp-online-list" id="mpOnlineList">
+              <!-- Render danh sách online -->
+            </div>
+          </div>
+
+          <!-- TAB 3: CẤU HÌNH FIREBASE -->
+          <div class="mp-panel" id="panel-tab-firebase">
+            <div class="mp-status-box">
+              <div class="mp-status-top">
+                <span id="mpStatusBadge" class="mp-badge-status blue">🤖 Chế độ mô phỏng (Demo Bots)</span>
+              </div>
+              <p id="mpStatusDesc">Đang có học sinh mô phỏng cùng tham quan để bạn trải nghiệm ngay lập tức.</p>
+            </div>
+
+            <div class="mp-nhom" style="margin-top:14px">
+              <label for="mpFirebaseUrlInput">Đường dẫn Firebase Realtime Database URL:</label>
+              <input type="url" id="mpFirebaseUrlInput" placeholder="https://[ten-du-an]-default-rtdb.asia-southeast1.firebasedatabase.app">
+              <div class="mp-row-nut">
+                <button type="button" class="mp-nut primary" id="mpSaveFirebaseBtn">💾 Lưu & Kết nối ngay</button>
+                <button type="button" class="mp-nut secondary" id="mpTestFirebaseBtn">🔄 Thử kết nối lại</button>
+              </div>
+            </div>
+
+            <div class="mp-toggle-box">
+              <label class="mp-switch-label">
+                <input type="checkbox" id="mpDemoBotsToggle" checked>
+                <span>Bật Robot học sinh mô phỏng (Demo Bots)</span>
+              </label>
+              <small>Khi bật, bảo tàng sẽ có các bạn học sinh dạo bước ngắm hiện vật, tạo không khí vui tươi sinh động kể cả khi vắng người.</small>
+            </div>
+
+            <details class="mp-huongdan-box">
+              <summary><b>📖 Hướng dẫn tạo Firebase Realtime Database miễn phí trong 2 phút</b></summary>
+              <div class="mp-hd-noi-dung">
+                <div class="mp-hd-buoc">
+                  <div class="mp-so">1</div>
+                  <div>Truy cập <b><a href="https://console.firebase.google.com" target="_blank" rel="noopener">console.firebase.google.com</a></b> và đăng nhập bằng tài khoản Google (Gmail) miễn phí.</div>
+                </div>
+                <div class="mp-hd-buoc">
+                  <div class="mp-so">2</div>
+                  <div>Bấm <b>Thêm dự án</b> (Add project) &rarr; Đặt tên (ví dụ: <code>thcs-an-nhon-3d</code>) &rarr; Bấm Tiếp tục &rarr; Tạo dự án.</div>
+                </div>
+                <div class="mp-hd-buoc">
+                  <div class="mp-so">3</div>
+                  <div>Ở cột bên trái chọn <b>Build</b> &rarr; <b>Realtime Database</b> &rarr; Bấm <b>Tạo cơ sở dữ liệu</b> (Create Database). Chọn vị trí máy chủ <b>Singapore (asia-southeast1)</b> để tốc độ nhanh nhất tại Việt Nam.</div>
+                </div>
+                <div class="mp-hd-buoc">
+                  <div class="mp-so">4</div>
+                  <div>Ở bước Quy tắc bảo mật, chọn <b>Bắt đầu ở chế độ thử nghiệm (Start in test mode)</b> &rarr; Bấm <b>Bật (Enable)</b>.</div>
+                </div>
+                <div class="mp-hd-buoc">
+                  <div class="mp-so">5</div>
+                  <div>Sao chép (Copy) đường dẫn URL hiển thị ở đầu trang (dạng <code>https://...firebasedatabase.app</code>) và dán vào ô nhập bên trên rồi bấm <b>Lưu & Kết nối</b> là hoàn tất!</div>
+                </div>
+              </div>
+            </details>
+          </div>
+        </div>
+      </div>
+    `;
+
+    document.body.appendChild(hopMultiplayer);
+
+    // Xử lý chuyển Tab
+    const tabs = hopMultiplayer.querySelectorAll('.mp-tab');
+    const panels = hopMultiplayer.querySelectorAll('.mp-panel');
+    tabs.forEach(tab => {
+      tab.onclick = () => {
+        tabs.forEach(t => t.classList.remove('active'));
+        panels.forEach(p => p.classList.remove('active'));
+        tab.classList.add('active');
+        const targetId = 'panel-' + tab.dataset.tab;
+        const targetPanel = hopMultiplayer.querySelector('#' + targetId);
+        if (targetPanel) targetPanel.classList.add('active');
+        if (tab.dataset.tab === 'tab-online') veDanhSachOnline();
+      };
+    });
+
+    // Nút đóng
+    hopMultiplayer.querySelector('#mpCloseBtn').onclick = dongMultiplayerModal;
+    hopMultiplayer.onclick = (e) => { if (e.target === hopMultiplayer) dongMultiplayerModal(); };
+
+    // Tên ngẫu nhiên
+    hopMultiplayer.querySelector('#mpRandomNameBtn').onclick = () => {
+      const mauTen = [
+        'Học sinh An Nhơn', 'Bảo Nam 8A3', 'Lan Anh 7A1', 'Minh Khang 9A2',
+        'Thầy giáo Tổng phụ trách', 'Cô giáo Ngữ văn', 'Cựu học sinh 2019', 'Khách tham quan quý mến'
+      ];
+      const r = mauTen[Math.floor(Math.random() * mauTen.length)];
+      hopMultiplayer.querySelector('#mpInputName').value = r;
+    };
+
+    // Nút lưu thông tin nhân vật
+    hopMultiplayer.querySelector('#mpSaveProfileBtn').onclick = () => {
+      const inp = hopMultiplayer.querySelector('#mpInputName');
+      const val = (inp.value || '').trim();
+      if (val) {
+        myName = val;
+        try { localStorage.setItem('bt3d_mp_name', myName); } catch (e) { }
+      }
+      try { localStorage.setItem('bt3d_mp_avatar', myAvatar); } catch (e) { }
+
+      // Phát thông tin mới
+      phatToaDoBanThan(true);
+      hienThongBaoToast('Đã cập nhật nhân vật và tên hiển thị!');
+      dongMultiplayerModal();
+    };
+
+    // Toggle Demo Bots
+    const toggle = hopMultiplayer.querySelector('#mpDemoBotsToggle');
+    toggle.checked = demoBotsEnabled;
+    toggle.onchange = () => {
+      demoBotsEnabled = toggle.checked;
+      try { localStorage.setItem('bt3d_mp_demobots', demoBotsEnabled ? 'true' : 'false'); } catch (e) { }
+      capNhatSoLuongOnline();
+    };
+
+    // Nút lưu Firebase URL
+    hopMultiplayer.querySelector('#mpSaveFirebaseBtn').onclick = () => {
+      const inp = hopMultiplayer.querySelector('#mpFirebaseUrlInput');
+      const url = (inp.value || '').trim();
+      try { localStorage.setItem('bt3d_firebase_url', url); } catch (e) { }
+      khoiTaoFirebase();
+      hienThongBaoToast('Đang kết nối đến máy chủ Firebase...');
+    };
+
+    hopMultiplayer.querySelector('#mpTestFirebaseBtn').onclick = () => {
+      khoiTaoFirebase();
+      hienThongBaoToast('Đang thử kết nối lại...');
+    };
+  }
+
+  // Vẽ 4 thẻ chọn Avatar vào Modal
+  function veAvatarCards() {
+    const grid = hopMultiplayer.querySelector('#mpAvatarGrid');
+    if (!grid) return;
+    grid.innerHTML = '';
+
+    Object.keys(AVATAR_DEFS).forEach(k => {
+      const av = AVATAR_DEFS[k];
+      const card = document.createElement('div');
+      card.className = 'mp-avatar-card' + (myAvatar === k ? ' selected' : '');
+      card.dataset.id = k;
+
+      // Tạo preview canvas thumbnail
+      const canvas = document.createElement('canvas');
+      canvas.width = 128; canvas.height = 256;
+      canvas.className = 'mp-avatar-preview-canvas';
+      const g = canvas.getContext('2d');
+      veNhanVatAvatar(g, k, 128, 256);
+
+      card.innerHTML = `
+        <div class="mp-card-tick">✓</div>
+        <div class="mp-card-canvas-wrap"></div>
+        <div class="mp-card-info">
+          <b>${av.name}</b>
+          <span class="mp-role-pill">${av.role}</span>
+          <small>${av.desc}</small>
+        </div>
+      `;
+      card.querySelector('.mp-card-canvas-wrap').appendChild(canvas);
+
+      card.onclick = () => {
+        grid.querySelectorAll('.mp-avatar-card').forEach(c => c.classList.remove('selected'));
+        card.classList.add('selected');
+        myAvatar = k;
+      };
+
+      grid.appendChild(card);
+    });
+  }
+
+  // Vẽ danh sách khách tham quan Online vào Tab 2
+  function veDanhSachOnline() {
+    const list = hopMultiplayer.querySelector('#mpOnlineList');
+    if (!list) return;
+    list.innerHTML = '';
+
+    const currentWhere = (typeof S !== 'undefined' ? S.where : 'lobby');
+
+    // 1. Bản thân
+    const myItem = document.createElement('div');
+    myItem.className = 'mp-user-row self';
+    const myDef = AVATAR_DEFS[myAvatar] || AVATAR_DEFS.student_male;
+    myItem.innerHTML = `
+      <div class="mp-user-avatar">${myDef.icon}</div>
+      <div class="mp-user-meta">
+        <div class="mp-user-name"><b>${myName}</b> <span class="mp-badge-you">Bạn</span></div>
+        <div class="mp-user-loc">📍 ${layTenPhong(currentWhere)}</div>
+      </div>
+      <div class="mp-user-status online">Đang online</div>
+    `;
+    list.appendChild(myItem);
+
+    // 2. Những người chơi khác & Bots
+    const others = [];
+    for (const pid in remotePlayers) {
+      if (pid === myId) continue;
+      others.push(remotePlayers[pid]);
+    }
+
+    if (!others.length) {
+      const empty = document.createElement('div');
+      empty.className = 'mp-empty-tip';
+      empty.innerHTML = 'Hiện chỉ có một mình bạn trong bảo tàng. Bạn có thể bật <b>Robot mô phỏng</b> ở tab Cấu hình hoặc gửi link web cho bạn bè cùng vào trải nghiệm nhé!';
+      list.appendChild(empty);
+      return;
+    }
+
+    others.forEach(u => {
+      const row = document.createElement('div');
+      const isSame = (u.room === currentWhere);
+      row.className = 'mp-user-row' + (isSame ? ' same-room' : '');
+      const def = AVATAR_DEFS[u.avatar] || AVATAR_DEFS.student_male;
+
+      row.innerHTML = `
+        <div class="mp-user-avatar">${def.icon}</div>
+        <div class="mp-user-meta">
+          <div class="mp-user-name">
+            <b>${u.name || 'Khách tham quan'}</b>
+            ${u.isBot ? '<span class="mp-badge-bot">Robot</span>' : ''}
+          </div>
+          <div class="mp-user-loc">${isSame ? '🌟 <b>Cùng phòng với bạn:</b> ' : '📍 '}${layTenPhong(u.room)}</div>
+        </div>
+        <div class="mp-user-status ${isSame ? 'same' : 'diff'}">${isSame ? 'Đang nhìn thấy nhau' : 'Phòng khác'}</div>
+      `;
+      list.appendChild(row);
+    });
+  }
+
+  function moMultiplayerModal() {
+    taoGiaoDienModal();
+    hopMultiplayer.querySelector('#mpInputName').value = myName;
+    const urlInp = hopMultiplayer.querySelector('#mpFirebaseUrlInput');
+    urlInp.value = localStorage.getItem('bt3d_firebase_url') || FIREBASE_CONFIG.databaseURL || '';
+    veAvatarCards();
+    veDanhSachOnline();
+    hopMultiplayer.style.display = 'flex';
+  }
+
+  function dongMultiplayerModal() {
+    if (hopMultiplayer) hopMultiplayer.style.display = 'none';
+  }
+
+  function hienThongBaoToast(msg) {
+    if (typeof showToast === 'function') {
+      showToast(msg);
+    } else {
+      console.log('[Multiplayer]', msg);
+    }
+  }
+
+  window.moMultiplayerModal = moMultiplayerModal;
+  window.dongMultiplayerModal = dongMultiplayerModal;
+
+  // 15. Tạo nút trên thanh công cụ Header (đặt cạnh Hộ chiếu)
+  function ganNutMultiplayer() {
+    const help = document.getElementById('btnHelp');
+    const hc = document.getElementById('btnHoChieu');
+    if (!help || !help.parentNode) return;
+
+    if (document.getElementById('btnMultiplayer')) return;
+
+    const nutMP = document.createElement('button');
+    nutMP.className = 'tbtn';
+    nutMP.id = 'btnMultiplayer';
+    nutMP.title = 'Khách cùng tham quan (Online)';
+    nutMP.innerHTML = `
+      <span class="mp-pulse-dot"></span>
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="width:18px;height:18px">
+        <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/>
+        <circle cx="9" cy="7" r="4"/>
+        <path d="M23 21v-2a4 4 0 0 0-3-3.87"/>
+        <path d="M16 3.13a4 4 0 0 1 0 7.75"/>
+      </svg>
+      <span id="mpBtnTxt">Bạn cùng xem (1)</span>
+    `;
+    nutMP.onclick = moMultiplayerModal;
+
+    if (hc && hc.parentNode === help.parentNode) {
+      help.parentNode.insertBefore(nutMP, hc);
+    } else {
+      help.parentNode.insertBefore(nutMP, help);
+    }
+
+    capNhatSoLuongOnline();
+  }
+
+  // Khởi động
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', () => {
+      ganNutMultiplayer();
+      khoiTaoFirebase();
+    });
+  } else {
+    ganNutMultiplayer();
+    khoiTaoFirebase();
+  }
+})();
       /* ---------- Ban thực hiện: biển đồng trong đại sảnh + mục trong hộp Hướng dẫn ---------- */
       (function () {
         const BTH = {
