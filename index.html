@@ -5941,11 +5941,9 @@
       function buildLobby(logoImg) {
         const L = new T.Group(); scene.add(L);
         const cream = new T.MeshStandardMaterial({ color: 0xf4e6c8, roughness: .9, side: T.BackSide }), dado = new T.MeshStandardMaterial({ color: 0x6b3f22, roughness: .45, side: T.BackSide });
-        // sàn khảm tỏa tròn, logo ở tâm
+        // sàn khảm tỏa tròn (họa tiết trống đồng)
         const fl = new T.Mesh(new T.CircleGeometry(R0, 128), mat({ map: radialFloorTex(), roughness: .22, metalness: .06 })); fl.rotation.x = -Math.PI / 2; L.add(fl);
         const logoTex = new T.Texture(logoImg); logoTex.encoding = T.sRGBEncoding; logoTex.anisotropy = maxAniso; logoTex.needsUpdate = true;
-        const med = new T.Mesh(new T.CircleGeometry(1.6, 96), new T.MeshBasicMaterial({ map: logoTex, toneMapped: false })); med.rotation.x = -Math.PI / 2; med.position.y = .006; L.add(med);
-        const mr = new T.Mesh(new T.RingGeometry(1.6, 1.78, 64), CBRONZE); mr.rotation.x = -Math.PI / 2; mr.position.y = .007; L.add(mr);
         const cpt = plane(3, R0 - 2.2, mat({ map: carpetTex(), roughness: .95 })); cpt.rotation.x = -Math.PI / 2; cpt.position.set(0, .004, 2.2 + (R0 - 2.2) / 2); L.add(cpt);
         // vách tầng 1 có các ô mở vào 6 gian và cổng chính
         const open = Object.values(ANG).map(a => [a - 12.4, a + 12.4]).concat([[170.3, 189.7]]).map(([a, b]) => [(a + 360) % 360, (b + 360) % 360]).map(([a, b]) => b < a ? [a, b + 360] : [a, b]).sort((p, q) => p[0] - q[0]);
