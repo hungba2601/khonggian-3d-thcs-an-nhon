@@ -2595,6 +2595,8 @@
     body.cinema-on .hint,
     body.cinema-on .pad,
     body.cinema-on #minimap,
+    body.cinema-on #mpChatHud,
+    body.cinema-on .mp-chat-hud,
     body.cinema-on .caption,
     body.cinema-on .guide,
     body.cinema-on .tip {
@@ -4521,25 +4523,40 @@
       display: none !important;
     }
 
+    /* Giao diện Web / Desktop: Nút trò chuyện & nội dung chat hiển thị bên phải màn hình (phía trên sơ đồ mặt bằng) */
     .mp-chat-hud {
       position: fixed;
-      left: 18px;
-      bottom: 128px;
+      right: 18px;
+      left: auto;
+      bottom: calc(env(safe-area-inset-bottom, 0px) + 228px);
       width: 320px;
       max-width: calc(100vw - 36px);
       z-index: 85;
       pointer-events: none;
       display: flex;
       flex-direction: column;
+      align-items: flex-end;
       gap: 8px;
       font-family: "Be Vietnam Pro", system-ui, -apple-system, sans-serif;
     }
 
+    /* Giao diện Điện thoại (<= 820px): Giữ nguyên vị trí bên trái như cũ */
     @media (max-width: 820px) {
       .mp-chat-hud {
         left: 12px;
+        right: auto;
         bottom: 128px;
         width: 270px;
+        align-items: flex-start;
+      }
+
+      .mp-chat-feed {
+        align-items: flex-start !important;
+        max-height: calc(100vh - 220px) !important;
+      }
+
+      .mp-chat-open-btn {
+        align-self: flex-start !important;
       }
 
       .mp-chat-open-btn kbd {
@@ -4550,8 +4567,17 @@
     .mp-chat-feed {
       display: flex;
       flex-direction: column;
+      align-items: flex-end;
       gap: 6px;
+      width: 100%;
+      max-height: calc(100vh - 340px);
+      overflow-y: auto;
+      scrollbar-width: none;
       pointer-events: none;
+    }
+
+    .mp-chat-feed::-webkit-scrollbar {
+      display: none;
     }
 
     .mp-chat-msg {
@@ -4569,6 +4595,9 @@
       animation: mpSlideIn 0.3s cubic-bezier(0.16, 1, 0.3, 1);
       transition: opacity 0.5s ease;
       word-break: break-word;
+      width: 100%;
+      box-sizing: border-box;
+      text-align: left;
     }
 
     @keyframes mpSlideIn {
@@ -4690,7 +4719,7 @@
 
     .mp-chat-open-btn {
       pointer-events: auto;
-      align-self: flex-start;
+      align-self: flex-end;
       display: inline-flex;
       align-items: center;
       gap: 6px;
