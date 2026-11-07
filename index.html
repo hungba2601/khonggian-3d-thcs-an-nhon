@@ -1784,7 +1784,11 @@
     .intro .rooms,
     .intro .ropen,
     .intro .joystick-pad,
-    .intro .pad {
+    .intro .pad,
+    .intro #mpChatHud,
+    .intro .mp-chat-hud,
+    body.intro #mpChatHud,
+    body.intro .mp-chat-hud {
       display: none !important
     }
 
@@ -4107,6 +4111,16 @@
     /* =====================================================================
        HỆ THỐNG TRÒ CHUYỆN & TƯƠNG TÁC GIỮA CÁC KHÁCH THAM QUAN BẢO TÀNG 3D
        ===================================================================== */
+    /* Ẩn hoàn toàn Chat HUD và nút trò chuyện khi ở màn hình Trang chủ (Intro) */
+    body.intro .mp-chat-hud,
+    .intro .mp-chat-hud,
+    body.intro #mpChatHud,
+    .intro #mpChatHud,
+    body:has(#welcome:not([hidden]):not(.out)) #mpChatHud,
+    body:has(#welcome:not([hidden]):not(.out)) .mp-chat-hud {
+      display: none !important;
+    }
+
     .mp-chat-hud {
       position: fixed;
       left: 18px;
@@ -4125,6 +4139,9 @@
         left: 12px;
         bottom: 128px;
         width: 270px;
+      }
+      .mp-chat-open-btn kbd {
+        display: none !important;
       }
     }
     .mp-chat-feed {
@@ -4340,7 +4357,7 @@
 
 </head>
 
-<body>
+<body class="intro">
   <div id="stage" aria-label="Không gian 3D Trường THCS An Nhơn"></div>
 
   <header class="brand" id="brandHome" title="Quay về trang chủ ban đầu (chọn không gian)" role="button" tabindex="0">
@@ -7500,7 +7517,16 @@
           setTimeout(() => { toast.hidden = true; }, 400);
         }, 4000);
       }
-      function skipIntro() { if (S.entered) return; S.entered = true; welcome.hidden = true; portal.force = true; portal.open = 1; showMobileTip(); }
+      function skipIntro() {
+        if (S.entered) return;
+        S.entered = true;
+        welcome.hidden = true;
+        portal.force = true;
+        portal.open = 1;
+        document.body.classList.remove('intro');
+        if (typeof capNhatHienThiChatHud === 'function') capNhatHienThiChatHud();
+        showMobileTip();
+      }
 
       async function enterRoom(id) {
         const R = ROOMS[id]; if (!R || S.busy) return; skipIntro(); S.busy = true; closeDrawer(); S.tour = false; setTourBtn(); markNav(id);
@@ -7556,6 +7582,8 @@
         S.tour = false;
         setTourBtn();
         markNav('lobby');
+        document.body.classList.add('intro');
+        if (typeof capNhatHienThiChatHud === 'function') capNhatHienThiChatHud();
         updateCaption();
 
         const welcome = $('#welcome');
@@ -7926,6 +7954,7 @@
 
       function updateCaption() {
         document.body.classList.toggle('intro', !S.entered);
+        if (typeof capNhatHienThiChatHud === 'function') capNhatHienThiChatHud();
         const w = S.where;
         const switchBtn = $('#btnSwitchSpace');
         const switchTxt = $('#switchSpaceText');
@@ -10690,6 +10719,14 @@
 
   // Giao diện Khung Live Chat (Bottom Left)
   let hopChatHud = null;
+
+  function capNhatHienThiChatHud() {
+    if (!hopChatHud) return;
+    const isIntro = (typeof S !== 'undefined' && !S.entered) || document.body.classList.contains('intro');
+    hopChatHud.style.display = isIntro ? 'none' : 'flex';
+  }
+  window.capNhatHienThiChatHud = capNhatHienThiChatHud;
+
   function taoGiaoDienChatHud() {
     if (hopChatHud) return;
 
@@ -10698,12 +10735,15 @@
     hopChatHud.className = 'mp-chat-hud';
     hopChatHud.innerHTML = `
       <div class="mp-chat-feed" id="mpChatFeed"></div>
-      <button type="button" class="mp-chat-open-btn" id="mpOpenChatBtn" title="Mở hộp thoại trò chuyện (Phím C)">
+      <button type="button" class="mp-chat-open-btn" id="mpOpenChatBtn" title="Mở hộp thoại trò chuyện">
         <span>💬 Trò chuyện</span>
         <kbd>C</kbd>
       </button>
     `;
     document.body.appendChild(hopChatHud);
+
+    // Đảm bảo không hiển thị trên màn hình trang chủ / chào
+    capNhatHienThiChatHud();
 
     hopChatHud.querySelector('#mpOpenChatBtn').onclick = () => {
       moHopThoaiTuongTac('all');
@@ -10713,6 +10753,7 @@
   // Thêm tin nhắn vào khung Live Chat trên màn hình
   function themTinNhanVaoChatHud(msgData, isSelf) {
     taoGiaoDienChatHud();
+    capNhatHienThiChatHud();
     const feed = document.getElementById('mpChatFeed');
     if (!feed) return;
 
