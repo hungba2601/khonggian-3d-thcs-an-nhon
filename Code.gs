@@ -1,13 +1,12 @@
 // ====================================================================
 // BACKEND GOOGLE APPS SCRIPT CHO BẢO TÀNG 3D - THCS AN NHƠN
-// 1. GHI NHẬN & ĐẾM SỐ LƯỢT TRUY CẬP VÀO Ô B3 SHEET "CauHinh"
+// 1. ĐẾM & CẬP NHẬT SỐ LƯỢT TRUY CẬP VÀO Ô B3 SHEET "CauHinh"
 // 2. NHẬN & LƯU ẢNH ĐÓNG GÓP TƯ LIỆU VÀO GOOGLE DRIVE VÀ SHEET "piture"
-// 3. ĐỌC DỮ LIỆU HIỆN VẬT & CÂU HỎI
+// 3. ĐỌC DỮ LIỆU CÂU HỎI TRẮC NGHIỆM TỪ SHEET "CauHoi"
+// (ĐÃ LƯỢC BỎ SHEET "NhatKyThamQuan" VÀ "HienVat" ĐỂ BẠN XÓA 2 SHEET NÀY)
 // ====================================================================
 
 var SHEET_CAU_HINH = "CauHinh";
-var SHEET_NHAT_KY = "NhatKyThamQuan";
-var SHEET_HIEN_VAT = "HienVat";
 var SHEET_CAU_HOI = "CauHoi";
 var SHEET_PICTURE = "piture"; // Tên sheet đóng góp ảnh theo đúng yêu cầu
 
@@ -38,7 +37,7 @@ function doGet(e) {
     return xemSoLuotHienTai(ss);
   }
 
-  // 3. API LẤY DỮ LIỆU HIỆN VẬT & CÂU HỎI
+  // 3. API LẤY DỮ LIỆU CÂU HỎI & CẤU HÌNH PHÒNG
   if (api === "hienvat") {
     return layDuLieuHienVat(ss);
   }
@@ -163,7 +162,6 @@ function xuLyDongGopHinhAnh(data) {
   }
 
   // 5. Ghi dòng dữ liệu mới vào sheet "piture"
-  // [Thời gian, Họ và tên, Link ảnh (Google Drive), Nội dung ảnh, Tên tệp gốc]
   sheet.appendRow([
     thoiGianChu,
     hoTen,
@@ -195,7 +193,7 @@ function layHoacTaoThuMuc(tenThuMuc) {
 }
 
 /**
- * Hàm khởi tạo sẵn sheet "piture" và thư mục Drive (có thể bấm Chạy trực tiếp trên Apps Script nếu muốn)
+ * Hàm khởi tạo sẵn sheet "piture" và thư mục Drive
  */
 function khoiTaoSheetPiture(ss) {
   if (!ss) ss = SpreadsheetApp.getActiveSpreadsheet();
@@ -224,6 +222,7 @@ function khoiTaoSheetPiture(ss) {
 
 /**
  * Đọc ô B3 của sheet CauHinh, tăng lên 1, lưu lại vào B3 và trả về JSON
+ * (HOÀN TOÀN KHÔNG CẦN SHEET NhatKyThamQuan)
  */
 function tangVaGhiLuotTruyCap(ss) {
   var lock = LockService.getScriptLock();
@@ -250,21 +249,6 @@ function tangVaGhiLuotTruyCap(ss) {
     // GHI SỐ MỚI VÀO Ô B3
     oB3.setValue(tongLuot);
 
-    // Ghi nhật ký vào sheet NhatKyThamQuan (nếu có)
-    try {
-      var sheetLog = ss.getSheetByName(SHEET_NHAT_KY);
-      if (sheetLog) {
-        var now = new Date();
-        sheetLog.appendRow([
-          now,
-          Utilities.formatDate(now, "GMT+7", "yyyy-MM-dd HH:mm:ss"),
-          tongLuot
-        ]);
-      }
-    } catch (eLog) {
-      console.warn("Lỗi ghi log: " + eLog.message);
-    }
-
     return taoPhanHoiJson({ luot: tongLuot });
   } finally {
     lock.releaseLock();
@@ -286,7 +270,8 @@ function xemSoLuotHienTai(ss) {
 }
 
 /**
- * Lấy danh sách hiện vật, câu hỏi, thông tin trường
+ * Lấy danh sách câu hỏi và cấu hình phòng
+ * (HOÀN TOÀN KHÔNG CẦN SHEET HienVat)
  */
 function layDuLieuHienVat(ss) {
   var sheetConfig = ss.getSheetByName(SHEET_CAU_HINH);
@@ -318,38 +303,14 @@ function layDuLieuHienVat(ss) {
     luot: soLuot,
     capNhat: new Date().toISOString(),
     phong: danhSachPhong,
-    hienVat: docDanhSachHienVat(ss),
+    hienVat: [], // Không cần sheet HienVat, trả về rỗng an toàn tuyệt đối cho web
     cauHoi: docDanhSachCauHoi(ss)
   });
 }
 
-function docDanhSachHienVat(ss) {
-  var sheet = ss.getSheetByName(SHEET_HIEN_VAT);
-  if (!sheet) return [];
-  var rows = sheet.getDataRange().getValues();
-  if (rows.length <= 1) return [];
-
-  var result = [];
-  for (var i = 1; i < rows.length; i++) {
-    var r = rows[i];
-    if (!r[0] && !r[3]) continue;
-    result.push({
-      id: String(r[0] || ("HV" + i)),
-      phong: String(r[1] || "P4"),
-      loai: String(r[2] || "Ảnh"),
-      tieuDe: String(r[3] || ""),
-      noiDung: String(r[4] || ""),
-      nguon: String(r[5] || ""),
-      thuTu: Number(r[6]) || i,
-      anh: String(r[7] || ""),
-      anhDuPhong: String(r[8] || r[7] || ""),
-      video: String(r[9] || ""),
-      lienKet: String(r[10] || "")
-    });
-  }
-  return result;
-}
-
+/**
+ * Đọc danh sách câu hỏi trắc nghiệm đố vui từ sheet "CauHoi"
+ */
 function docDanhSachCauHoi(ss) {
   var sheet = ss.getSheetByName(SHEET_CAU_HOI);
   if (!sheet) return [];
