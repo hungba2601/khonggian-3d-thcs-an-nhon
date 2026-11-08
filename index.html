@@ -4540,19 +4540,19 @@
       font-family: "Be Vietnam Pro", system-ui, -apple-system, sans-serif;
     }
 
-    /* Giao diện Điện thoại (<= 820px): Giữ nguyên vị trí bên trái như cũ */
+    /* Giao diện Điện thoại (<= 820px): Vị trí bên trái, nâng cao hơn cần gạt điều hướng để không bị che */
     @media (max-width: 820px) {
       .mp-chat-hud {
         left: 12px;
         right: auto;
-        bottom: 128px;
+        bottom: calc(env(safe-area-inset-bottom, 0px) + 160px);
         width: 270px;
         align-items: flex-start;
       }
 
       .mp-chat-feed {
         align-items: flex-start !important;
-        max-height: calc(100vh - 220px) !important;
+        max-height: calc(100vh - 280px) !important;
       }
 
       .mp-chat-open-btn {
