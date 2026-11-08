@@ -10890,20 +10890,20 @@
 
           if (status === 'connected') {
             badge.className = 'mp-badge-status green';
-            badge.textContent = '🟢 Đã kết nối Firebase';
-            txt.textContent = 'Đồng bộ thời gian thực mượt mà qua Firebase Realtime Database.';
+            badge.textContent = '🟢 Máy chủ trực tuyến';
+            txt.textContent = 'Đang đồng bộ trực tuyến thời gian thực giữa các khách tham quan.';
           } else if (status === 'connecting') {
             badge.className = 'mp-badge-status yellow';
             badge.textContent = '🟡 Đang kết nối...';
-            txt.textContent = 'Đang thiết lập liên kết đến máy chủ Firebase.';
+            txt.textContent = 'Đang thiết lập liên kết đến máy chủ.';
           } else if (status === 'demo') {
             badge.className = 'mp-badge-status blue';
             badge.textContent = '🤖 Chế độ mô phỏng (Demo Bots)';
-            txt.textContent = 'Đang có học sinh mô phỏng cùng tham quan. Bạn có thể kết nối Firebase để gặp khách thật từ khắp nơi.';
+            txt.textContent = 'Đang có học sinh mô phỏng cùng tham quan bảo tàng 3D.';
           } else {
             badge.className = 'mp-badge-status red';
-            badge.textContent = '🔴 Chưa kết nối Firebase';
-            txt.textContent = msg || 'Chưa cấu hình đường dẫn Database URL hợp lệ.';
+            badge.textContent = '🔴 Ngoại tuyến';
+            txt.textContent = msg || 'Chưa thể kết nối đến máy chủ trực tuyến.';
           }
         }
 
@@ -10936,7 +10936,7 @@
         <div class="mp-tab-bar">
           <button type="button" class="mp-tab active" data-tab="tab-profile">👤 Nhân vật & Tên</button>
           <button type="button" class="mp-tab" data-tab="tab-online">👥 Đang online (<span id="mpOnlineCountBadge">1</span>)</button>
-          <button type="button" class="mp-tab" data-tab="tab-firebase">⚡ Cấu hình Firebase</button>
+          <button type="button" class="mp-tab" data-tab="tab-firebase">⚙️ Cấu hình</button>
         </div>
 
         <div class="mp-than">
@@ -10971,57 +10971,22 @@
             </div>
           </div>
 
-          <!-- TAB 3: CẤU HÌNH FIREBASE -->
+          <!-- TAB 3: CẤU HÌNH -->
           <div class="mp-panel" id="panel-tab-firebase">
             <div class="mp-status-box">
               <div class="mp-status-top">
-                <span id="mpStatusBadge" class="mp-badge-status blue">🤖 Chế độ mô phỏng (Demo Bots)</span>
+                <span id="mpStatusBadge" class="mp-badge-status green">🟢 Máy chủ trực tuyến</span>
               </div>
-              <p id="mpStatusDesc">Đang có học sinh mô phỏng cùng tham quan để bạn trải nghiệm ngay lập tức.</p>
+              <p id="mpStatusDesc">Đang kết nối đồng bộ trực tuyến thời gian thực giữa các khách tham quan.</p>
             </div>
 
-            <div class="mp-nhom" style="margin-top:14px">
-              <label for="mpFirebaseUrlInput">Đường dẫn Firebase Realtime Database URL:</label>
-              <input type="url" id="mpFirebaseUrlInput" placeholder="https://[ten-du-an]-default-rtdb.asia-southeast1.firebasedatabase.app">
-              <div class="mp-row-nut">
-                <button type="button" class="mp-nut primary" id="mpSaveFirebaseBtn">💾 Lưu & Kết nối ngay</button>
-                <button type="button" class="mp-nut secondary" id="mpTestFirebaseBtn">🔄 Thử kết nối lại</button>
-              </div>
-            </div>
-
-            <div class="mp-toggle-box">
+            <div class="mp-toggle-box" style="margin-top:14px">
               <label class="mp-switch-label">
                 <input type="checkbox" id="mpDemoBotsToggle" checked>
                 <span>Bật Robot học sinh mô phỏng (Demo Bots)</span>
               </label>
               <small>Khi bật, bảo tàng sẽ có các bạn học sinh dạo bước ngắm hiện vật, tạo không khí vui tươi sinh động kể cả khi vắng người.</small>
             </div>
-
-            <details class="mp-huongdan-box">
-              <summary><b>📖 Hướng dẫn tạo Firebase Realtime Database miễn phí trong 2 phút</b></summary>
-              <div class="mp-hd-noi-dung">
-                <div class="mp-hd-buoc">
-                  <div class="mp-so">1</div>
-                  <div>Truy cập <b><a href="https://console.firebase.google.com" target="_blank" rel="noopener">console.firebase.google.com</a></b> và đăng nhập bằng tài khoản Google (Gmail) miễn phí.</div>
-                </div>
-                <div class="mp-hd-buoc">
-                  <div class="mp-so">2</div>
-                  <div>Bấm <b>Thêm dự án</b> (Add project) &rarr; Đặt tên (ví dụ: <code>thcs-an-nhon-3d</code>) &rarr; Bấm Tiếp tục &rarr; Tạo dự án.</div>
-                </div>
-                <div class="mp-hd-buoc">
-                  <div class="mp-so">3</div>
-                  <div>Ở cột bên trái chọn <b>Build</b> &rarr; <b>Realtime Database</b> &rarr; Bấm <b>Tạo cơ sở dữ liệu</b> (Create Database). Chọn vị trí máy chủ <b>Singapore (asia-southeast1)</b> để tốc độ nhanh nhất tại Việt Nam.</div>
-                </div>
-                <div class="mp-hd-buoc">
-                  <div class="mp-so">4</div>
-                  <div>Ở bước Quy tắc bảo mật, chọn <b>Bắt đầu ở chế độ thử nghiệm (Start in test mode)</b> &rarr; Bấm <b>Bật (Enable)</b>.</div>
-                </div>
-                <div class="mp-hd-buoc">
-                  <div class="mp-so">5</div>
-                  <div>Sao chép (Copy) đường dẫn URL hiển thị ở đầu trang (dạng <code>https://...firebasedatabase.app</code>) và dán vào ô nhập bên trên rồi bấm <b>Lưu & Kết nối</b> là hoàn tất!</div>
-                </div>
-              </div>
-            </details>
           </div>
         </div>
       </div>
@@ -11077,19 +11042,25 @@
             capNhatSoLuongOnline();
           };
 
-          // Nút lưu Firebase URL
-          hopMultiplayer.querySelector('#mpSaveFirebaseBtn').onclick = () => {
-            const inp = hopMultiplayer.querySelector('#mpFirebaseUrlInput');
-            const url = (inp.value || '').trim();
-            try { localStorage.setItem('bt3d_firebase_url', url); } catch (e) { }
-            khoiTaoFirebase();
-            hienThongBaoToast('Đang kết nối đến máy chủ Firebase...');
-          };
+          // Nút lưu Firebase URL (nếu có trong DOM)
+          const saveBtn = hopMultiplayer.querySelector('#mpSaveFirebaseBtn');
+          if (saveBtn) {
+            saveBtn.onclick = () => {
+              const inp = hopMultiplayer.querySelector('#mpFirebaseUrlInput');
+              const url = (inp ? inp.value : '').trim();
+              try { localStorage.setItem('bt3d_firebase_url', url); } catch (e) { }
+              khoiTaoFirebase();
+              hienThongBaoToast('Đang kết nối đến máy chủ...');
+            };
+          }
 
-          hopMultiplayer.querySelector('#mpTestFirebaseBtn').onclick = () => {
-            khoiTaoFirebase();
-            hienThongBaoToast('Đang thử kết nối lại...');
-          };
+          const testBtn = hopMultiplayer.querySelector('#mpTestFirebaseBtn');
+          if (testBtn) {
+            testBtn.onclick = () => {
+              khoiTaoFirebase();
+              hienThongBaoToast('Đang thử kết nối lại...');
+            };
+          }
         }
 
         // Vẽ 6 thẻ chọn Avatar vào Modal (Học sinh, Giáo viên, Khách tham quan)
@@ -11230,7 +11201,9 @@
           taoGiaoDienModal();
           hopMultiplayer.querySelector('#mpInputName').value = myName;
           const urlInp = hopMultiplayer.querySelector('#mpFirebaseUrlInput');
-          urlInp.value = localStorage.getItem('bt3d_firebase_url') || FIREBASE_CONFIG.databaseURL || '';
+          if (urlInp) {
+            urlInp.value = localStorage.getItem('bt3d_firebase_url') || FIREBASE_CONFIG.databaseURL || '';
+          }
           veAvatarCards();
           veDanhSachOnline();
 
