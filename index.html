@@ -777,6 +777,54 @@
       opacity: 1;
     }
 
+    /* Toast thông báo & cảnh báo hệ thống đa người chơi */
+    .mp-global-toast {
+      position: fixed;
+      top: calc(env(safe-area-inset-top, 0px) + 24px);
+      left: 50%;
+      transform: translateX(-50%) translateY(-20px) scale(0.95);
+      background: rgba(26, 12, 16, 0.94);
+      color: #fff4da;
+      border: 1.5px solid #d4af37;
+      border-radius: 999px;
+      padding: 10px 22px;
+      font-size: 13.5px;
+      font-weight: 600;
+      line-height: 1.4;
+      font-family: "Be Vietnam Pro", system-ui, -apple-system, sans-serif;
+      box-shadow: 0 10px 32px rgba(0, 0, 0, 0.6), 0 0 16px rgba(212, 175, 55, 0.35);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      z-index: 99999;
+      pointer-events: none;
+      opacity: 0;
+      transition: all 0.28s cubic-bezier(0.16, 1, 0.3, 1);
+      max-width: calc(100vw - 32px);
+      text-align: center;
+      word-break: break-word;
+    }
+
+    .mp-global-toast.show {
+      opacity: 1;
+      transform: translateX(-50%) translateY(0) scale(1);
+    }
+
+    .mp-global-toast.warning {
+      background: linear-gradient(135deg, rgba(80, 10, 16, 0.96) 0%, rgba(45, 6, 10, 0.98) 100%);
+      border-color: #ef4444;
+      color: #fee2e2;
+      box-shadow: 0 10px 32px rgba(0, 0, 0, 0.65), 0 0 20px rgba(239, 68, 68, 0.45);
+      animation: mpToastShake 0.4s ease-in-out;
+    }
+
+    @keyframes mpToastShake {
+      0%, 100% { transform: translateX(-50%) translateY(0) scale(1); }
+      20% { transform: translateX(calc(-50% - 6px)) translateY(0) scale(1); }
+      40% { transform: translateX(calc(-50% + 6px)) translateY(0) scale(1); }
+      60% { transform: translateX(calc(-50% - 4px)) translateY(0) scale(1); }
+      80% { transform: translateX(calc(-50% + 4px)) translateY(0) scale(1); }
+    }
+
     /* Gợi ý điều khiển */
     .hint {
       position: fixed;
@@ -9737,6 +9785,130 @@
           databaseURL: "https://project-0dc7cfad-aa2e-4d7f-99c-default-rtdb.asia-southeast1.firebasedatabase.app"
         };
 
+        // =====================================================================
+        // BỘ LỌC NGÔN TỪ VĂN HÓA HỌC ĐƯỜNG (BẢO VỆ MÔI TRƯỜNG THIẾU NHI & HỌC ĐƯỜNG)
+        // Kiểm tra và ngăn chặn từ ngữ thô tục, chửi thề, phản cảm khi đặt tên & chat
+        // =====================================================================
+        function stripAccents(str) {
+          if (!str) return '';
+          return str.normalize('NFD')
+            .replace(/[\u0300-\u036f]/g, '')
+            .replace(/[đĐ]/g, 'd')
+            .toLowerCase();
+        }
+
+        function normalizeLeet(str) {
+          if (!str) return '';
+          return str.toLowerCase()
+            .replace(/[@]/g, 'a')
+            .replace(/[0]/g, 'o')
+            .replace(/[1!|]/g, 'i')
+            .replace(/[3]/g, 'e')
+            .replace(/[4]/g, 'a')
+            .replace(/[5$]/g, 's')
+            .replace(/[7]/g, 't')
+            .replace(/[8]/g, 'b');
+        }
+
+        // 1. Nhóm từ thô tục, chửi thề, tục tĩu, khiêu dâm
+        const REGEX_TU_CAM_TUYET_DOI = [
+          // Tục tĩu có dấu (chính xác 100%)
+          /\b(c[ặă]c|k[ặă]c|l[ồỗ]n|bu[ồỗ]i|d[áà]i|đ[ịi]t|đ[ụu]|đ[éè]o|đ[éè]ch|ch[ịi]ch|xo[ạa]c|ph[ịi]ch|th[ủu]\s*d[âa]m|m[óo]c\s*l[ốo]p|b[úu]\s*cu|b[úu]\s*c[ặă]c|b[úu]\s*l[ồỗ]n|m[úu]t\s*bu[ồỗ]i|li[ếe]m\s*l[ồỗ]n)\b/i,
+          // Cụm chửi thề kinh điển
+          /\b(d[iị]t\s*m[eẹ]|d[uụ]\s*m[aá]|d[uụ]\s*m[eẹ]|d[iị]t\s*c[oọ]n\s*m[eẹ]|d[iị]t\s*c[uụ]|d[uụ]\s*m[aá]\s*m[aà]y|d[iị]t\s*m[eẹ]\s*m[aà]y|d[iị]t\s*b[aà])\b/i,
+          // Viết tắt tục tĩu
+          /\b(dkm|dcm|dcmm|dmm|vcl|vkl|vcc|clgt|vl|loz|vlon)\b/i,
+          // Khiêu dâm, mại dâm
+          /\b(g[áa]i\s*b[aao]|g[áa]i\s*đ[iĩ][ếe]m|g[áa]i\s*ph[òo]|l[àa]m\s*t[ìi]nh|khi[êe]u\s*d[âa]m)\b/i,
+          // Lăng mạ xúc phạm
+          /\b(th[ằăa]ng\s*ch[óo]|con\s*ch[óo]|đ[ồo]\s*ch[óo]|ch[óo]\s*đ[ẻe]|ch[óo]\s*ch[ếe]t|ch[óo]\s*m[áa]|s[úu]c\s*v[ậa]t|s[úu]c\s*sinh|[óo]c\s*ch[óo]|đ[ồo]\s*ngu|th[ằăa]ng\s*ngu|con\s*ngu|ngu\s*nh[ưu]\s*ch[óo]|ngu\s*nh[ưu]\s*b[òo]|ngu\s*l[ồỗ]n|m[ặă]t\s*l[ồỗ]n|h[ãa]m\s*l[ồỗ]n|m[ẹe]\s*ki[ếe]p|ti[êe]n\s*s[ưu]|đ[ồo]\s*đi[êe]n|đ[ồo]\s*kh[uù]ng)\b/i,
+          // Tiếng Anh
+          /\b(fuck|fucking|fucker|motherfucker|bitch|asshole|bastard|pussy|cunt|cock|dick|porn|hentai)\b/i
+        ];
+
+        // 2. Các từ không dấu cần kiểm tra theo ngữ cảnh
+        const REGEX_TU_CAM_KHONG_DAU = [
+          /\b(dit|du|lon|buoi|chich|xoac|phich|deo|dech|loz)\b/i,
+          /\b(con\s+cac|cai\s+cac|dau\s+cac|bu\s+cac|an\s+cac|nhu\s+cac|cac\s+to|mut\s+cac|liem\s+cac|do\s+cac|thang\s+cac)\b/i,
+          /\b(me\s+may|cha\s+may|bo\s+may|tien\s+su\s+may)\b/i,
+          /\b(thang\s+cho|con\s+cho|do\s+cho|cho\s+chet|suc\s+vat|oc\s+cho|do\s+ngu|thang\s+ngu|con\s+ngu|ngu\s+lon|mat\s+lon)\b/i
+        ];
+
+        // 3. Hàm kiểm tra vi phạm ngôn từ: trả về { viPham: boolean, lyDo: string }
+        function kiemTraNoiDungXau(rawText) {
+          if (!rawText || typeof rawText !== 'string') return { viPham: false };
+          const str = rawText.trim();
+          if (!str) return { viPham: false };
+
+          // Kiểm tra regex tuyệt đối trên văn bản gốc
+          for (const reg of REGEX_TU_CAM_TUYET_DOI) {
+            if (reg.test(str)) {
+              return { viPham: true, lyDo: 'Từ ngữ chưa phù hợp văn hóa học đường' };
+            }
+          }
+
+          // Chuẩn hóa không dấu và leet
+          const noAcc = stripAccents(str);
+          const leet = normalizeLeet(noAcc);
+
+          for (const reg of REGEX_TU_CAM_TUYET_DOI) {
+            if (reg.test(noAcc) || reg.test(leet)) {
+              return { viPham: true, lyDo: 'Từ ngữ chưa phù hợp văn hóa học đường' };
+            }
+          }
+
+          // Kiểm tra cụm từ không dấu theo ngữ cảnh
+          for (const reg of REGEX_TU_CAM_KHONG_DAU) {
+            if (reg.test(noAcc) || reg.test(leet)) {
+              return { viPham: true, lyDo: 'Từ ngữ chưa phù hợp văn hóa học đường' };
+            }
+          }
+
+          // Bắt các dạng lách ký tự ngắt quãng: d.m, d-m, đ.ị.t, l.ồ.n, c.ặ.c, v.c.l
+          const compact = leet.replace(/[^a-z0-9]/g, '');
+          const compactDedup = compact.replace(/([a-z])\1{2,}/g, '$1$1');
+          const BAD_COMPACT_WORDS = ['dm', 'dkm', 'dcm', 'dmm', 'vcl', 'vkl', 'clgt', 'dit', 'lon', 'buoi', 'cac', 'chich'];
+
+          if (BAD_COMPACT_WORDS.includes(compactDedup)) {
+            return { viPham: true, lyDo: 'Từ viết tắt chưa phù hợp văn hóa học đường' };
+          }
+
+          // Kiểm tra từng từ bị ngắt quãng bởi dấu chấm, gạch (ví dụ: "d.m", "đ.ị.t", "l.o.n")
+          for (const bw of BAD_COMPACT_WORDS) {
+            if (bw.length >= 2) {
+              const p = bw.split('').join('[.\\-_*~`!@#\\s]+');
+              const r = new RegExp('(^|[^a-z0-9])' + p + '($|[^a-z0-9])', 'i');
+              if (r.test(leet)) {
+                return { viPham: true, lyDo: 'Từ ngữ chưa phù hợp văn hóa học đường' };
+              }
+            }
+          }
+
+          return { viPham: false };
+        }
+
+        // 4. Hàm làm sạch / che từ ngữ thô tục thành *** (dùng khi hiển thị tin nhắn nhận được hoặc tên người khác)
+        const REGEX_CENSOR_ALL = [
+          /\b(c[ặă]c|k[ặă]c|l[ồỗ]n|bu[ồỗ]i|d[áà]i|đ[ịi]t|đ[ụu]|đ[éè]o|đ[éè]ch|ch[ịi]ch|xo[ạa]c|ph[ịi]ch|th[ủu]\s*d[âa]m|m[óo]c\s*l[ốo]p|b[úu]\s*cu|b[úu]\s*c[ặă]c|b[úu]\s*l[ồỗ]n|m[úu]t\s*bu[ồỗ]i|li[ếe]m\s*l[ồỗ]n)\b/gi,
+          /\b(d[iị]t\s*m[eẹ]|d[uụ]\s*m[aá]|d[uụ]\s*m[eẹ]|d[iị]t\s*c[oọ]n\s*m[eẹ]|d[iị]t\s*c[uụ]|d[uụ]\s*m[aá]\s*m[aà]y|d[iị]t\s*m[eẹ]\s*m[aà]y|d[iị]t\s*b[aà])\b/gi,
+          /\b(dkm|dcm|dcmm|dmm|vcl|vkl|vcc|clgt|vl|loz|vlon)\b/gi,
+          /\b(g[áa]i\s*b[aao]|g[áa]i\s*đ[iĩ][ếe]m|g[áa]i\s*ph[òo]|l[àa]m\s*t[ìi]nh|khi[êe]u\s*d[âa]m)\b/gi,
+          /\b(th[ằăa]ng\s*ch[óo]|con\s*ch[óo]|đ[ồo]\s*ch[óo]|ch[óo]\s*đ[ẻe]|ch[óo]\s*ch[ếe]t|ch[óo]\s*m[áa]|s[úu]c\s*v[ậa]t|s[úu]c\s*sinh|[óo]c\s*ch[óo]|đ[ồo]\s*ngu|th[ằăa]ng\s*ngu|con\s*ngu|ngu\s*nh[ưu]\s*ch[óo]|ngu\s*nh[ưu]\s*b[òo]|ngu\s*l[ồỗ]n|m[ặă]t\s*l[ồỗ]n|h[ãa]m\s*l[ồỗ]n|m[ẹe]\s*ki[ếe]p|ti[êe]n\s*s[ưu]|đ[ồo]\s*đi[êe]n|đ[ồo]\s*kh[uù]ng)\b/gi,
+          /\b(fuck|fucking|fucker|motherfucker|bitch|asshole|bastard|pussy|cunt|cock|dick|porn|hentai)\b/gi,
+          /\b(con\s+cac|cai\s+cac|dau\s+cac|bu\s+cac|an\s+cac|nhu\s+cac|cac\s+to|mut\s+cac|liem\s+cac|do\s+cac|thang\s+cac)\b/gi,
+          /\b(me\s+may|cha\s+may|bo\s+may|tien\s+su\s+may)\b/gi,
+          /\b(thang\s+cho|con\s+cho|do\s+cho|cho\s+chet|suc\s+vat|oc\s+cho|do\s+ngu|thang\s+ngu|con\s+ngu|ngu\s+lon|mat\s+lon)\b/gi
+        ];
+
+        function lamSachVanBan(text) {
+          if (!text) return '';
+          let s = String(text);
+          for (const reg of REGEX_CENSOR_ALL) {
+            s = s.replace(reg, '***');
+          }
+          return s;
+        }
+
         // 2. Danh mục 6 nhân vật minh họa (Học sinh, Giáo viên, Khách tham quan nam/nữ)
         const AVATAR_DEFS = {
           student_male: {
@@ -9809,6 +9981,10 @@
         }
 
         let myName = localStorage.getItem('bt3d_mp_name') || '';
+        if (myName && kiemTraNoiDungXau(myName).viPham) {
+          myName = '';
+          try { localStorage.removeItem('bt3d_mp_name'); } catch (e) { }
+        }
         if (!myName) {
           myName = 'Khách tham quan #' + Math.floor(1000 + Math.random() * 9000);
           try { localStorage.setItem('bt3d_mp_name', myName); } catch (e) { }
@@ -10315,7 +10491,7 @@
           g.textBaseline = 'middle';
           g.fillStyle = '#ffffff';
           g.font = 'bold 30px "Be Vietnam Pro", system-ui, sans-serif';
-          let display = name || 'Khách tham quan';
+          let display = lamSachVanBan(name || 'Khách tham quan');
           if (g.measureText(display).width > 280) {
             while (g.measureText(display + '...').width > 280 && display.length > 3) {
               display = display.slice(0, -1);
@@ -10387,10 +10563,11 @@
           group.userData.tagMat = tagMat;
 
           // 4. Kích hoạt tương tác nhấp chọn / chạm vào nhân vật 3D để mở hộp thoại trò chuyện
+          const safeName = lamSachVanBan(playerData.name || 'khách tham quan');
           bodyMesh.userData.act = () => moHopThoaiTuongTac(playerData.id);
-          bodyMesh.userData.label = '💬 Trò chuyện với ' + (playerData.name || 'khách tham quan');
+          bodyMesh.userData.label = '💬 Trò chuyện với ' + safeName;
           tagMesh.userData.act = () => moHopThoaiTuongTac(playerData.id);
-          tagMesh.userData.label = '💬 Trò chuyện với ' + (playerData.name || 'khách tham quan');
+          tagMesh.userData.label = '💬 Trò chuyện với ' + safeName;
           if (typeof clickables !== 'undefined') {
             clickables.push(bodyMesh);
             clickables.push(tagMesh);
@@ -10437,15 +10614,16 @@
             // Nếu đổi tên
             if (group.userData.name !== data.name) {
               group.userData.name = data.name;
+              const safeRemoteName = lamSachVanBan(data.name || 'khách tham quan');
               if (group.userData.tagMat) {
                 group.userData.tagMat.map = taoTextureBangTen(data.name, false);
                 group.userData.tagMat.needsUpdate = true;
               }
               if (group.userData.bodyMesh) {
-                group.userData.bodyMesh.userData.label = '💬 Trò chuyện với ' + data.name;
+                group.userData.bodyMesh.userData.label = '💬 Trò chuyện với ' + safeRemoteName;
               }
               if (group.userData.tagMesh) {
-                group.userData.tagMesh.userData.label = '💬 Trò chuyện với ' + data.name;
+                group.userData.tagMesh.userData.label = '💬 Trò chuyện với ' + safeRemoteName;
               }
             }
           }
@@ -10749,6 +10927,11 @@
               if (!msg || !msg.id || !msg.text) return;
               if (msg.senderId === myId) return; // Không hiển thị lại tin của chính mình (đã thêm khi gửi)
 
+              // Lọc và làm sạch nội dung tin nhắn và tên người gửi từ xa
+              msg.text = lamSachVanBan(msg.text);
+              if (msg.senderName) msg.senderName = lamSachVanBan(msg.senderName);
+              if (msg.targetName) msg.targetName = lamSachVanBan(msg.targetName);
+
               const currentRoom = (typeof S !== 'undefined' ? S.where : 'lobby');
               const isDirectToMe = (msg.targetId === myId);
               const isBroadcast = (!msg.targetId || msg.targetId === 'all');
@@ -11022,6 +11205,13 @@
             const inp = hopMultiplayer.querySelector('#mpInputName');
             const val = (inp.value || '').trim();
             if (val) {
+              const checkName = kiemTraNoiDungXau(val);
+              if (checkName.viPham) {
+                hienThongBaoToast('⚠️ Tên chứa từ ngữ chưa phù hợp. Vui lòng đặt tên lịch sự, văn minh!', true);
+                inp.focus();
+                inp.select();
+                return;
+              }
               myName = val;
               try { localStorage.setItem('bt3d_mp_name', myName); } catch (e) { }
             }
@@ -11115,12 +11305,13 @@
           const myItem = document.createElement('div');
           myItem.className = 'mp-user-row self';
           const myDef = AVATAR_DEFS[myAvatar] || AVATAR_DEFS.student_male;
+          const displayMyName = lamSachVanBan(myName || 'Khách tham quan');
           myItem.innerHTML = `
             <div class="mp-user-main">
               <div class="mp-user-avatar">${myDef.icon || '👤'}</div>
               <div class="mp-user-meta">
                 <div class="mp-user-name">
-                  <b class="mp-user-fullname" title="${escapeHtml(myName)}">${escapeHtml(myName)}</b>
+                  <b class="mp-user-fullname" title="${escapeHtml(displayMyName)}">${escapeHtml(displayMyName)}</b>
                   <span class="mp-badge-you">Bạn</span>
                   <span class="mp-badge-role">${escapeHtml(myDef.role || 'Khách')}</span>
                 </div>
@@ -11156,7 +11347,7 @@
             const isSame = (u.room === currentWhere);
             row.className = 'mp-user-row' + (isSame ? ' same-room' : '');
             const def = AVATAR_DEFS[u.avatar] || AVATAR_DEFS.student_male;
-            const uName = u.name || 'Khách tham quan';
+            const uName = lamSachVanBan(u.name || 'Khách tham quan');
 
             row.innerHTML = `
               <div class="mp-user-main">
@@ -11218,11 +11409,33 @@
           if (hopMultiplayer) hopMultiplayer.style.display = 'none';
         }
 
-        function hienThongBaoToast(msg) {
-          if (typeof showToast === 'function') {
-            showToast(msg);
-          } else {
-            console.log('[Multiplayer]', msg);
+        let mpToastTimer = null;
+        function hienThongBaoToast(msg, isWarning = false) {
+          try {
+            let toast = document.getElementById('mpGlobalToast');
+            if (!toast) {
+              toast = document.createElement('div');
+              toast.id = 'mpGlobalToast';
+              toast.className = 'mp-global-toast';
+              document.body.appendChild(toast);
+            }
+            toast.textContent = msg;
+            if (isWarning) {
+              toast.classList.add('warning');
+            } else {
+              toast.classList.remove('warning');
+            }
+            // Kích hoạt lại animation
+            void toast.offsetWidth;
+            toast.classList.add('show');
+
+            if (mpToastTimer) clearTimeout(mpToastTimer);
+            mpToastTimer = setTimeout(() => {
+              toast.classList.remove('show');
+              toast.classList.remove('warning');
+            }, isWarning ? 4000 : 3200);
+          } catch (e) {
+            console.log('[Toast]', msg);
           }
         }
 
@@ -11353,6 +11566,7 @@
 
         // Hiển thị bong bóng thoại nổi trong không gian 3D trên đầu nhân vật
         function hienBongBongChat(pid, text) {
+          const cleanText = lamSachVanBan(text);
           const ag = remoteAvatars[pid];
           if (!ag) return;
 
@@ -11369,7 +11583,7 @@
 
           const bubbleGeo = new THREE.PlaneGeometry(1.15, 0.48);
           const bubbleMat = new THREE.MeshBasicMaterial({
-            map: taoTextureBongBongChat(text),
+            map: taoTextureBongBongChat(cleanText),
             transparent: true,
             side: THREE.DoubleSide,
             depthWrite: false
@@ -11645,13 +11859,14 @@
             roomEl.textContent = '📍 ' + layTenPhong(target.room);
             inputEl.placeholder = 'Nhập lời nhắn gửi đến mọi người trong phòng...';
           } else {
+            const cleanTargetName = lamSachVanBan(target.name || 'Khách tham quan');
             if (subEl) subEl.textContent = '🔒 TRÒ CHUYỆN RIÊNG TƯ (CHỈ 2 BẠN THẤY)';
-            nameEl.textContent = 'Trò chuyện cùng ' + target.name;
-            cardNameEl.textContent = target.name;
+            nameEl.textContent = 'Trò chuyện cùng ' + cleanTargetName;
+            cardNameEl.textContent = cleanTargetName;
             roleEl.textContent = target.isBot ? 'Học sinh mô phỏng' : ((def.role || 'Khách tham quan') + ' • Tin riêng');
             avatarEl.textContent = def.icon || '👤';
             roomEl.textContent = '📍 ' + layTenPhong(target.room);
-            inputEl.placeholder = 'Nhập lời nhắn riêng gửi đến ' + target.name + '...';
+            inputEl.placeholder = 'Nhập lời nhắn riêng gửi đến ' + cleanTargetName + '...';
           }
 
           inputEl.value = '';
@@ -11669,6 +11884,18 @@
         function guiTinNhan(text, targetId) {
           const content = (text || '').trim();
           if (!content) return;
+
+          // Kiểm tra vi phạm ngôn từ trước khi gửi
+          const checkChat = kiemTraNoiDungXau(content);
+          if (checkChat.viPham) {
+            hienThongBaoToast('⚠️ Tin nhắn chứa từ ngữ thiếu lịch sự hoặc phản cảm. Vui lòng giữ gìn nét đẹp văn hóa học đường!', true);
+            const inputEl = document.getElementById('chatInputText');
+            if (inputEl) {
+              inputEl.focus();
+              inputEl.select();
+            }
+            return;
+          }
 
           let target = targetId ? remotePlayers[targetId] : null;
           const currentRoom = (typeof S !== 'undefined' ? S.where : 'lobby');
