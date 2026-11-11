@@ -3955,9 +3955,65 @@
       margin-bottom: 6px;
     }
 
-    .mp-input-wrap {
+    .mp-input-wrap,
+    .mp-fruit-select-wrap {
       display: flex;
       gap: 8px;
+      align-items: stretch;
+    }
+
+    .mp-fruit-select-container {
+      flex: 1;
+      position: relative;
+    }
+
+    .mp-fruit-select {
+      width: 100%;
+      box-sizing: border-box;
+      padding: 10px 14px;
+      border-radius: 10px;
+      border: 1.5px solid #d4c2a5;
+      background: #ffffff;
+      font-size: 15px;
+      font-weight: 600;
+      color: #2b1f14;
+      font-family: inherit;
+      outline: none;
+      cursor: pointer;
+      transition: border-color 0.2s, box-shadow 0.2s;
+    }
+
+    .mp-fruit-select:focus {
+      border-color: #8a1a24;
+      box-shadow: 0 0 0 3px rgba(138, 26, 36, 0.15);
+    }
+
+    .mp-fruit-badge {
+      margin-top: 10px;
+      padding: 9px 13px;
+      background: linear-gradient(135deg, #fffaf1, #f6eedf);
+      border: 1.5px solid #e5d1a8;
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .fruit-badge-icon {
+      font-size: 24px;
+      line-height: 1;
+      filter: drop-shadow(0 2px 3px rgba(0, 0, 0, 0.12));
+    }
+
+    .fruit-badge-text {
+      font-size: 13.5px;
+      color: #53391d;
+      line-height: 1.4;
+    }
+
+    .fruit-badge-text b {
+      color: #8a1a24;
+      font-size: 15px;
     }
 
     .mp-nhom input[type="text"],
@@ -4876,68 +4932,68 @@
     }
 
     .chat-preset-pills {
-      display: flex;
-      flex-wrap: wrap;
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(210px, 1fr));
       gap: 8px;
-      margin-bottom: 16px;
+      margin-bottom: 14px;
+      max-height: 270px;
+      overflow-y: auto;
+      padding-right: 4px;
+      -webkit-overflow-scrolling: touch;
     }
 
     .chat-pill-btn {
       background: #ffffff;
       border: 1.5px solid #dfcfb4;
-      border-radius: 20px;
-      padding: 7px 12px;
+      border-radius: 12px;
+      padding: 9px 12px;
       font-size: 13px;
       font-weight: 600;
       color: #4b3621;
       cursor: pointer;
       transition: all 0.2s ease;
       font-family: inherit;
-      display: inline-flex;
+      display: flex;
       align-items: center;
-      gap: 4px;
+      gap: 6px;
+      text-align: left;
+      line-height: 1.35;
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
     }
 
-    .chat-pill-btn:hover {
+    .chat-pill-btn:hover,
+    .chat-pill-btn:active {
       background: #fbf1e0;
       border-color: #8a1a24;
       color: #8a1a24;
       transform: translateY(-1px);
+      box-shadow: 0 3px 8px rgba(138, 26, 36, 0.12);
     }
 
-    .chat-input-box {
-      margin-top: 6px;
-    }
-
-    .chat-input-box label {
-      display: block;
-      font-size: 13.5px;
-      font-weight: 600;
-      color: #4a3622;
-      margin-bottom: 6px;
-    }
-
-    .chat-input-row {
+    .chat-safe-notice {
       display: flex;
-      gap: 8px;
-    }
-
-    .chat-input-row input {
-      flex: 1;
+      align-items: center;
+      gap: 10px;
       padding: 10px 14px;
+      background: #f7f9fa;
+      border: 1px dashed #b8cee0;
       border-radius: 10px;
-      border: 1.5px solid #d4c2a5;
-      background: #ffffff;
-      font-size: 14.5px;
-      color: #1e1b18;
-      font-family: inherit;
-      outline: none;
-      transition: border-color 0.2s, box-shadow 0.2s;
+      font-size: 12px;
+      color: #3b5a75;
+      line-height: 1.45;
+      margin-top: 4px;
     }
 
-    .chat-input-row input:focus {
-      border-color: #8a1a24;
-      box-shadow: 0 0 0 3px rgba(138, 26, 36, 0.15);
+    .chat-safe-notice .safe-notice-icon {
+      font-size: 20px;
+      flex-shrink: 0;
+    }
+
+    @media (max-width: 600px) {
+      .chat-preset-pills {
+        grid-template-columns: 1fr;
+        max-height: 230px;
+      }
     }
   </style>
 
@@ -10053,13 +10109,46 @@
           try { sessionStorage.setItem('bt3d_mp_id', myId); } catch (e) { }
         }
 
+        // Danh sách 30 biệt danh trái cây tiếng Anh kèm icon và giải nghĩa tiếng Việt
+        const FRUIT_NAMES = [
+          { name: 'Apple', icon: '🍎', vi: 'Quả Táo' },
+          { name: 'Banana', icon: '🍌', vi: 'Quả Chuối' },
+          { name: 'Orange', icon: '🍊', vi: 'Quả Cam' },
+          { name: 'Grape', icon: '🍇', vi: 'Quả Nho' },
+          { name: 'Strawberry', icon: '🍓', vi: 'Dâu Tây' },
+          { name: 'Watermelon', icon: '🍉', vi: 'Dưa Hấu' },
+          { name: 'Mango', icon: '🥭', vi: 'Quả Xoài' },
+          { name: 'Pineapple', icon: '🍍', vi: 'Quả Dứa' },
+          { name: 'Peach', icon: '🍑', vi: 'Quả Đào' },
+          { name: 'Cherry', icon: '🍒', vi: 'Quả Anh Đào' },
+          { name: 'Pear', icon: '🍐', vi: 'Quả Lê' },
+          { name: 'Lemon', icon: '🍋', vi: 'Chanh Vàng' },
+          { name: 'Melon', icon: '🍈', vi: 'Dưa Lưới' },
+          { name: 'Kiwi', icon: '🥝', vi: 'Quả Kiwi' },
+          { name: 'Coconut', icon: '🥥', vi: 'Quả Dừa' },
+          { name: 'Avocado', icon: '🥑', vi: 'Quả Bơ' },
+          { name: 'Blueberry', icon: '🫐', vi: 'Việt Quất' },
+          { name: 'Green Apple', icon: '🍏', vi: 'Táo Xanh' },
+          { name: 'Papaya', icon: '🍈', vi: 'Đu Đủ' },
+          { name: 'Dragon Fruit', icon: '🌸', vi: 'Thanh Long' },
+          { name: 'Pomegranate', icon: '🍎', vi: 'Quả Lựu' },
+          { name: 'Passion Fruit', icon: '🍇', vi: 'Chanh Dây' },
+          { name: 'Tangerine', icon: '🍊', vi: 'Quả Quýt' },
+          { name: 'Grapefruit', icon: '🍊', vi: 'Quả Bưởi' },
+          { name: 'Apricot', icon: '🍑', vi: 'Quả Mơ' },
+          { name: 'Plum', icon: '🫐', vi: 'Quả Mận' },
+          { name: 'Lychee', icon: '🍒', vi: 'Vải Thiều' },
+          { name: 'Longan', icon: '🟤', vi: 'Quả Nhãn' },
+          { name: 'Guava', icon: '🍏', vi: 'Quả Ổi' },
+          { name: 'Fig', icon: '🫐', vi: 'Sung Mỹ' }
+        ];
+
         let myName = localStorage.getItem('bt3d_mp_name') || '';
-        if (myName && kiemTraNoiDungXau(myName, true).viPham) {
-          myName = '';
-          try { localStorage.removeItem('bt3d_mp_name'); } catch (e) { }
-        }
-        if (!myName) {
-          myName = 'Khách tham quan #' + Math.floor(1000 + Math.random() * 9000);
+        // Đảm bảo tên luôn là 1 trong 30 loại trái cây tiếng Anh có icon
+        const hopLeFruit = FRUIT_NAMES.some(f => (f.icon + ' ' + f.name) === myName);
+        if (!hopLeFruit) {
+          const rf = FRUIT_NAMES[Math.floor(Math.random() * FRUIT_NAMES.length)];
+          myName = rf.icon + ' ' + rf.name;
           try { localStorage.setItem('bt3d_mp_name', myName); } catch (e) { }
         }
 
@@ -11196,13 +11285,21 @@
         </div>
 
         <div class="mp-than">
-          <!-- TAB 1: NHÂN VẬT & TÊN -->
+          <!-- TAB 1: NHÂN VẬT & BIỆT DANH TRÁI CÂY -->
           <div class="mp-panel active" id="panel-tab-profile">
             <div class="mp-nhom">
-              <label for="mpInputName">Tên hoặc biệt danh hiển thị của bạn:</label>
-              <div class="mp-input-wrap">
-                <input type="text" id="mpInputName" maxlength="32" placeholder="Ví dụ: Thầy Hùng, Bảo Nam 8A3, Cựu học sinh...">
-                <button type="button" class="mp-nut-sm" id="mpRandomNameBtn" title="Tạo tên ngẫu nhiên">🎲 Đổi ngẫu nhiên</button>
+              <label for="mpFruitSelect">Biệt danh trái cây của bạn (chọn từ 30 loại quả):</label>
+              <div class="mp-fruit-select-wrap">
+                <div class="mp-fruit-select-container">
+                  <select id="mpFruitSelect" class="mp-fruit-select">
+                    <!-- 30 loại trái cây tiếng Anh -->
+                  </select>
+                </div>
+                <button type="button" class="mp-nut-sm" id="mpRandomFruitBtn" title="Chọn ngẫu nhiên một loại trái cây">🎲 Đổi ngẫu nhiên</button>
+              </div>
+              <div class="mp-fruit-badge" id="mpFruitSelectedBadge">
+                <span class="fruit-badge-icon">🍎</span>
+                <span class="fruit-badge-text">Biệt danh tham quan: <b>Apple</b> (Quả Táo)</span>
               </div>
             </div>
 
@@ -11277,50 +11374,59 @@
             mpHopBox.addEventListener('click', (e) => e.stopPropagation());
           }
 
-          // Tên ngẫu nhiên
-          hopMultiplayer.querySelector('#mpRandomNameBtn').onclick = () => {
-            const mauTen = [
-              'Học sinh An Nhơn', 'Bảo Nam 8A3', 'Lan Anh 7A1', 'Minh Khang 9A2',
-              'Thầy giáo Tổng phụ trách', 'Cô giáo Ngữ văn', 'Bác Hùng (Phụ huynh)',
-              'Cô Mai (Phụ huynh)', 'Khách tham quan quý mến', 'Cựu học sinh 2019'
-            ];
-            const r = mauTen[Math.floor(Math.random() * mauTen.length)];
-            hopMultiplayer.querySelector('#mpInputName').value = r;
-          };
+          // Khởi tạo danh sách 30 trái cây vào Select
+          const fruitSelect = hopMultiplayer.querySelector('#mpFruitSelect');
+          const fruitBadge = hopMultiplayer.querySelector('#mpFruitSelectedBadge');
+
+          function capNhatBadgeTraiCay(val) {
+            if (!fruitBadge) return;
+            const fruit = FRUIT_NAMES.find(f => (f.icon + ' ' + f.name) === val) || FRUIT_NAMES[0];
+            fruitBadge.innerHTML = `
+              <span class="fruit-badge-icon">${fruit.icon}</span>
+              <span class="fruit-badge-text">Biệt danh tham quan: <b>${escapeHtml(fruit.name)}</b> (${escapeHtml(fruit.vi)})</span>
+            `;
+          }
+
+          if (fruitSelect) {
+            fruitSelect.innerHTML = FRUIT_NAMES.map(f => {
+              const val = f.icon + ' ' + f.name;
+              return `<option value="${escapeHtml(val)}">${f.icon} ${escapeHtml(f.name)} (${escapeHtml(f.vi)})</option>`;
+            }).join('');
+
+            fruitSelect.value = myName;
+            capNhatBadgeTraiCay(myName);
+
+            fruitSelect.onchange = () => {
+              capNhatBadgeTraiCay(fruitSelect.value);
+            };
+          }
+
+          // Nút đổi trái cây ngẫu nhiên
+          const randomFruitBtn = hopMultiplayer.querySelector('#mpRandomFruitBtn');
+          if (randomFruitBtn) {
+            randomFruitBtn.onclick = () => {
+              const rf = FRUIT_NAMES[Math.floor(Math.random() * FRUIT_NAMES.length)];
+              const val = rf.icon + ' ' + rf.name;
+              if (fruitSelect) fruitSelect.value = val;
+              capNhatBadgeTraiCay(val);
+            };
+          }
 
           // Nút lưu thông tin nhân vật
           const xuLyLuuThongTinNhanVat = () => {
-            const inp = hopMultiplayer.querySelector('#mpInputName');
-            const val = (inp.value || '').trim();
-            if (val) {
-              const checkName = kiemTraNoiDungXau(val, true);
-              if (checkName.viPham) {
-                hienThongBaoToast('⚠️ Tên chứa từ ngữ chưa phù hợp. Vui lòng đặt tên lịch sự, văn minh!', true);
-                inp.focus();
-                inp.select();
-                return;
-              }
-              myName = val;
+            if (fruitSelect && fruitSelect.value) {
+              myName = fruitSelect.value;
               try { localStorage.setItem('bt3d_mp_name', myName); } catch (e) { }
             }
             try { localStorage.setItem('bt3d_mp_avatar', myAvatar); } catch (e) { }
 
             // Phát thông tin mới
             phatToaDoBanThan(true);
-            hienThongBaoToast('Đã cập nhật nhân vật và tên hiển thị!');
+            hienThongBaoToast('Đã chọn biệt danh ' + myName + ' và áp dụng nhân vật!');
             dongMultiplayerModal();
           };
 
           hopMultiplayer.querySelector('#mpSaveProfileBtn').onclick = xuLyLuuThongTinNhanVat;
-          const nameInputEl = hopMultiplayer.querySelector('#mpInputName');
-          if (nameInputEl) {
-            nameInputEl.onkeydown = (e) => {
-              if (e.key === 'Enter') {
-                e.preventDefault();
-                xuLyLuuThongTinNhanVat();
-              }
-            };
-          }
 
           // Toggle Demo Bots
           const toggle = hopMultiplayer.querySelector('#mpDemoBotsToggle');
@@ -11489,7 +11595,18 @@
 
         function moMultiplayerModal(initialTab) {
           taoGiaoDienModal();
-          hopMultiplayer.querySelector('#mpInputName').value = myName;
+          const fruitSelect = hopMultiplayer.querySelector('#mpFruitSelect');
+          if (fruitSelect) {
+            fruitSelect.value = myName;
+            const fruitBadge = hopMultiplayer.querySelector('#mpFruitSelectedBadge');
+            if (fruitBadge) {
+              const fruit = FRUIT_NAMES.find(f => (f.icon + ' ' + f.name) === myName) || FRUIT_NAMES[0];
+              fruitBadge.innerHTML = `
+                <span class="fruit-badge-icon">${fruit.icon}</span>
+                <span class="fruit-badge-text">Biệt danh tham quan: <b>${escapeHtml(fruit.name)}</b> (${escapeHtml(fruit.vi)})</span>
+              `;
+            }
+          }
           const urlInp = hopMultiplayer.querySelector('#mpFirebaseUrlInput');
           if (urlInp) {
             urlInp.value = localStorage.getItem('bt3d_firebase_url') || FIREBASE_CONFIG.databaseURL || '';
@@ -11853,22 +11970,25 @@
             </div>
           </div>
 
-          <label class="chat-pills-label">Lời chào & tin nhắn nhanh (chạm để gửi ngay):</label>
+          <label class="chat-pills-label">Chọn lời chào thân thiện để gửi (chạm để gửi ngay):</label>
           <div class="chat-preset-pills" id="chatPresetPills">
-            <button type="button" class="chat-pill-btn" data-msg="👋 Chào bạn!">👋 Chào bạn!</button>
-            <button type="button" class="chat-pill-btn" data-msg="✨ Bảo tàng trường mình đẹp quá!">✨ Bảo tàng trường đẹp quá!</button>
-            <button type="button" class="chat-pill-btn" data-msg="💐 Em kính chào Thầy/Cô ạ!">💐 Kính chào Thầy/Cô ạ!</button>
-            <button type="button" class="chat-pill-btn" data-msg="🌸 Tặng bạn bông hoa sen!">🌸 Tặng hoa sen!</button>
-            <button type="button" class="chat-pill-btn" data-msg="❤️ Thả tim bảo tàng An Nhơn!">❤️ Thả tim!</button>
-            <button type="button" class="chat-pill-btn" data-msg="🤝 Rất vui được gặp bạn ở đây!">🤝 Rất vui được gặp bạn!</button>
+            <button type="button" class="chat-pill-btn" data-msg="👋 Xin chào bạn! Chúc bạn tham quan vui vẻ!">👋 Xin chào bạn!</button>
+            <button type="button" class="chat-pill-btn" data-msg="✨ Bảo tàng 3D trường mình đẹp quá!">✨ Bảo tàng 3D trường mình đẹp quá!</button>
+            <button type="button" class="chat-pill-btn" data-msg="💐 Em kính chào Thầy/Cô ạ!">💐 Em kính chào Thầy/Cô ạ!</button>
+            <button type="button" class="chat-pill-btn" data-msg="🌸 Tặng bạn bông hoa sen tươi thắm!">🌸 Tặng bạn bông hoa sen!</button>
+            <button type="button" class="chat-pill-btn" data-msg="❤️ Thả tim bảo tàng THCS An Nhơn!">❤️ Thả tim bảo tàng An Nhơn!</button>
+            <button type="button" class="chat-pill-btn" data-msg="🤝 Rất vui được cùng tham quan với bạn!">🤝 Rất vui được gặp bạn!</button>
+            <button type="button" class="chat-pill-btn" data-msg="👏 Tự hào truyền thống trường THCS An Nhơn!">👏 Tự hào truyền thống trường mình!</button>
+            <button type="button" class="chat-pill-btn" data-msg="🏛️ Không gian 3D thật ấn tượng và sinh động!">🏛️ Không gian 3D thật ấn tượng!</button>
+            <button type="button" class="chat-pill-btn" data-msg="😊 Chúc bạn một buổi tham quan thật ý nghĩa!">😊 Chúc bạn tham quan ý nghĩa!</button>
+            <button type="button" class="chat-pill-btn" data-msg="📖 Bạn đã tham quan phòng truyền thống chưa?">📖 Bạn xem phòng truyền thống chưa?</button>
+            <button type="button" class="chat-pill-btn" data-msg="🙋 Chúc bạn một ngày học tập thật tốt nhé!">🙋 Chúc bạn học tập thật tốt!</button>
+            <button type="button" class="chat-pill-btn" data-msg="👍 Cảm ơn bạn rất nhiều nhé!">👍 Cảm ơn bạn rất nhiều!</button>
           </div>
 
-          <div class="chat-input-box">
-            <label for="chatInputText">Hoặc nhập lời nhắn bạn muốn gửi:</label>
-            <div class="chat-input-row">
-              <input type="text" id="chatInputText" maxlength="120" placeholder="Nhập lời nhắn của bạn...">
-              <button type="button" class="mp-nut primary" id="chatSendBtn">Gửi tin 🚀</button>
-            </div>
+          <div class="chat-safe-notice">
+            <span class="safe-notice-icon">🛡️</span>
+            <span>Chức năng gửi lời nhắn đã được giới hạn ở các câu chào văn minh, lịch sự để giữ gìn nét đẹp văn hóa học đường. Hãy chạm vào câu chào phía trên để gửi!</span>
           </div>
         </div>
       </div>
@@ -11902,27 +12022,6 @@
               guiTinNhan(msg, currentTargetId);
             };
           });
-
-          // Nút gửi và phím Enter
-          const sendBtn = hopInteraction.querySelector('#chatSendBtn');
-          const inputEl = hopInteraction.querySelector('#chatInputText');
-
-          sendBtn.onclick = () => {
-            const val = (inputEl.value || '').trim();
-            if (val) {
-              guiTinNhan(val, currentTargetId);
-            }
-          };
-
-          inputEl.onkeydown = (e) => {
-            if (e.key === 'Enter') {
-              e.preventDefault();
-              const val = (inputEl.value || '').trim();
-              if (val) {
-                guiTinNhan(val, currentTargetId);
-              }
-            }
-          };
         }
 
         function moHopThoaiTuongTac(targetId) {
@@ -11956,33 +12055,28 @@
           const roleEl = hopInteraction.querySelector('#chatTargetRole');
           const roomEl = hopInteraction.querySelector('#chatTargetRoom');
           const avatarEl = hopInteraction.querySelector('#chatTargetAvatarPreview');
-          const inputEl = hopInteraction.querySelector('#chatInputText');
           const subEl = hopInteraction.querySelector('#chatTargetSub');
 
           const def = AVATAR_DEFS[target.avatar] || AVATAR_DEFS.student_male;
 
           if (target.isAll) {
             if (subEl) subEl.textContent = 'GỬI ĐẾN MỌI NGƯỜI TRONG PHÒNG';
-            nameEl.textContent = 'Gửi lời nhắn đến mọi người';
+            nameEl.textContent = 'Gửi lời chào đến mọi người';
             cardNameEl.textContent = 'Tất cả khách cùng phòng';
             roleEl.textContent = 'Toàn phòng';
             avatarEl.textContent = '📢';
             roomEl.textContent = '📍 ' + layTenPhong(target.room);
-            inputEl.placeholder = 'Nhập lời nhắn gửi đến mọi người trong phòng...';
           } else {
             const cleanTargetName = lamSachVanBan(target.name || 'Khách tham quan');
-            if (subEl) subEl.textContent = '🔒 TRÒ CHUYỆN RIÊNG TƯ (CHỈ 2 BẠN THẤY)';
-            nameEl.textContent = 'Trò chuyện cùng ' + cleanTargetName;
+            if (subEl) subEl.textContent = '🔒 LỜI CHÀO RIÊNG TƯ (CHỈ 2 BẠN THẤY)';
+            nameEl.textContent = 'Gửi lời chào đến ' + cleanTargetName;
             cardNameEl.textContent = cleanTargetName;
             roleEl.textContent = target.isBot ? 'Học sinh mô phỏng' : ((def.role || 'Khách tham quan') + ' • Tin riêng');
             avatarEl.textContent = def.icon || '👤';
             roomEl.textContent = '📍 ' + layTenPhong(target.room);
-            inputEl.placeholder = 'Nhập lời nhắn riêng gửi đến ' + cleanTargetName + '...';
           }
 
-          inputEl.value = '';
           hopInteraction.style.display = 'flex';
-          setTimeout(() => inputEl.focus(), 100);
         }
 
         function dongHopInteraction() {
@@ -12000,11 +12094,6 @@
           const checkChat = kiemTraNoiDungXau(content, false);
           if (checkChat.viPham) {
             hienThongBaoToast('⚠️ Tin nhắn chứa từ ngữ thiếu lịch sự hoặc phản cảm. Vui lòng giữ gìn nét đẹp văn hóa học đường!', true);
-            const inputEl = document.getElementById('chatInputText');
-            if (inputEl) {
-              inputEl.focus();
-              inputEl.select();
-            }
             return;
           }
 
