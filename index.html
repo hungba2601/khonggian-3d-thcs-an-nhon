@@ -10809,11 +10809,36 @@
         }
 
         // 9. Robot khách tham quan mô phỏng (Demo Simulation Bots)
-        // Giúp tạo không khí đông vui, nhộn nhịp trong trường ngay cả khi chưa kết nối mạng
+        // Sinh ngẫu nhiên biệt danh trái cây tiếng Anh cho các Bot mô phỏng
+        let botFruitNames = {};
+        try {
+          botFruitNames = JSON.parse(sessionStorage.getItem('bt3d_bot_fruit_names') || '{}');
+        } catch (e) { }
+
+        const daDungFruit = [myName];
+        ['bot_lananh', 'bot_baonam', 'bot_phuhuynh'].forEach(id => {
+          if (botFruitNames[id] && FRUIT_NAMES.some(f => (f.icon + ' ' + f.name) === botFruitNames[id])) {
+            daDungFruit.push(botFruitNames[id]);
+          }
+        });
+
+        ['bot_lananh', 'bot_baonam', 'bot_phuhuynh'].forEach(id => {
+          if (!botFruitNames[id] || !FRUIT_NAMES.some(f => (f.icon + ' ' + f.name) === botFruitNames[id])) {
+            const conLai = FRUIT_NAMES.filter(f => !daDungFruit.includes(f.icon + ' ' + f.name));
+            const pool = conLai.length ? conLai : FRUIT_NAMES;
+            const chon = pool[Math.floor(Math.random() * pool.length)];
+            botFruitNames[id] = chon.icon + ' ' + chon.name;
+            daDungFruit.push(botFruitNames[id]);
+          }
+        });
+        try {
+          sessionStorage.setItem('bt3d_bot_fruit_names', JSON.stringify(botFruitNames));
+        } catch (e) { }
+
         const DEMO_BOTS = [
           {
             id: 'bot_lananh',
-            name: 'Lan Anh (7A1)',
+            name: botFruitNames['bot_lananh'] || '🍓 Strawberry',
             avatar: 'student_female',
             room: 'lobby',
             state: 'walk', // walk | pause
@@ -10831,7 +10856,7 @@
           },
           {
             id: 'bot_baonam',
-            name: 'Bảo Nam (8A3)',
+            name: botFruitNames['bot_baonam'] || '🥑 Avocado',
             avatar: 'student_male',
             room: 'lobby',
             state: 'walk',
@@ -10848,7 +10873,7 @@
           },
           {
             id: 'bot_phuhuynh',
-            name: 'Bác Hùng (Phụ huynh)',
+            name: botFruitNames['bot_phuhuynh'] || '🥭 Mango',
             avatar: 'visitor_male',
             room: 'lobby',
             state: 'walk',
@@ -12153,7 +12178,7 @@
             } else if (bot.id === 'bot_phuhuynh') {
               reply = 'Chào bạn nhé! Tôi là phụ huynh học sinh đến tham quan không gian truyền thống của trường. Không gian thật trang nghiêm và đẹp đẽ! 👨✨';
             } else {
-              reply = 'Chào bạn nhé! Mình là Bảo Nam 8A3, rất vui được gặp bạn ở bảo tàng trường mình! 👦✨';
+              reply = 'Chào bạn nhé! Mình là ' + bot.name + ', rất vui được gặp bạn ở bảo tàng trường mình! 👦✨';
             }
           } else if (low.includes('đẹp') || low.includes('thích') || low.includes('tuyệt') || low.includes('xịn') || low.includes('hay')) {
             if (bot.id === 'bot_lananh') {
