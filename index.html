@@ -9788,6 +9788,7 @@
         // =====================================================================
         // BỘ LỌC NGÔN TỪ VĂN HÓA HỌC ĐƯỜNG (BẢO VỆ MÔI TRƯỜNG THIẾU NHI & HỌC ĐƯỜNG)
         // Kiểm tra và ngăn chặn từ ngữ thô tục, chửi thề, phản cảm khi đặt tên & chat
+        // (Xử lý toàn diện cả CÓ DẤU, KHÔNG DẤU, VIẾT TẮT, ĐỌC NÓNG, CHÈN KÝ TỰ LÁCH LUẬT)
         // =====================================================================
         function stripAccents(str) {
           if (!str) return '';
@@ -9810,70 +9811,104 @@
             .replace(/[8]/g, 'b');
         }
 
-        // 1. Nhóm từ thô tục, chửi thề, tục tĩu, khiêu dâm
-        const REGEX_TU_CAM_TUYET_DOI = [
-          // Tục tĩu có dấu (chính xác 100%)
-          /\b(c[ặă]c|k[ặă]c|l[ồỗ]n|bu[ồỗ]i|d[áà]i|đ[ịi]t|đ[ụu]|đ[éè]o|đ[éè]ch|ch[ịi]ch|xo[ạa]c|ph[ịi]ch|th[ủu]\s*d[âa]m|m[óo]c\s*l[ốo]p|b[úu]\s*cu|b[úu]\s*c[ặă]c|b[úu]\s*l[ồỗ]n|m[úu]t\s*bu[ồỗ]i|li[ếe]m\s*l[ồỗ]n)\b/i,
-          // Cụm chửi thề kinh điển
-          /\b(d[iị]t\s*m[eẹ]|d[uụ]\s*m[aá]|d[uụ]\s*m[eẹ]|d[iị]t\s*c[oọ]n\s*m[eẹ]|d[iị]t\s*c[uụ]|d[uụ]\s*m[aá]\s*m[aà]y|d[iị]t\s*m[eẹ]\s*m[aà]y|d[iị]t\s*b[aà])\b/i,
-          // Viết tắt tục tĩu
-          /\b(dkm|dcm|dcmm|dmm|vcl|vkl|vcc|clgt|vl|loz|vlon)\b/i,
-          // Khiêu dâm, mại dâm
-          /\b(g[áa]i\s*b[aao]|g[áa]i\s*đ[iĩ][ếe]m|g[áa]i\s*ph[òo]|l[àa]m\s*t[ìi]nh|khi[êe]u\s*d[âa]m)\b/i,
-          // Lăng mạ xúc phạm
-          /\b(th[ằăa]ng\s*ch[óo]|con\s*ch[óo]|đ[ồo]\s*ch[óo]|ch[óo]\s*đ[ẻe]|ch[óo]\s*ch[ếe]t|ch[óo]\s*m[áa]|s[úu]c\s*v[ậa]t|s[úu]c\s*sinh|[óo]c\s*ch[óo]|đ[ồo]\s*ngu|th[ằăa]ng\s*ngu|con\s*ngu|ngu\s*nh[ưu]\s*ch[óo]|ngu\s*nh[ưu]\s*b[òo]|ngu\s*l[ồỗ]n|m[ặă]t\s*l[ồỗ]n|h[ãa]m\s*l[ồỗ]n|m[ẹe]\s*ki[ếe]p|ti[êe]n\s*s[ưu]|đ[ồo]\s*đi[êe]n|đ[ồo]\s*kh[uù]ng)\b/i,
-          // Tiếng Anh
-          /\b(fuck|fucking|fucker|motherfucker|bitch|asshole|bastard|pussy|cunt|cock|dick|porn|hentai)\b/i
+        // Danh mục quy tắc phát hiện ngôn từ xấu (Cả có dấu và không dấu)
+        const REGEX_TU_CAM_TOAN_DIEN = [
+          // 1. Nhóm Địt / Đụ / Đéo / Đếch / Dme / Dma (Cả có dấu và không dấu: dit, djt, dyt, du, deo, dech, dume, duma, dme...)
+          /\b(d[iịjy]t|d[uụ]|d[eéè]o|d[eéè]ch)\b/i,
+          /\b(d[iịjy]t\s*m[eẹ]|d[uụ]\s*m[aá]|d[uụ]\s*m[eẹ]|d[iịjy]t\s*c[oọ]n\s*m[eẹ]|d[iịjy]t\s*c[uụ]|d[uụ]\s*m[aá]\s*m[aà]y|d[iịjy]t\s*m[eẹ]\s*m[aà]y|d[iịjy]t\s*b[aà]|d[iịjy]t\s*ch[aả])\b/i,
+          /\b(dume|duma|dme|dma|dmemay|dmamay|dumamay|dumemay)\b/i,
+
+          // 2. Nhóm Lồn / Loz (Cả có dấu và không dấu: lon, loz, l0n, l0z, vlon, vloz, cloz...)
+          /\b(l[oôồỗõóòọ]n|l[oôồỗõóòọ]z|vlon|vloz|cloz)\b/i,
+          /\b(cai\s+l[oôồỗ]n|con\s+l[oôồỗ]n|nhu\s+l[oôồỗ]n|mat\s+l[oôồỗ]n|ham\s+l[oôồỗ]n|ngu\s+l[oôồỗ]n|bu\s+l[oôồỗ]n|liem\s+l[oôồỗ]n|thang\s+l[oôồỗ]n|do\s+l[oôồỗ]n|lon\s+que|lon\s+rach|banh\s+lon|bu\s+loz|liem\s+loz|nhu\s+loz|cai\s+loz|mat\s+loz|ngu\s+loz)\b/i,
+
+          // 3. Nhóm Buồi (Có dấu cấm tuyệt đối; không dấu bắt theo cụm xúc phạm hoặc từ đứng lẻ)
+          /\b(bu[ồỗ]i)\b/i,
+          /\b(dau\s+bu[oồỗ]i|cai\s+bu[oồỗ]i|con\s+bu[oồỗ]i|nhu\s+bu[oồỗ]i|an\s+bu[oồỗ]i|bu\s+bu[oồỗ]i|mut\s+bu[oồỗ]i|liem\s+bu[oồỗ]i|thang\s+bu[oồỗ]i|do\s+bu[oồỗ]i|mat\s+bu[oồỗ]i|ngu\s+bu[oồỗ]i|bu[oồỗ]i\s+to|bu[oồỗ]i\s+teo)\b/i,
+
+          // 4. Nhóm Cặc (Có dấu cấm tuyệt đối; không dấu cấm theo cụm thô tục)
+          /\b([ck][ặă]c)\b/i,
+          /\b(con\s+cac|cai\s+cac|dau\s+cac|bu\s+cac|an\s+cac|nhu\s+cac|cac\s+to|mut\s+cac|liem\s+cac|do\s+cac|thang\s+cac|nhin\s+cac|mat\s+cac|oc\s+cac|ngu\s+cac|xe\s+cac|xoac\s+cac|cl\s+cac|co\s+cac|lam\s+cac\s+gi|cai\s+cac\s+gi)\b/i,
+
+          // 5. Nhóm Chịch / Xoạc / Phịch (Cả có dấu và không dấu: chich, xoac, phich)
+          /\b(ch[iị]ch|xo[aạ]c|ph[iị]ch)\b/i,
+
+          // 6. Nhóm Cu / Dái (Hành vi hoặc từ ngữ thô tục)
+          /\b(b[uú]\s*cu|m[uú]t\s*cu|li[eêế]m\s*cu|s[oờ]\s*cu|b[oó]p\s*cu|cu\s+to|con\s+cu|cai\s+cu|d[áà]i|b[oó]p\s*d[aáà]i|h[aáà]i\s*d[aáà]i|v[uưướ]t\s*d[aáà]i|c[aà]\s*d[aáà]i)\b/i,
+
+          // 7. Nhóm Tình dục / Mại dâm / Khiêu dâm
+          /\b(th[uủ]\s*d[aâ]m|m[oó]c\s*l[oố]p|s[uụ]k\s*c[aặ]c|s[oó]c\s*l[oọ]|g[aá]i\s*bao|g[aá]i\s*di[eêế]m|g[aá]i\s*ph[oò]|cave|l[aà]m\s*t[iì]nh|khi[eê]u\s*d[aâ]m|sextoy)\b/i,
+
+          // 8. Viết tắt chửi bậy (dm, đm, dkm, dcm, dmm, vcl, vkl, cc, cl...)
+          /\b(dkm|dcm|dcmm|dmm|dkmm|vcl|vkl|vcc|clgt|vl|loz|vlon|vler)\b/i,
+          /\b(d[.\-_\s]*m|đ[.\-_\s]*m)\b/i,
+          /\b(nhu\s+cc|nhu\s+cl|cai\s+cc|cai\s+cl|an\s+cc|an\s+cl|lam\s+cc\s+gi|lam\s+cl\s+gi|co\s+cc|co\s+cl)\b/i,
+
+          // 9. Lăng mạ, sỉ nhục, chửi rủa (Cả có dấu và không dấu)
+          /\b(th[aă]ng\s+ch[oó]|con\s+ch[oó]|d[oò]\s+ch[oó]|ch[oó]\s+ch[eế]t|ch[oó]\s+d[eẻ]|ch[oó]\s+m[aá]|lu\s+ch[oó]|dam\s+ch[oó])\b/i,
+          /\b(s[uú]c\s+v[aậ]t|d[oò]\s+s[uú]c\s+v[aậ]t|[oó]c\s+ch[oó]|d[oò]\s+[oó]c\s+ch[oó]|n[aã]o\s+ch[oó]|[oó]c\s+b[oò]|n[aã]o\s+b[oò])\b/i,
+          /\b(th[aă]ng\s+ngu|con\s+ngu|d[oò]\s+ngu|ngu\s+nhu\s+ch[oó]|ngu\s+nhu\s+b[oò]|ngu\s+vl|ngu\s+vcl|ngu\s+vkl|ngu\s+si|ngu\s+ng[oố]c)\b/i,
+          /\b(th[aă]ng\s+di[eê]n|con\s+di[eê]n|d[oò]\s+di[eê]n|th[aă]ng\s+kh[uù]ng|con\s+kh[uù]ng|d[oò]\s+kh[uù]ng|d[oò]\s+h[aã]m|b[eệ]nh\s+ho[aạ]n)\b/i,
+          /\b(m[eẹ]\s+m[aà]y|ch[aả]\s+m[aà]y|b[oố]\s+m[aà]y|ong\s+noi\s+m[aà]y|ba\s+noi\s+m[aà]y|ti[eê]n\s+s[uư]\s+m[aà]y|t[oô]\s+s[uư]\s+m[aà]y|m[eẹ]\s+ki[eế]p|ch[eế]t\s+ti[eệ]t|ch[eế]t\s+m[eẹ]|ch[eế]t\s+m[eẹ]\s+m[aà]y|ch[eế]t\s+m[eẹ]\s+di)\b/i,
+          /\b(c[uú]t\s+di|c[uú]t\s+m[eẹ]\s+m[aà]y|c[uú]t\s+kh[oỏ]i\s+d[aâ]y|bi[eê]n\s+di|bi[eê]n\s+m[eẹ]\s+m[aà]y)\b/i,
+          /\b(an\s+c[uứ]t|an\s+c[uụ]c|c[uụ]c\s+c[uứ]t|b[aã]i\s+c[uứ]t)\b/i,
+          /\b(m[aặ]t\s+d[aạ]y|d[oò]\s+m[aặ]t\s+d[aạ]y|th[aă]ng\s+m[aặ]t\s+d[aạ]y|con\s+m[aặ]t\s+d[aạ]y|kh[oố]n\s+n[aạ]n|d[oò]\s+kh[oố]n)\b/i,
+
+          // 10. Tiếng Anh tục tĩu
+          /\b(fuck|fucking|fucker|motherfucker|bitch|asshole|bastard|pussy|cunt|cock|dick|porn|hentai|sex|nude)\b/i
         ];
 
-        // 2. Các từ không dấu cần kiểm tra theo ngữ cảnh
-        const REGEX_TU_CAM_KHONG_DAU = [
-          /\b(dit|du|lon|buoi|chich|xoac|phich|deo|dech|loz)\b/i,
-          /\b(con\s+cac|cai\s+cac|dau\s+cac|bu\s+cac|an\s+cac|nhu\s+cac|cac\s+to|mut\s+cac|liem\s+cac|do\s+cac|thang\s+cac)\b/i,
-          /\b(me\s+may|cha\s+may|bo\s+may|tien\s+su\s+may)\b/i,
-          /\b(thang\s+cho|con\s+cho|do\s+cho|cho\s+chet|suc\s+vat|oc\s+cho|do\s+ngu|thang\s+ngu|con\s+ngu|ngu\s+lon|mat\s+lon)\b/i
-        ];
-
-        // 3. Hàm kiểm tra vi phạm ngôn từ: trả về { viPham: boolean, lyDo: string }
-        function kiemTraNoiDungXau(rawText) {
+        // Hàm kiểm tra vi phạm ngôn từ: trả về { viPham: boolean, lyDo: string }
+        function kiemTraNoiDungXau(rawText, isName = false) {
           if (!rawText || typeof rawText !== 'string') return { viPham: false };
           const str = rawText.trim();
           if (!str) return { viPham: false };
-
-          // Kiểm tra regex tuyệt đối trên văn bản gốc
-          for (const reg of REGEX_TU_CAM_TUYET_DOI) {
-            if (reg.test(str)) {
-              return { viPham: true, lyDo: 'Từ ngữ chưa phù hợp văn hóa học đường' };
-            }
-          }
 
           // Chuẩn hóa không dấu và leet
           const noAcc = stripAccents(str);
           const leet = normalizeLeet(noAcc);
 
-          for (const reg of REGEX_TU_CAM_TUYET_DOI) {
-            if (reg.test(noAcc) || reg.test(leet)) {
+          // 1. Kiểm tra trường hợp đặt tên nhân vật
+          if (isName) {
+            // Không cho đặt tên chỉ chứa từ thô tục (cả có dấu và không dấu)
+            if (/^(cac|c[ặă]c|buoi|bu[ồỗ]i|lon|l[ồỗ]n|dit|d[ịi]t|djt|du|d[ụu]|deo|d[éè]o|dme|dma|loz)$/i.test(noAcc)) {
+              return { viPham: true, lyDo: 'Tên chứa từ ngữ chưa phù hợp văn hóa học đường' };
+            }
+            if (/\b(cac|c[ặă]c|buoi|bu[ồỗ]i|lon|l[ồỗ]n|dit|d[ịi]t|djt|deo|d[éè]o)\b/i.test(noAcc)) {
+              return { viPham: true, lyDo: 'Tên chứa từ ngữ chưa phù hợp văn hóa học đường' };
+            }
+          }
+
+          // 2. Chặn từ đứng một mình: 'buoi', 'cac'
+          if (/^(buoi|cac)$/i.test(noAcc)) {
+            return { viPham: true, lyDo: 'Từ ngữ chưa phù hợp văn hóa học đường' };
+          }
+
+          // 3. Phân biệt thông minh đại từ 'các' trong câu:
+          // Nếu có chữ 'cac', chỉ cho phép khi đứng trước các danh từ lịch sự học đường (các bạn, các em, các thầy cô, các môn, các phòng...)
+          if (/\bcac\b/i.test(noAcc)) {
+            const isPoliteCac = /\bcac\s+(ban|em|thay|co|anh|chi|bac|chu|chau|vi|dong\s*chi|hoc\s*sinh|giao\s*vien|phong|gian|tranh|anh|tu\s*lieu|hien\s*vat|mon|bai|tiet|ngay|thang|nam|buoi|chuong\s*trinh|hoat\s*dong|cau|goc|tang|noi|truong|lop|con)\b/i.test(noAcc);
+            if (!isPoliteCac) {
+              return { viPham: true, lyDo: 'Chứa từ ngữ không phù hợp văn hóa học đường' };
+            }
+          }
+
+          // 4. Kiểm tra qua toàn bộ tập biểu thức chính quy (trên chuỗi gốc, chuỗi bỏ dấu và chuỗi leet)
+          for (const reg of REGEX_TU_CAM_TOAN_DIEN) {
+            if (reg.test(str) || reg.test(noAcc) || reg.test(leet)) {
               return { viPham: true, lyDo: 'Từ ngữ chưa phù hợp văn hóa học đường' };
             }
           }
 
-          // Kiểm tra cụm từ không dấu theo ngữ cảnh
-          for (const reg of REGEX_TU_CAM_KHONG_DAU) {
-            if (reg.test(noAcc) || reg.test(leet)) {
-              return { viPham: true, lyDo: 'Từ ngữ chưa phù hợp văn hóa học đường' };
-            }
-          }
-
-          // Bắt các dạng lách ký tự ngắt quãng: d.m, d-m, đ.ị.t, l.ồ.n, c.ặ.c, v.c.l
+          // 5. Bắt các dạng lách ký tự ngắt quãng: d.m, d-m, đ.ị.t, l.ồ.n, c.ặ.c, v.c.l, d_m
           const compact = leet.replace(/[^a-z0-9]/g, '');
           const compactDedup = compact.replace(/([a-z])\1{2,}/g, '$1$1');
-          const BAD_COMPACT_WORDS = ['dm', 'dkm', 'dcm', 'dmm', 'vcl', 'vkl', 'clgt', 'dit', 'lon', 'buoi', 'cac', 'chich'];
+          const BAD_COMPACT_WORDS = ['dm', 'dkm', 'dcm', 'dmm', 'vcl', 'vkl', 'clgt', 'dit', 'djt', 'lon', 'buoi', 'chich', 'dume', 'duma', 'dme', 'dma'];
 
           if (BAD_COMPACT_WORDS.includes(compactDedup)) {
             return { viPham: true, lyDo: 'Từ viết tắt chưa phù hợp văn hóa học đường' };
           }
 
-          // Kiểm tra từng từ bị ngắt quãng bởi dấu chấm, gạch (ví dụ: "d.m", "đ.ị.t", "l.o.n")
           for (const bw of BAD_COMPACT_WORDS) {
             if (bw.length >= 2) {
               const p = bw.split('').join('[.\\-_*~`!@#\\s]+');
@@ -9889,15 +9924,30 @@
 
         // 4. Hàm làm sạch / che từ ngữ thô tục thành *** (dùng khi hiển thị tin nhắn nhận được hoặc tên người khác)
         const REGEX_CENSOR_ALL = [
-          /\b(c[ặă]c|k[ặă]c|l[ồỗ]n|bu[ồỗ]i|d[áà]i|đ[ịi]t|đ[ụu]|đ[éè]o|đ[éè]ch|ch[ịi]ch|xo[ạa]c|ph[ịi]ch|th[ủu]\s*d[âa]m|m[óo]c\s*l[ốo]p|b[úu]\s*cu|b[úu]\s*c[ặă]c|b[úu]\s*l[ồỗ]n|m[úu]t\s*bu[ồỗ]i|li[ếe]m\s*l[ồỗ]n)\b/gi,
-          /\b(d[iị]t\s*m[eẹ]|d[uụ]\s*m[aá]|d[uụ]\s*m[eẹ]|d[iị]t\s*c[oọ]n\s*m[eẹ]|d[iị]t\s*c[uụ]|d[uụ]\s*m[aá]\s*m[aà]y|d[iị]t\s*m[eẹ]\s*m[aà]y|d[iị]t\s*b[aà])\b/gi,
-          /\b(dkm|dcm|dcmm|dmm|vcl|vkl|vcc|clgt|vl|loz|vlon)\b/gi,
-          /\b(g[áa]i\s*b[aao]|g[áa]i\s*đ[iĩ][ếe]m|g[áa]i\s*ph[òo]|l[àa]m\s*t[ìi]nh|khi[êe]u\s*d[âa]m)\b/gi,
-          /\b(th[ằăa]ng\s*ch[óo]|con\s*ch[óo]|đ[ồo]\s*ch[óo]|ch[óo]\s*đ[ẻe]|ch[óo]\s*ch[ếe]t|ch[óo]\s*m[áa]|s[úu]c\s*v[ậa]t|s[úu]c\s*sinh|[óo]c\s*ch[óo]|đ[ồo]\s*ngu|th[ằăa]ng\s*ngu|con\s*ngu|ngu\s*nh[ưu]\s*ch[óo]|ngu\s*nh[ưu]\s*b[òo]|ngu\s*l[ồỗ]n|m[ặă]t\s*l[ồỗ]n|h[ãa]m\s*l[ồỗ]n|m[ẹe]\s*ki[ếe]p|ti[êe]n\s*s[ưu]|đ[ồo]\s*đi[êe]n|đ[ồo]\s*kh[uù]ng)\b/gi,
-          /\b(fuck|fucking|fucker|motherfucker|bitch|asshole|bastard|pussy|cunt|cock|dick|porn|hentai)\b/gi,
-          /\b(con\s+cac|cai\s+cac|dau\s+cac|bu\s+cac|an\s+cac|nhu\s+cac|cac\s+to|mut\s+cac|liem\s+cac|do\s+cac|thang\s+cac)\b/gi,
-          /\b(me\s+may|cha\s+may|bo\s+may|tien\s+su\s+may)\b/gi,
-          /\b(thang\s+cho|con\s+cho|do\s+cho|cho\s+chet|suc\s+vat|oc\s+cho|do\s+ngu|thang\s+ngu|con\s+ngu|ngu\s+lon|mat\s+lon)\b/gi
+          /\b(d[iịjy]t\s*m[eẹ]|d[uụ]\s*m[aá]|d[uụ]\s*m[eẹ]|d[iịjy]t\s*c[oọ]n\s*m[eẹ]|d[iịjy]t\s*c[uụ]|d[uụ]\s*m[aá]\s*m[aà]y|d[iịjy]t\s*m[eẹ]\s*m[aà]y|d[iịjy]t\s*b[aà]|d[iịjy]t\s*ch[aả])\b/gi,
+          /\b(dume|duma|dme|dma|dmemay|dmamay|dumamay|dumemay)\b/gi,
+          /\b(d[iịjy]t|d[uụ]|d[eéè]o|d[eéè]ch)\b/gi,
+          /\b(cai\s+l[oôồỗ]n|con\s+l[oôồỗ]n|nhu\s+l[oôồỗ]n|mat\s+l[oôồỗ]n|ham\s+l[oôồỗ]n|ngu\s+l[oôồỗ]n|bu\s+l[oôồỗ]n|liem\s+l[oôồỗ]n|thang\s+l[oôồỗ]n|do\s+l[oôồỗ]n|lon\s+que|lon\s+rach|banh\s+lon|bu\s+loz|liem\s+loz|nhu\s+loz|cai\s+loz|mat\s+loz|ngu\s+loz)\b/gi,
+          /\b(l[oôồỗõóòọ]n|l[oôồỗõóòọ]z|vlon|vloz|cloz)\b/gi,
+          /\b(dau\s+bu[oồỗ]i|cai\s+bu[oồỗ]i|con\s+bu[oồỗ]i|nhu\s+bu[oồỗ]i|an\s+bu[oồỗ]i|bu\s+bu[oồỗ]i|mut\s+bu[oồỗ]i|liem\s+bu[oồỗ]i|thang\s+bu[oồỗ]i|do\s+bu[oồỗ]i|mat\s+bu[oồỗ]i|ngu\s+bu[oồỗ]i|bu[oồỗ]i\s+to|bu[oồỗ]i\s+teo)\b/gi,
+          /\b(bu[ồỗ]i)\b/gi,
+          /\b(con\s+cac|cai\s+cac|dau\s+cac|bu\s+cac|an\s+cac|nhu\s+cac|cac\s+to|mut\s+cac|liem\s+cac|do\s+cac|thang\s+cac|nhin\s+cac|mat\s+cac|oc\s+cac|ngu\s+cac|xe\s+cac|xoac\s+cac|cl\s+cac|co\s+cac|lam\s+cac\s+gi|cai\s+cac\s+gi)\b/gi,
+          /\b([ck][ặă]c)\b/gi,
+          /\b(ch[iị]ch|xo[aạ]c|ph[iị]ch)\b/gi,
+          /\b(b[uú]\s*cu|m[uú]t\s*cu|li[eêế]m\s*cu|s[oờ]\s*cu|b[oó]p\s*cu|cu\s+to|con\s+cu|cai\s+cu|d[áà]i|b[oó]p\s*d[aáà]i|h[aáà]i\s*d[aáà]i|v[uưướ]t\s*d[aáà]i|c[aà]\s*d[aáà]i)\b/gi,
+          /\b(th[uủ]\s*d[aâ]m|m[oó]c\s*l[oố]p|s[uụ]k\s*c[aặ]c|s[oó]c\s*l[oọ]|g[aá]i\s*bao|g[aá]i\s*di[eêế]m|g[aá]i\s*ph[oò]|cave|l[aà]m\s*t[iì]nh|khi[eê]u\s*d[aâ]m|sextoy)\b/gi,
+          /\b(dkm|dcm|dcmm|dmm|dkmm|vcl|vkl|vcc|clgt|vl|loz|vlon|vler)\b/gi,
+          /\b(d[.\-_\s]*m|đ[.\-_\s]*m)\b/gi,
+          /\b(nhu\s+cc|nhu\s+cl|cai\s+cc|cai\s+cl|an\s+cc|an\s+cl|lam\s+cc\s+gi|lam\s+cl\s+gi|co\s+cc|co\s+cl)\b/gi,
+          /\b(th[aă]ng\s+ch[oó]|con\s+ch[oó]|d[oò]\s+ch[oó]|ch[oó]\s+ch[eế]t|ch[oó]\s+d[eẻ]|ch[oó]\s+m[aá]|lu\s+ch[oó]|dam\s+ch[oó])\b/gi,
+          /\b(s[uú]c\s+v[aậ]t|d[oò]\s+s[uú]c\s+v[aậ]t|[oó]c\s+ch[oó]|d[oò]\s+[oó]c\s+ch[oó]|n[aã]o\s+ch[oó]|[oó]c\s+b[oò]|n[aã]o\s+b[oò])\b/gi,
+          /\b(th[aă]ng\s+ngu|con\s+ngu|d[oò]\s+ngu|ngu\s+nhu\s+ch[oó]|ngu\s+nhu\s+b[oò]|ngu\s+vl|ngu\s+vcl|ngu\s+vkl|ngu\s+si|ngu\s+ng[oố]c)\b/gi,
+          /\b(th[aă]ng\s+di[eê]n|con\s+di[eê]n|d[oò]\s+di[eê]n|th[aă]ng\s+kh[uù]ng|con\s+kh[uù]ng|d[oò]\s+kh[uù]ng|d[oò]\s+h[aã]m|b[eệ]nh\s+ho[aạ]n)\b/gi,
+          /\b(m[eẹ]\s+m[aà]y|ch[aả]\s+m[aà]y|b[oố]\s+m[aà]y|ong\s+noi\s+m[aà]y|ba\s+noi\s+m[aà]y|ti[eê]n\s+s[uư]\s+m[aà]y|t[oô]\s+s[uư]\s+m[aà]y|m[eẹ]\s+ki[eế]p|ch[eế]t\s+ti[eệ]t|ch[eế]t\s+m[eẹ]|ch[eế]t\s+m[eẹ]\s+m[aà]y|ch[eế]t\s+m[eẹ]\s+di)\b/gi,
+          /\b(c[uú]t\s+di|c[uú]t\s+m[eẹ]\s+m[aà]y|c[uú]t\s+kh[oỏ]i\s+d[aâ]y|bi[eê]n\s+di|bi[eê]n\s+m[eẹ]\s+m[aà]y)\b/gi,
+          /\b(an\s+c[uứ]t|an\s+c[uụ]c|c[uụ]c\s+c[uứ]t|b[aã]i\s+c[uứ]t)\b/gi,
+          /\b(m[aặ]t\s+d[aạ]y|d[oò]\s+m[aặ]t\s+d[aạ]y|th[aă]ng\s+m[aặ]t\s+d[aạ]y|con\s+m[aặ]t\s+d[aạ]y|kh[oố]n\s+n[aạ]n|d[oò]\s+kh[oố]n)\b/gi,
+          /\b(fuck|fucking|fucker|motherfucker|bitch|asshole|bastard|pussy|cunt|cock|dick|porn|hentai|sex|nude)\b/gi
         ];
 
         function lamSachVanBan(text) {
@@ -9981,7 +10031,7 @@
         }
 
         let myName = localStorage.getItem('bt3d_mp_name') || '';
-        if (myName && kiemTraNoiDungXau(myName).viPham) {
+        if (myName && kiemTraNoiDungXau(myName, true).viPham) {
           myName = '';
           try { localStorage.removeItem('bt3d_mp_name'); } catch (e) { }
         }
@@ -11205,7 +11255,7 @@
             const inp = hopMultiplayer.querySelector('#mpInputName');
             const val = (inp.value || '').trim();
             if (val) {
-              const checkName = kiemTraNoiDungXau(val);
+              const checkName = kiemTraNoiDungXau(val, true);
               if (checkName.viPham) {
                 hienThongBaoToast('⚠️ Tên chứa từ ngữ chưa phù hợp. Vui lòng đặt tên lịch sự, văn minh!', true);
                 inp.focus();
@@ -11885,8 +11935,8 @@
           const content = (text || '').trim();
           if (!content) return;
 
-          // Kiểm tra vi phạm ngôn từ trước khi gửi
-          const checkChat = kiemTraNoiDungXau(content);
+          // Kiểm tra vi phạm ngôn từ trước khi gửi (cả có dấu và không dấu)
+          const checkChat = kiemTraNoiDungXau(content, false);
           if (checkChat.viPham) {
             hienThongBaoToast('⚠️ Tin nhắn chứa từ ngữ thiếu lịch sự hoặc phản cảm. Vui lòng giữ gìn nét đẹp văn hóa học đường!', true);
             const inputEl = document.getElementById('chatInputText');
