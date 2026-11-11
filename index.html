@@ -818,11 +818,27 @@
     }
 
     @keyframes mpToastShake {
-      0%, 100% { transform: translateX(-50%) translateY(0) scale(1); }
-      20% { transform: translateX(calc(-50% - 6px)) translateY(0) scale(1); }
-      40% { transform: translateX(calc(-50% + 6px)) translateY(0) scale(1); }
-      60% { transform: translateX(calc(-50% - 4px)) translateY(0) scale(1); }
-      80% { transform: translateX(calc(-50% + 4px)) translateY(0) scale(1); }
+
+      0%,
+      100% {
+        transform: translateX(-50%) translateY(0) scale(1);
+      }
+
+      20% {
+        transform: translateX(calc(-50% - 6px)) translateY(0) scale(1);
+      }
+
+      40% {
+        transform: translateX(calc(-50% + 6px)) translateY(0) scale(1);
+      }
+
+      60% {
+        transform: translateX(calc(-50% - 4px)) translateY(0) scale(1);
+      }
+
+      80% {
+        transform: translateX(calc(-50% + 4px)) translateY(0) scale(1);
+      }
     }
 
     /* Gợi ý điều khiển */
@@ -11242,9 +11258,24 @@
             };
           });
 
-          // Nút đóng
+          // Nút đóng & Xử lý nhấp ra ngoài màn hình (tránh việc kéo bôi đen chữ làm tắt nhầm hộp thoại)
           hopMultiplayer.querySelector('#mpCloseBtn').onclick = dongMultiplayerModal;
-          hopMultiplayer.onclick = (e) => { if (e.target === hopMultiplayer) dongMultiplayerModal(); };
+          let isMpMouseDownOnBackdrop = false;
+          hopMultiplayer.onmousedown = (e) => {
+            isMpMouseDownOnBackdrop = (e.target === hopMultiplayer);
+          };
+          hopMultiplayer.onclick = (e) => {
+            if (isMpMouseDownOnBackdrop && e.target === hopMultiplayer) {
+              dongMultiplayerModal();
+            }
+            isMpMouseDownOnBackdrop = false;
+          };
+          // Ngăn chặn sự kiện chuột từ trong hộp thoại nổi ra ngoài
+          const mpHopBox = hopMultiplayer.querySelector('.mp-hop');
+          if (mpHopBox) {
+            mpHopBox.addEventListener('mousedown', (e) => e.stopPropagation());
+            mpHopBox.addEventListener('click', (e) => e.stopPropagation());
+          }
 
           // Tên ngẫu nhiên
           hopMultiplayer.querySelector('#mpRandomNameBtn').onclick = () => {
@@ -11845,11 +11876,23 @@
 
           document.body.appendChild(hopInteraction);
 
-          // Đóng modal
+          // Đóng modal & Xử lý nhấp ra ngoài an toàn
           hopInteraction.querySelector('#chatCloseBtn').onclick = dongHopInteraction;
-          hopInteraction.onclick = (e) => {
-            if (e.target === hopInteraction) dongHopInteraction();
+          let isChatMouseDownOnBackdrop = false;
+          hopInteraction.onmousedown = (e) => {
+            isChatMouseDownOnBackdrop = (e.target === hopInteraction);
           };
+          hopInteraction.onclick = (e) => {
+            if (isChatMouseDownOnBackdrop && e.target === hopInteraction) {
+              dongHopInteraction();
+            }
+            isChatMouseDownOnBackdrop = false;
+          };
+          const chatHopBox = hopInteraction.querySelector('.mp-hop');
+          if (chatHopBox) {
+            chatHopBox.addEventListener('mousedown', (e) => e.stopPropagation());
+            chatHopBox.addEventListener('click', (e) => e.stopPropagation());
+          }
 
           // Gắn sự kiện các nút câu chào nhanh
           const pills = hopInteraction.querySelectorAll('.chat-pill-btn');
@@ -12093,15 +12136,38 @@
           }, 1350);
         }
 
-        // Phím tắt C để mở chat nhanh, Esc để đóng
+        // Phím tắt C để mở chat nhanh, Esc để đóng (kiểm tra an toàn toàn diện)
         window.addEventListener('keydown', (e) => {
-          if (e.target.closest && e.target.closest('input, textarea, select')) return;
+          // 1. Phím Esc đóng modal đang mở
+          if (e.key === 'Escape') {
+            if (hopInteraction && hopInteraction.style.display !== 'none') {
+              dongHopInteraction();
+              return;
+            }
+            if (hopMultiplayer && hopMultiplayer.style.display !== 'none') {
+              dongMultiplayerModal();
+              return;
+            }
+          }
+
+          // 2. Tuyệt đối không can thiệp khi nhấn tổ hợp phím (Ctrl+C copy, Ctrl+X cut, Ctrl+A, Alt, Meta, Unikey/EVKey clipboard)
+          if (e.ctrlKey || e.metaKey || e.altKey) return;
+
+          // 3. Không can thiệp nếu đang thao tác trong ô nhập liệu
+          if (e.target.closest && e.target.closest('input, textarea, select, [contenteditable]')) return;
+          if (document.activeElement && document.activeElement.matches && document.activeElement.matches('input, textarea, select, [contenteditable]')) return;
+
+          // 4. Không mở chat nếu hộp thoại Chọn nhân vật & Bạn cùng xem đang hiển thị
+          if (hopMultiplayer && hopMultiplayer.style.display !== 'none') return;
+          if (hopInteraction && hopInteraction.style.display !== 'none') return;
+
+          // 5. Không can thiệp nếu đang thao tác trong bất kỳ modal hay menu nổi nào
+          if (e.target.closest && e.target.closest('.mp-nen, .mp-hop, .modal, .drawer')) return;
+
+          // 6. Phím C mở hộp thoại trò chuyện khi đang ở chế độ xem 3D tự do
           if (e.code === 'KeyC') {
             e.preventDefault();
             moHopThoaiTuongTac('all');
-          }
-          if (e.key === 'Escape') {
-            dongHopInteraction();
           }
         });
 
