@@ -4016,6 +4016,36 @@
       font-size: 15px;
     }
 
+    .mp-khoi-lop-nhom {
+      margin-top: 14px;
+      margin-bottom: 14px;
+    }
+
+    .mp-khoi-lop-wrap {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+    }
+
+    .mp-select-col {
+      display: flex;
+      flex-direction: column;
+      gap: 5px;
+    }
+
+    .mp-select-sublabel {
+      font-size: 12.5px;
+      font-weight: 600;
+      color: #634726;
+    }
+
+    @media (max-width: 520px) {
+      .mp-khoi-lop-wrap {
+        grid-template-columns: 1fr;
+        gap: 8px;
+      }
+    }
+
     .mp-nhom input[type="text"],
     .mp-nhom input[type="url"] {
       flex: 1;
@@ -10143,14 +10173,68 @@
           { name: 'Fig', icon: '🫐', vi: 'Sung Mỹ' }
         ];
 
-        let myName = localStorage.getItem('bt3d_mp_name') || '';
-        // Đảm bảo tên luôn là 1 trong 30 loại trái cây tiếng Anh có icon
-        const hopLeFruit = FRUIT_NAMES.some(f => (f.icon + ' ' + f.name) === myName);
-        if (!hopLeFruit) {
-          const rf = FRUIT_NAMES[Math.floor(Math.random() * FRUIT_NAMES.length)];
-          myName = rf.icon + ' ' + rf.name;
-          try { localStorage.setItem('bt3d_mp_name', myName); } catch (e) { }
+        // Danh mục Khối và Lớp của Trường THCS An Nhơn
+        const KHOI_LOP_MAP = {
+          '6': Array.from({ length: 13 }, (_, i) => `6A${i + 1}`),
+          '7': Array.from({ length: 12 }, (_, i) => `7A${i + 1}`),
+          '8': Array.from({ length: 13 }, (_, i) => `8A${i + 1}`),
+          '9': Array.from({ length: 14 }, (_, i) => `9A${i + 1}`),
+          'khac': ['Giáo viên', 'Phụ huynh', 'Cựu học sinh', 'Khách tham quan']
+        };
+
+        function laLopHopLe(lop) {
+          if (!lop) return false;
+          for (const k in KHOI_LOP_MAP) {
+            if (KHOI_LOP_MAP[k].includes(lop)) return true;
+          }
+          return false;
         }
+
+        function timKhoiCuaLop(lop) {
+          if (!lop) return '8';
+          for (const k in KHOI_LOP_MAP) {
+            if (KHOI_LOP_MAP[k].includes(lop)) return k;
+          }
+          return '8';
+        }
+
+        let myFruit = localStorage.getItem('bt3d_mp_fruit') || '';
+        let myGrade = localStorage.getItem('bt3d_mp_grade') || '';
+        let myClass = localStorage.getItem('bt3d_mp_class') || '';
+        let myName = localStorage.getItem('bt3d_mp_name') || '';
+
+        // Tự động phân tích nếu myName đã có từ phiên làm việc trước
+        if (myName) {
+          const matchFruit = FRUIT_NAMES.find(f => myName.includes(f.name));
+          if (matchFruit && !myFruit) myFruit = matchFruit.name;
+          const matchClass = myName.match(/\(([^)]+)\)/);
+          if (matchClass && laLopHopLe(matchClass[1]) && !myClass) {
+            myClass = matchClass[1];
+            myGrade = timKhoiCuaLop(myClass);
+          }
+        }
+
+        if (!FRUIT_NAMES.some(f => f.name === myFruit)) {
+          const rf = FRUIT_NAMES[Math.floor(Math.random() * FRUIT_NAMES.length)];
+          myFruit = rf.name;
+        }
+
+        if (!myClass || !laLopHopLe(myClass)) {
+          myGrade = '8';
+          myClass = '8A3';
+        }
+        if (!myGrade) {
+          myGrade = timKhoiCuaLop(myClass);
+        }
+
+        const curFruitObj = FRUIT_NAMES.find(f => f.name === myFruit) || FRUIT_NAMES[0];
+        myName = `${curFruitObj.icon} ${curFruitObj.name} (${myClass})`;
+        try {
+          localStorage.setItem('bt3d_mp_fruit', myFruit);
+          localStorage.setItem('bt3d_mp_grade', myGrade);
+          localStorage.setItem('bt3d_mp_class', myClass);
+          localStorage.setItem('bt3d_mp_name', myName);
+        } catch (e) { }
 
         let myAvatar = localStorage.getItem('bt3d_mp_avatar') || 'student_male';
         if (!AVATAR_DEFS[myAvatar]) myAvatar = 'student_male';
@@ -10621,10 +10705,10 @@
 
         function taoTextureBangTen(name, isSelf) {
           const c = document.createElement('canvas');
-          c.width = 384; c.height = 96;
+          c.width = 440; c.height = 96;
           const g = c.getContext('2d');
 
-          const w = 384, h = 96;
+          const w = 440, h = 96;
           g.beginPath();
           if (typeof g.roundRect === 'function') {
             g.roundRect(10, 10, w - 20, h - 20, 38);
@@ -10633,7 +10717,7 @@
             g.quadraticCurveTo(w - 10, h - 10, w - 48, h - 10); g.lineTo(48, h - 10);
             g.quadraticCurveTo(10, h - 10, 10, 48); g.quadraticCurveTo(10, 10, 48, 10);
           }
-          g.fillStyle = isSelf ? 'rgba(154, 28, 34, 0.92)' : 'rgba(23, 20, 26, 0.88)';
+          g.fillStyle = isSelf ? 'rgba(154, 28, 34, 0.94)' : 'rgba(23, 20, 26, 0.90)';
           g.fill();
           g.lineWidth = 4;
           g.strokeStyle = isSelf ? '#ffd700' : '#c9a35a';
@@ -10648,19 +10732,24 @@
           g.lineWidth = 2.5;
           g.stroke();
 
-          // Chữ tên khách tham quan
+          // Chữ tên khách tham quan kèm lớp
           g.textAlign = 'left';
           g.textBaseline = 'middle';
           g.fillStyle = '#ffffff';
-          g.font = 'bold 30px "Be Vietnam Pro", system-ui, sans-serif';
+          let fontSize = 28;
+          g.font = `bold ${fontSize}px "Be Vietnam Pro", system-ui, sans-serif`;
           let display = lamSachVanBan(name || 'Khách tham quan');
-          if (g.measureText(display).width > 280) {
-            while (g.measureText(display + '...').width > 280 && display.length > 3) {
+          while (g.measureText(display).width > 340 && fontSize > 20) {
+            fontSize -= 2;
+            g.font = `bold ${fontSize}px "Be Vietnam Pro", system-ui, sans-serif`;
+          }
+          if (g.measureText(display).width > 345) {
+            while (g.measureText(display + '...').width > 345 && display.length > 3) {
               display = display.slice(0, -1);
             }
             display += '...';
           }
-          g.fillText(display, 70, 48);
+          g.fillText(display, 68, 48);
 
           const t = new THREE.CanvasTexture(c);
           t.encoding = THREE.sRGBEncoding;
@@ -10712,7 +10801,7 @@
           group.userData.bodyMat = bodyMat;
 
           // 3. Bảng tên nổi (Floating Nametag) tại y = 1.83m
-          const tagGeo = new THREE.PlaneGeometry(0.95, 0.24);
+          const tagGeo = new THREE.PlaneGeometry(1.08, 0.24);
           const tagMat = new THREE.MeshBasicMaterial({
             map: taoTextureBangTen(group.userData.name, false),
             transparent: true,
@@ -10835,10 +10924,22 @@
           sessionStorage.setItem('bt3d_bot_fruit_names', JSON.stringify(botFruitNames));
         } catch (e) { }
 
+        const botDefClasses = {
+          bot_lananh: '7A1',
+          bot_baonam: '8A3',
+          bot_phuhuynh: 'Phụ huynh'
+        };
+
+        function layTenDayDuBot(id, defFruit) {
+          const f = botFruitNames[id] || defFruit;
+          const cls = botDefClasses[id] || '8A3';
+          return `${f} (${cls})`;
+        }
+
         const DEMO_BOTS = [
           {
             id: 'bot_lananh',
-            name: botFruitNames['bot_lananh'] || '🍓 Strawberry',
+            name: layTenDayDuBot('bot_lananh', '🍓 Strawberry'),
             avatar: 'student_female',
             room: 'lobby',
             state: 'walk', // walk | pause
@@ -10856,7 +10957,7 @@
           },
           {
             id: 'bot_baonam',
-            name: botFruitNames['bot_baonam'] || '🥑 Avocado',
+            name: layTenDayDuBot('bot_baonam', '🥑 Avocado'),
             avatar: 'student_male',
             room: 'lobby',
             state: 'walk',
@@ -10873,7 +10974,7 @@
           },
           {
             id: 'bot_phuhuynh',
-            name: botFruitNames['bot_phuhuynh'] || '🥭 Mango',
+            name: layTenDayDuBot('bot_phuhuynh', '🥭 Mango'),
             avatar: 'visitor_male',
             room: 'lobby',
             state: 'walk',
@@ -11280,6 +11381,40 @@
         // 14. Giao diện Modal quản lý Bạn cùng xem
         let hopMultiplayer = null;
 
+        function napDanhSachLop(khoiVal, selectedLop) {
+          if (!hopMultiplayer) return;
+          const lopSelect = hopMultiplayer.querySelector('#mpLopSelect');
+          if (!lopSelect) return;
+          const ds = KHOI_LOP_MAP[khoiVal] || KHOI_LOP_MAP['8'];
+          lopSelect.innerHTML = ds.map(l => {
+            return `<option value="${escapeHtml(l)}">${escapeHtml(l)}</option>`;
+          }).join('');
+          if (selectedLop && ds.includes(selectedLop)) {
+            lopSelect.value = selectedLop;
+          } else {
+            lopSelect.value = ds[0];
+          }
+        }
+
+        function capNhatBadgeNhanVat() {
+          if (!hopMultiplayer) return;
+          const fruitBadge = hopMultiplayer.querySelector('#mpFruitSelectedBadge');
+          const fruitSelect = hopMultiplayer.querySelector('#mpFruitSelect');
+          const lopSelect = hopMultiplayer.querySelector('#mpLopSelect');
+          if (!fruitBadge || !fruitSelect || !lopSelect) return;
+
+          const fVal = fruitSelect.value;
+          const fruit = FRUIT_NAMES.find(f => (f.icon + ' ' + f.name) === fVal || f.name === fVal) || FRUIT_NAMES[0];
+          const lopVal = lopSelect.value || '8A3';
+          const isStudentClass = /^[6-9]A\d+$/.test(lopVal);
+          const lopDesc = isStudentClass ? `Lớp ${lopVal}` : lopVal;
+
+          fruitBadge.innerHTML = `
+            <span class="fruit-badge-icon">${fruit.icon}</span>
+            <span class="fruit-badge-text">Biệt danh tham quan: <b>${escapeHtml(fruit.name)} (${escapeHtml(lopVal)})</b> — ${escapeHtml(fruit.vi)} • ${escapeHtml(lopDesc)}</span>
+          `;
+        }
+
         function taoGiaoDienModal() {
           if (hopMultiplayer) return;
 
@@ -11310,10 +11445,10 @@
         </div>
 
         <div class="mp-than">
-          <!-- TAB 1: NHÂN VẬT & BIỆT DANH TRÁI CÂY -->
+          <!-- TAB 1: NHÂN VẬT & BIỆT DANH TRÁI CÂY & KHỐI LỚP -->
           <div class="mp-panel active" id="panel-tab-profile">
             <div class="mp-nhom">
-              <label for="mpFruitSelect">Biệt danh trái cây của bạn (chọn từ 30 loại quả):</label>
+              <label for="mpFruitSelect">1. Biệt danh trái cây của bạn (chọn từ 30 loại quả):</label>
               <div class="mp-fruit-select-wrap">
                 <div class="mp-fruit-select-container">
                   <select id="mpFruitSelect" class="mp-fruit-select">
@@ -11322,13 +11457,38 @@
                 </div>
                 <button type="button" class="mp-nut-sm" id="mpRandomFruitBtn" title="Chọn ngẫu nhiên một loại trái cây">🎲 Đổi ngẫu nhiên</button>
               </div>
+            </div>
+
+            <!-- CHỌN KHỐI & LỚP HỌC -->
+            <div class="mp-nhom mp-khoi-lop-nhom">
+              <label>2. Khối và Lớp của bạn tại Trường THCS An Nhơn:</label>
+              <div class="mp-khoi-lop-wrap">
+                <div class="mp-select-col">
+                  <span class="mp-select-sublabel">Chọn Khối:</span>
+                  <select id="mpKhoiSelect" class="mp-fruit-select">
+                    <option value="6">🏫 Khối 6 (6A1 - 6A13)</option>
+                    <option value="7">🏫 Khối 7 (7A1 - 7A12)</option>
+                    <option value="8">🏫 Khối 8 (8A1 - 8A13)</option>
+                    <option value="9">🏫 Khối 9 (9A1 - 9A14)</option>
+                    <option value="khac">👥 Khác (Giáo viên / Khách)</option>
+                  </select>
+                </div>
+                <div class="mp-select-col">
+                  <span class="mp-select-sublabel">Chọn Lớp / Phân loại:</span>
+                  <select id="mpLopSelect" class="mp-fruit-select">
+                    <!-- Sẽ render động theo Khối -->
+                  </select>
+                </div>
+              </div>
+
+              <!-- Live Badge kết hợp Biệt danh + Lớp -->
               <div class="mp-fruit-badge" id="mpFruitSelectedBadge">
                 <span class="fruit-badge-icon">🍎</span>
-                <span class="fruit-badge-text">Biệt danh tham quan: <b>Apple</b> (Quả Táo)</span>
+                <span class="fruit-badge-text">Biệt danh tham quan: <b>Apple (8A3)</b> — Quả Táo • Lớp 8A3</span>
               </div>
             </div>
 
-            <label class="mp-label-avatars">Chọn nhân vật đại diện cho bạn trong bảo tàng 3D:</label>
+            <label class="mp-label-avatars">3. Chọn nhân vật đại diện cho bạn trong bảo tàng 3D:</label>
             <div class="mp-avatar-grid" id="mpAvatarGrid">
               <!-- Render 4 avatar cards -->
             </div>
@@ -11399,18 +11559,10 @@
             mpHopBox.addEventListener('click', (e) => e.stopPropagation());
           }
 
-          // Khởi tạo danh sách 30 trái cây vào Select
+          // Khởi tạo danh sách 30 trái cây và Khối Lớp vào Select
           const fruitSelect = hopMultiplayer.querySelector('#mpFruitSelect');
-          const fruitBadge = hopMultiplayer.querySelector('#mpFruitSelectedBadge');
-
-          function capNhatBadgeTraiCay(val) {
-            if (!fruitBadge) return;
-            const fruit = FRUIT_NAMES.find(f => (f.icon + ' ' + f.name) === val) || FRUIT_NAMES[0];
-            fruitBadge.innerHTML = `
-              <span class="fruit-badge-icon">${fruit.icon}</span>
-              <span class="fruit-badge-text">Biệt danh tham quan: <b>${escapeHtml(fruit.name)}</b> (${escapeHtml(fruit.vi)})</span>
-            `;
-          }
+          const khoiSelect = hopMultiplayer.querySelector('#mpKhoiSelect');
+          const lopSelect = hopMultiplayer.querySelector('#mpLopSelect');
 
           if (fruitSelect) {
             fruitSelect.innerHTML = FRUIT_NAMES.map(f => {
@@ -11418,13 +11570,25 @@
               return `<option value="${escapeHtml(val)}">${f.icon} ${escapeHtml(f.name)} (${escapeHtml(f.vi)})</option>`;
             }).join('');
 
-            fruitSelect.value = myName;
-            capNhatBadgeTraiCay(myName);
+            const curFruitObj = FRUIT_NAMES.find(f => f.name === myFruit) || FRUIT_NAMES[0];
+            fruitSelect.value = curFruitObj.icon + ' ' + curFruitObj.name;
+            fruitSelect.onchange = capNhatBadgeNhanVat;
+          }
 
-            fruitSelect.onchange = () => {
-              capNhatBadgeTraiCay(fruitSelect.value);
+          if (khoiSelect) {
+            khoiSelect.value = myGrade || '8';
+            napDanhSachLop(khoiSelect.value, myClass);
+            khoiSelect.onchange = () => {
+              napDanhSachLop(khoiSelect.value);
+              capNhatBadgeNhanVat();
             };
           }
+
+          if (lopSelect) {
+            lopSelect.onchange = capNhatBadgeNhanVat;
+          }
+
+          capNhatBadgeNhanVat();
 
           // Nút đổi trái cây ngẫu nhiên
           const randomFruitBtn = hopMultiplayer.querySelector('#mpRandomFruitBtn');
@@ -11433,21 +11597,32 @@
               const rf = FRUIT_NAMES[Math.floor(Math.random() * FRUIT_NAMES.length)];
               const val = rf.icon + ' ' + rf.name;
               if (fruitSelect) fruitSelect.value = val;
-              capNhatBadgeTraiCay(val);
+              capNhatBadgeNhanVat();
             };
           }
 
           // Nút lưu thông tin nhân vật
           const xuLyLuuThongTinNhanVat = () => {
-            if (fruitSelect && fruitSelect.value) {
-              myName = fruitSelect.value;
-              try { localStorage.setItem('bt3d_mp_name', myName); } catch (e) { }
-            }
-            try { localStorage.setItem('bt3d_mp_avatar', myAvatar); } catch (e) { }
+            const fVal = fruitSelect ? fruitSelect.value : '';
+            const fruitObj = FRUIT_NAMES.find(f => (f.icon + ' ' + f.name) === fVal || f.name === fVal) || FRUIT_NAMES[0];
+            myFruit = fruitObj.name;
+
+            if (khoiSelect) myGrade = khoiSelect.value;
+            if (lopSelect) myClass = lopSelect.value;
+
+            myName = `${fruitObj.icon} ${fruitObj.name} (${myClass})`;
+
+            try {
+              localStorage.setItem('bt3d_mp_fruit', myFruit);
+              localStorage.setItem('bt3d_mp_grade', myGrade);
+              localStorage.setItem('bt3d_mp_class', myClass);
+              localStorage.setItem('bt3d_mp_name', myName);
+              localStorage.setItem('bt3d_mp_avatar', myAvatar);
+            } catch (e) { }
 
             // Phát thông tin mới
             phatToaDoBanThan(true);
-            hienThongBaoToast('Đã chọn biệt danh ' + myName + ' và áp dụng nhân vật!');
+            hienThongBaoToast('Đã lưu biệt danh ' + myName + ' và áp dụng nhân vật!');
             dongMultiplayerModal();
           };
 
@@ -11517,6 +11692,23 @@
               grid.querySelectorAll('.mp-avatar-card').forEach(c => c.classList.remove('selected'));
               card.classList.add('selected');
               myAvatar = k;
+
+              const ks = hopMultiplayer.querySelector('#mpKhoiSelect');
+              if (ks) {
+                if (k.startsWith('teacher_') && ks.value !== 'khac') {
+                  ks.value = 'khac';
+                  napDanhSachLop('khac', 'Giáo viên');
+                  capNhatBadgeNhanVat();
+                } else if (k.startsWith('visitor_') && ks.value !== 'khac') {
+                  ks.value = 'khac';
+                  napDanhSachLop('khac', 'Khách tham quan');
+                  capNhatBadgeNhanVat();
+                } else if (k.startsWith('student_') && ks.value === 'khac') {
+                  ks.value = '8';
+                  napDanhSachLop('8', '8A3');
+                  capNhatBadgeNhanVat();
+                }
+              }
             };
 
             grid.appendChild(card);
@@ -11621,17 +11813,17 @@
         function moMultiplayerModal(initialTab) {
           taoGiaoDienModal();
           const fruitSelect = hopMultiplayer.querySelector('#mpFruitSelect');
+          const khoiSelect = hopMultiplayer.querySelector('#mpKhoiSelect');
+          const lopSelect = hopMultiplayer.querySelector('#mpLopSelect');
           if (fruitSelect) {
-            fruitSelect.value = myName;
-            const fruitBadge = hopMultiplayer.querySelector('#mpFruitSelectedBadge');
-            if (fruitBadge) {
-              const fruit = FRUIT_NAMES.find(f => (f.icon + ' ' + f.name) === myName) || FRUIT_NAMES[0];
-              fruitBadge.innerHTML = `
-                <span class="fruit-badge-icon">${fruit.icon}</span>
-                <span class="fruit-badge-text">Biệt danh tham quan: <b>${escapeHtml(fruit.name)}</b> (${escapeHtml(fruit.vi)})</span>
-              `;
-            }
+            const curFruitObj = FRUIT_NAMES.find(f => f.name === myFruit) || FRUIT_NAMES[0];
+            fruitSelect.value = curFruitObj.icon + ' ' + curFruitObj.name;
           }
+          if (khoiSelect) {
+            khoiSelect.value = myGrade || '8';
+            napDanhSachLop(khoiSelect.value, myClass);
+          }
+          capNhatBadgeNhanVat();
           const urlInp = hopMultiplayer.querySelector('#mpFirebaseUrlInput');
           if (urlInp) {
             urlInp.value = localStorage.getItem('bt3d_firebase_url') || FIREBASE_CONFIG.databaseURL || '';
