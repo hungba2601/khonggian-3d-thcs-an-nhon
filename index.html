@@ -5505,9 +5505,9 @@
     const PORTRAIT_BY = "Ảnh chụp khoảng năm 1946, không rõ tác giả · Phạm vi công cộng · Wikimedia Commons";   // ảnh chân dung chính thống, đặt trong thư mục anh
     // Danh sách 3 bài nhạc nền phát ngẫu nhiên mỗi lần mở web (hết bài tự động lặp lại)
     const PLAYLIST = [
-      { file: "love story.mp3", title: "Love Story", artist: "Taylor Swift (Du dương)" },
-      { file: "Sealed with a kiss.m4a", title: "Sealed With A Kiss", artist: "Jason Donovan (Lãng mạn)" },
-      { file: "Woman in Love.mp3", title: "Woman in Love", artist: "Barbra Streisand (Sâu lắng)" }
+      { file: "love story.mp3", title: "Love Story", artist: "Taylor Swift (Du dương)", volume: 0.3 },
+      { file: "Sealed with a kiss.m4a", title: "Sealed With A Kiss", artist: "Jason Donovan (Lãng mạn)", volume: 0.3 },
+      { file: "Woman in Love.mp3", title: "Woman in Love", artist: "Barbra Streisand (Sâu lắng)", volume: 0.5 }
     ];
     let playlistIndex = Math.floor(Math.random() * PLAYLIST.length);
     let CHOSEN_TRACK = PLAYLIST[playlistIndex];
@@ -6082,9 +6082,15 @@
          tạm dừng/tiếp tục, chuyển bài, tắt tiếng y hệt giao diện mẫu. */
       const Music = (() => {
         let audio = null, fileFailed = false, on = false, fadeT = null;
-        let volume = 0.3; // Mặc định 30% du dương
+        let userAdjustedVolume = false;
+
+        function getTrackVolume(t) {
+          return (t && typeof t.volume === 'number') ? t.volume : 0.3;
+        }
+
+        let volume = getTrackVolume(CHOSEN_TRACK); // Mặc định theo bài (Woman in Love: 50%, các bài khác: 30%)
         let isMuted = false;
-        let previousVolume = 0.3;
+        let previousVolume = volume;
 
         const btn = $('#btnMusic'), dot = $('#musicDot'), lbl = $('#musicState');
         const popover = $('#musicPopover');
@@ -6211,6 +6217,10 @@
                 playlistIndex = altIdx;
                 CHOSEN_TRACK = PLAYLIST[altIdx];
                 MUSIC_SRC = encodeURI(CHOSEN_TRACK.file);
+                if (!userAdjustedVolume) {
+                  volume = getTrackVolume(CHOSEN_TRACK);
+                  previousVolume = volume;
+                }
                 audio = createAudioTrack(MUSIC_SRC);
                 audio.play().then(() => {
                   if (!on) { audio.pause(); return; }
@@ -6252,9 +6262,9 @@
         function toggleMute() {
           if (isMuted || volume === 0) {
             isMuted = false;
-            setVolume(previousVolume > 0 ? previousVolume : 0.3);
+            setVolume(previousVolume > 0 ? previousVolume : getTrackVolume(CHOSEN_TRACK));
           } else {
-            previousVolume = volume > 0 ? volume : 0.3;
+            previousVolume = volume > 0 ? volume : getTrackVolume(CHOSEN_TRACK);
             isMuted = true;
             setVolume(0);
           }
@@ -6265,6 +6275,10 @@
           CHOSEN_TRACK = PLAYLIST[playlistIndex];
           MUSIC_SRC = encodeURI(CHOSEN_TRACK.file);
           fileFailed = false;
+          if (!userAdjustedVolume) {
+            volume = getTrackVolume(CHOSEN_TRACK);
+            previousVolume = volume;
+          }
           if (audio) {
             audio.pause();
             audio = null;
@@ -6334,6 +6348,7 @@
 
         if (mpSlider) {
           mpSlider.oninput = (e) => {
+            userAdjustedVolume = true;
             setVolume(parseFloat(e.target.value) / 100);
           };
         }
@@ -6341,6 +6356,7 @@
         if (mpPresets) {
           mpPresets.forEach(b => {
             b.onclick = () => {
+              userAdjustedVolume = true;
               setVolume(parseInt(b.dataset.v, 10) / 100);
             };
           });
@@ -6360,7 +6376,11 @@
         function useFile(f) {
           stop();
           if (audio) { audio.pause(); }
-          CHOSEN_TRACK = { file: f.name, title: f.name, artist: "Tệp tải lên" };
+          CHOSEN_TRACK = { file: f.name, title: f.name, artist: "Tệp tải lên", volume: 0.3 };
+          if (!userAdjustedVolume) {
+            volume = 0.3;
+            previousVolume = 0.3;
+          }
           audio = createAudioTrack(URL.createObjectURL(f));
           fileFailed = false;
           setTimeout(start, 200);
